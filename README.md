@@ -72,6 +72,63 @@ debian@debian:~$ sudo -i
 root@debian:~# whoami 
 root
 ```
+
+Add to `inventory.yaml` with the new servers (possibly temporary) ip address.
 	
 2. Run playbook against server
+
+Create python venv and install ansible
+```
+cd src
+python3 -m venv venv
+. venv/bin/activate
+pip install -r ../requirements.txt 
+```
+
+Ensure `sshpass` is installed
+
+> This is to verify initial access, before we put key based access in place
+
+```
+sudo apt install -y sshpass
+```
+
+Verify access using the `debian` password you created earlier and have added to `inventory.yaml`
+
+```
+ansible -i inventory.yaml -m ping <new-server-ip> -k
+```
+
+Expected output:
+
+```
+SSH password: 
+<ip> | SUCCESS => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python3"
+    },
+    "changed": false,
+    "ping": "pong"
+}
+```
+
+Verify servers playbook:
+
+```
+$ ansible-playbook -i inventory.yaml playbooks/servers.yaml -k --check
+SSH password: 
+
+PLAY [servers] *****************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [<IP>]
+
+TASK [Debug] *******************************************************************
+ok: [<IP>] => {
+    "msg": "Running servers playbook"
+}
+
+PLAY RECAP *********************************************************************
+<IP>               : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+```
 	
