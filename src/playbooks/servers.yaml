@@ -36,3 +36,12 @@
       state: latest
       install_recommends: no
 
+  - name: modprobe zfs
+    community.general.modprobe:
+      name: zfs
+      state: present
+
+  - name: Install zfsutils-linux
+    ansible.builtin.apt:
+      name: zfsutils-linux
+      state: latest
