@@ -132,3 +132,8 @@ PLAY RECAP *********************************************************************
 <IP>               : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
 ```
 	
+## Install / boostrap server by running playbook
+
+```
+ansible-playbook -vvv -i inventory.yaml playbooks/servers.yaml -k -K
+```
