@@ -1,0 +1,3 @@
+[submodule "iDRAC-Redfish-Scripting"]
+	path = iDRAC-Redfish-Scripting
+	url = https://github.com/dell/iDRAC-Redfish-Scripting.git
