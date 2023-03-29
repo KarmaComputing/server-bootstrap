@@ -1,8 +1,7 @@
-name: Respond to new issue and create branch
+name: Respond to new issue and create branch 
 on:
   issues:
-    - opened
-
+    types: [opened, edited, milestoned]
 jobs:
   respond-to-issue:
     runs-on: ubuntu-latest
