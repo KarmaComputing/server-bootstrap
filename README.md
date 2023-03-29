@@ -14,7 +14,8 @@ Purpose: Provision a blank server using automatin and minimal hands-on inteventi
 Install ssh
 
 ```
-apt install openssh-server
+sudo -i
+apt install -y openssh-server jq vim sshpass
 ```
 Create debian user (a non-root user)
 
@@ -32,9 +33,7 @@ usermod -aG sudo debian
 Allow password authentication
 
 ```
-vim /etc/ssh/sshd_config
-# set
-PasswordAuthentication yes
+sed -i 's/.*PasswordAuthentication.*/PasswordAuthentication yes/g' /etc/ssh/ssh_config
 ```
 
 Restart sshd
@@ -71,7 +70,10 @@ debian@debian:~$ sudo -i
 [sudo] password for debian: 
 root@debian:~# whoami 
 root
+exit
 ```
+
+> Exit out of the server, we run the ansible playbook from another host which has conectivity to the new server. We do not run ansible directly on the server.
 
 Add to `inventory.yaml` with the new servers (possibly temporary) ip address.
 	
@@ -112,28 +114,402 @@ SSH password:
 }
 ```
 
-Verify servers playbook:
-
-```
-$ ansible-playbook -i inventory.yaml playbooks/servers.yaml -k --check
-SSH password: 
-
-PLAY [servers] *****************************************************************
-
-TASK [Gathering Facts] *********************************************************
-ok: [<IP>]
-
-TASK [Debug] *******************************************************************
-ok: [<IP>] => {
-    "msg": "Running servers playbook"
-}
-
-PLAY RECAP *********************************************************************
-<IP>               : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
-```
-	
 ## Install / boostrap server by running playbook
 
 ```
 ansible-playbook -vvv -i inventory.yaml playbooks/servers.yaml -k -K
 ```
+
+## Turn on HBO mode (convert to non-raid)
+In the iDRAC, see `convert-to-hba-mode.png`
+
+> You must apply the operation "at next reboot" you can't apply hba mode whilst booted.
+
+
+### View all SCSI disks
+
+```
+# The -S is to only show scsi (see `man lsblk`)
+lsblk -S -o type,name,label,partlabel,size,model,serial,wwn,uuid
+```
+
+- Get disks serial numbers, ordered by slot number
+  ```
+  lsblk --json -S -o type,name,label,size,model,serial,wwn,uuid | jq -r '.blockdevices[] | select(.type=="disk") | .serial'
+  ```
+  Get first two disks serial numbers:
+  ```
+  lsblk --json -S -o type,name,label,size,model,serial,wwn,uuid | jq -r '.blockdevices[] | select(.type=="disk") | .serial' | head -2
+  ```
+
+get first disk
+
+```
+. ./get-first-disk-id.sh
+
+# Clear partition table
+sgdisk --zap-all $DISK
+
+
+# Partition your disk(s):
+sgdisk -a1 -n1:24K:+1000K -t1:EF02 $DISK
+# Set Unencrypted or ZFS native encryption:
+sgdisk     -n4:0:0        -t4:BF00 $DISK
+```
+
+Repeat above for disk 2.
+
+### Create the boot pool
+Create zpool mirror:
+
+```
+zpool create \
+    -o ashift=12 \
+    -o autotrim=on -d \
+    -o cachefile=/etc/zfs/zpool.cache \
+    -o feature@async_destroy=enabled \
+    -o feature@bookmarks=enabled \
+    -o feature@embedded_data=enabled \
+    -o feature@empty_bpobj=enabled \
+    -o feature@enabled_txg=enabled \
+    -o feature@extensible_dataset=enabled \
+    -o feature@filesystem_limits=enabled \
+    -o feature@hole_birth=enabled \
+    -o feature@large_blocks=enabled \
+    -o feature@livelist=enabled \
+    -o feature@lz4_compress=enabled \
+    -o feature@spacemap_histogram=enabled \
+    -o feature@zpool_checkpoint=enabled \
+    -O devices=off \
+    -O acltype=posixacl -O xattr=sa \
+    -O compression=lz4 \
+    -O normalization=formD \
+    -O relatime=on \
+    -O canmount=off -O mountpoint=/boot -R /mnt \
+    bpool \
+    /dev/disk/by-id/scsi-SATA_disk1-part3 \
+    /dev/disk/by-id/scsi-SATA_disk2-part3
+```
+
+### Create the root pool
+
+> Unencrypted
+
+```
+zpool create \
+    -o ashift=12 \
+    -o autotrim=on \
+    -O acltype=posixacl -O xattr=sa -O dnodesize=auto \
+    -O compression=lz4 \
+    -O normalization=formD \
+    -O relatime=on \
+    -O canmount=off -O mountpoint=/ -R /mnt \
+    rpool mirror /dev/disk/by-id/scsi-SATA_disk1-part4 /dev/disk/by-id/scsi-SATA_disk2-part4
+```
+
+e.g. where `DISK1` is /dev/disk/by-id/ata-SK_segate-2u3u8389233-part4
+
+
+### System Installation ([ref](https://openzfs.github.io/openzfs-docs/Getting%20Started/Debian/Debian%20Bullseye%20Root%20on%20ZFS.html#step-3-system-installation))
+
+Create filesystem datasets to act as containers:
+```
+zfs create -o canmount=off -o mountpoint=none rpool/ROOT
+zfs create -o canmount=off -o mountpoint=none bpool/BOOT
+```
+
+Create filesystem datasets for the root and boot filesystems:
+```
+zfs create -p -o canmount=noauto -o mountpoint=/ rpool/ROOT/debian
+zfs mount rpool/ROOT/debian
+
+zfs create -p -o mountpoint=/boot bpool/BOOT/debian
+```
+
+### Create datasets:
+```
+zfs create                     rpool/home
+zfs create -o mountpoint=/root rpool/home/root
+chmod 700 /mnt/root
+zfs create -o canmount=off     rpool/var
+zfs create -o canmount=off     rpool/var/lib
+zfs create                     rpool/var/log
+zfs create                     rpool/var/spool
+```
+
+(Optional datasets)
+```
+zfs create -o com.sun:auto-snapshot=false rpool/var/cache
+zfs create -o com.sun:auto-snapshot=false rpool/var/lib/nfs
+zfs create -o com.sun:auto-snapshot=false rpool/var/tmp
+chmod 1777 /mnt/var/tmp
+```
+
+
+### Mount a tmpfs at /run:
+
+```
+mkdir /mnt/run
+mount -t tmpfs tmpfs /mnt/run
+mkdir /mnt/run/lock
+```
+
+### Install the minimal system
+```
+debootstrap bullseye /mnt
+```
+
+### Copy in zpool.cache:
+
+```
+mkdir /mnt/etc/zfs
+cp /etc/zfs/zpool.cache /mnt/etc/zfs/
+```
+
+### System Configuration
+
+Configure the hostname:
+```
+hostname CHANGEME
+hostname > /mnt/etc/hostname
+vi /mnt/etc/hosts
+```
+
+```
+Add a line:
+127.0.1.1       HOSTNAME
+or if the system has a real name in DNS:
+127.0.1.1       FQDN HOSTNAME
+```
+Configure the network interface:
+
+```
+ip addr show
+```
+```
+vi /mnt/etc/network/interfaces.d/NAME
+```
+```
+auto NAME
+iface NAME inet dhcp
+```
+
+Configure the package sources:
+
+`vi /mnt/etc/apt/sources.list`
+
+```
+deb http://deb.debian.org/debian bullseye main contrib
+deb-src http://deb.debian.org/debian bullseye main contrib
+
+deb http://deb.debian.org/debian-security bullseye-security main contrib
+deb-src http://deb.debian.org/debian-security bullseye-security main contrib
+
+deb http://deb.debian.org/debian bullseye-updates main contrib
+deb-src http://deb.debian.org/debian bullseye-updates main contrib
+```
+
+### Bind the virtual filesystems from the LiveCD environment to the new system and chroot into it:
+
+```
+DISK=/dev/disk/by-id/SATA_disk1
+```
+
+```
+mount --make-private --rbind /dev  /mnt/dev
+mount --make-private --rbind /proc /mnt/proc
+mount --make-private --rbind /sys  /mnt/sys
+chroot /mnt /usr/bin/env DISK=$DISK bash --login
+```
+
+### Configure a basic system environment:
+
+```
+ln -s /proc/self/mounts /etc/mtab
+apt update
+
+apt install --yes console-setup locales
+```
+
+Even if you prefer a non-English system language, always ensure that en_US.UTF-8 is available:
+
+```
+dpkg-reconfigure locales tzdata keyboard-configuration console-setup
+```
+
+Install ZFS in the chroot environment for the new system:
+
+```
+apt install --yes dpkg-dev linux-headers-generic linux-image-generic
+apt install --yes zfs-initramfs
+echo REMAKE_INITRD=yes > /etc/dkms/zfs.conf
+```
+> Note: Ignore any error messages saying ERROR: Couldn't resolve device and WARNING: Couldn't determine root device. cryptsetup does not support ZFS.
+
+Install an NTP service to synchronize time. 
+
+```
+apt install systemd-timesyncd
+timedatectl
+```
+
+Install GRUB
+```
+apt install --yes grub-pc
+```
+
+Optional: Remove os-prober:
+```
+apt purge --yes os-prober
+```
+
+### Set root password
+```
+passwd
+```
+
+Enable importing bpool
+
+> This ensures that bpool is always imported, regardless of whether /etc/zfs/zpool.cache exists, whether it is in the cachefile or not, or whether zfs-import-scan.service is enabled.
+
+`vi /etc/systemd/system/zfs-import-bpool.service`
+
+```
+[Unit]
+DefaultDependencies=no
+Before=zfs-import-scan.service
+Before=zfs-import-cache.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/sbin/zpool import -N -o cachefile=none bpool
+# Work-around to preserve zpool cache:
+ExecStartPre=-/bin/mv /etc/zfs/zpool.cache /etc/zfs/preboot_zpool.cache
+ExecStartPost=-/bin/mv /etc/zfs/preboot_zpool.cache /etc/zfs/zpool.cache
+
+[Install]
+WantedBy=zfs-import.target
+```
+
+`systemctl enable zfs-import-bpool.service`
+
+
+Optional: Install SSH:
+
+```
+apt install --yes openssh-server
+apt install --yes openssh-server
+
+vi /etc/ssh/sshd_config
+# Set: PermitRootLogin yes
+```
+
+Optional (but kindly requested): Install popcon
+
+```
+apt install --yes popularity-contest
+```
+
+### GRUB Installation
+
+Verify that the ZFS boot filesystem is recognized:
+
+```
+grub-probe /boot
+```
+
+Refresh the initrd files:
+```
+update-initramfs -c -k all
+```
+> Note: Ignore any error messages saying ERROR: Couldn't resolve device and WARNING: Couldn't determine root device. cryptsetup does not support ZFS.
+
+Workaround GRUB’s missing zpool-features support:
+
+```
+vi /etc/default/grub
+# Set: GRUB_CMDLINE_LINUX="root=ZFS=rpool/ROOT/debian"
+```
+
+Optional (but highly recommended): Make debugging GRUB easier:
+
+```
+vi /etc/default/grub
+# Remove quiet from: GRUB_CMDLINE_LINUX_DEFAULT
+# Uncomment: GRUB_TERMINAL=console
+# Save and quit.
+```
+
+Update the boot configuration:
+```
+update-grub
+```
+> Note: Ignore errors from osprober, if present.
+
+Install the boot loader:
+
+For legacy (BIOS) booting, install GRUB to the MBR:
+```
+grub-install $DISK
+```
+e.g:
+```
+grub-install /dev/disk/by-id/SATA_disk1
+Installing for i386-pc platform.
+grub-install /dev/disk/by-id/SATA_disk2
+```
+> Remember, If you are creating a mirror or raidz topology, repeat the grub-install command for each disk in the pool.
+
+Fix filesystem mount ordering:
+
+```
+mkdir /etc/zfs/zfs-list.cache
+touch /etc/zfs/zfs-list.cache/bpool
+touch /etc/zfs/zfs-list.cache/rpool
+zed -F &
+```
+
+Verify that zed updated the cache by making sure these are not empty:
+
+```
+cat /etc/zfs/zfs-list.cache/bpool
+cat /etc/zfs/zfs-list.cache/rpool
+```
+
+If either is empty, force a cache update and check again:
+```
+zfs set canmount=on     bpool/BOOT/debian
+zfs set canmount=noauto rpool/ROOT/debian
+```
+
+Fix the paths to eliminate /mnt:
+```
+sed -Ei "s|/mnt/?|/|" /etc/zfs/zfs-list.cache/*
+```
+
+## First boot
+
+Optional: Snapshot the initial installation:
+```
+zfs snapshot bpool/BOOT/debian@install
+zfs snapshot rpool/ROOT/debian@install
+```
+
+Exit from the chroot environment back to the LiveCD environment:
+
+```
+exit
+```
+
+Run these commands in the LiveCD environment to unmount all filesystems:
+
+```
+mount | grep -v zfs | tac | awk '/\/mnt/ {print $3}' | \
+    xargs -i{} umount -lf {}
+zpool export -a
+```
+
+
+# Ref
+https://openzfs.github.io/openzfs-docs/Getting%20Started/Debian/Debian%20Bullseye%20Root%20on%20ZFS.html#id8:~:text=Partition%20your%20disk(s)%3A

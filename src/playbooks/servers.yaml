@@ -30,18 +30,10 @@
       - dpkg-dev
       - linux-headers-amd64
 
-  - name: Install zfs-dkms (no-install-recommends)
-    ansible.builtin.apt:
-      name: zfs-dkms
-      state: latest
-      install_recommends: no
-
-  - name: modprobe zfs
-    community.general.modprobe:
-      name: zfs
-      state: present
-
   - name: Install zfsutils-linux
     ansible.builtin.apt:
       name: zfsutils-linux
       state: latest
+
+  - name: Disable swap during play
+    command: swapoff --all
