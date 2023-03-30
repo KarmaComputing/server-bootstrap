@@ -1,10 +1,10 @@
-name: Respond to new issue and create branch
+name: Auto create git branch upon new issue
 on:
   issues:
     types: [opened]
 
 jobs:
-  respond-to-issue:
+  create-issue-branch:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -23,7 +23,7 @@ jobs:
           # Becomes:
           #
                                                              # Note there is a space here, to keep both '-' and spaces ' '
-          echo ISSUE_TITLE=`echo "${{ github.event.issue.title }}" | \
+          echo ISSUE_BRANCH_NAME=`echo "${{ github.event.issue.title }}" | \
           # Remove non alpha/numeric chars
           tr -cd '[:alnum:]- ' | \
           # Convert spaces to hyphens '-'
@@ -37,6 +37,7 @@ jobs:
 
       - name: Create new branch
         run: |
-          git checkout -b "${{ steps.issue.outputs.number }}-${{ env.ISSUE_TITLE }}"
+          echo "The issue branch name is ${{ env.ISSUE_BRANCH_NAME}} "
+          git checkout -b "${{ steps.issue.outputs.number }}-${{ env.ISSUE_BRANCH_NAME }}"
           git push -u origin HEAD
 
