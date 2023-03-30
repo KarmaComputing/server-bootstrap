@@ -15,6 +15,7 @@ jobs:
         run: |
           echo "::set-output name=number::${{ github.event.issue.number }}"
           echo "::set-output name=title::${{ github.event.issue.title }}"
+          echo ISSUE_TITLE=`echo "${{ github.event.issue.title }}" | tr -cd '[:alnum:]-' | tr ' ' '-' | cut -c -60` >> $GITHUB_ENV
 
       - name: Create new branch
         uses: actions/checkout@v2
@@ -22,6 +23,6 @@ jobs:
           ref: main
           path: repo
         run: |
-          git checkout -b "${{ steps.issue.outputs.number }}-${{ steps.issue.outputs.title }}"
+          git checkout -b "${{ steps.issue.outputs.number }}-${{ env.ISSUE_TITLE }}"
           git push -u origin HEAD
 
