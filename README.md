@@ -90,11 +90,12 @@ qemu-system-x86_64 -cdrom bin/ipxe.iso -nographic
 > The rest will be done via playbook, this manual step is sadly needed to create the inital user (TODO perform via RedfishAPI + playwright see https://blog.karmacomputing.co.uk/devops-with-physical-servers-redfish-python-api-idrac/ and also https://github.com/microsoft/playwright/issues/21786#issuecomment-1481488488)
 	set boot device to virtual cd
 	launch virtual console
-	attach virtual media (debian 11 live cd)
-	wait for debian live to load
-	create non-root user called debian
+	attach virtual media ([Fedora live cd](https://download.fedoraproject.org/pub/fedora/linux/releases/37/Spins/x86_64/iso/Fedora-LXQt-Live-x86_64-37-1.7.iso))
+	wait for fedora live to load
 	
 Install ssh
+
+![](./img/Selection_184.png "Login to iDRAC")
 
 ```
 sudo -i
