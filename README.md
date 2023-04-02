@@ -131,7 +131,6 @@ So that we can use Ansible to configure the server, open the virtual terminal an
 
 ![](./img/Selection_260.png "Use virtual terminal to enable ssh within the liveCD environment")
 
-
 ```
 # From the LiveCD virtual terminal view
 sudo -i
