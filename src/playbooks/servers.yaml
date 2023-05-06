@@ -72,19 +72,6 @@
     tags:
     - network
 
-  - name: Install openssh-server
-    ansible.builtin.apt:
-      name: openssh-server
-      state: latest
-
-  - name: Install ZFS & related packages
-    ansible.builtin.apt:
-      pkg:
-      - debootstrap
-      - gdisk
-      - dpkg-dev
-      - linux-headers-amd64
-
   - apk:
       name: eudev,lsblk,sgdisk,jq,wipefs
       update_cache: yes
