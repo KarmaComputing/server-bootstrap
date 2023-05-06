@@ -6,15 +6,11 @@
     ansible.builtin.debug:
       msg: "Running servers playbook"
 
-  - name: Add source repository into sources list
-    ansible.builtin.apt_repository:
-      repo: deb http://deb.debian.org/debian bullseye main contrib
-      state: present
+  - name: Configure NTP client for time synchronization
+    command: setup-ntp busybox
 
-  - name: Add source repository into sources list
-    ansible.builtin.apt_repository:
-      repo: deb http://deb.debian.org/debian bullseye-backports main contrib
-      state: present
+  - name: Set up apk-repo
+    command: setup-apkrepos -f
 
   # - name: Template ~/.vimrc
   #   ansible.builtin.template:
