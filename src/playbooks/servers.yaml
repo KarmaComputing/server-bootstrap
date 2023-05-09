@@ -1,4 +1,9 @@
 ---
+#
+# Bootstrap physical server from factory reset to booted
+#
+# - Install OpenZFS boot & root across first two disks
+#
 - hosts: servers
   become: true
   tasks:
