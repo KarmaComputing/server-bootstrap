@@ -14,6 +14,11 @@
 #
 
 
+if [ "$1" != "continue-i-know-what-i-am-doing" ]; then
+   echo you must pass "continue-i-know-what-i-am-doing" as first argument
+   exit 1
+fi
+
 # List drives with at least 1.8TB in size.
 
 
