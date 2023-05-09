@@ -12,5 +12,22 @@
   - name: Set up apk-repo
     command: setup-apkrepos -f
 
-  - name: Set up apk-repo
-    command: apk update && apk add eudev && setup-devd udev
+  - name: Add packages
+    command: apk update && apk add eudev lsblk sgdisk jq wipefs && setup-devd udev
+
+  - name: Copy file wipe-all-disks.sh
+    ansible.builtin.copy:
+      src: ./scripts/wipe-all-disks.sh
+      dest: /root/wipe-all-disks.sh
+      owner: root
+      group: root
+      mode: '0755'
+
+  - name: Copy file install-fedora-root-on-zfs.sh
+    ansible.builtin.copy:
+      src: ./scripts/install-fedora-root-on-zfs.sh
+      dest: /root/install-fedora-root-on-zfs.sh
+      owner: root
+      group: root
+      mode: '0755'
+
