@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>Web Scale Console</title>
+      <style>
+         body {
+         background-color: #f7f7f7;
+         font-family: Arial, sans-serif;
+         }
+         h1 {
+         text-align: center;
+         margin-top: 50px;
+         font-size: 48px;
+         color: #333;
+         }
+         h2 {
+         text-align: center;
+         margin-top: 30px;
+         font-size: 28px;
+         color: #333;
+         }
+         .circle {
+         display: inline-block;
+         width: 200px;
+         height: 200px;
+         border-radius: 50%;
+         background-color: #333;
+         margin: 50px;
+         text-align: center;
+         line-height: 200px;
+         font-size: 40px;
+         color: #fff;
+         cursor: pointer;
+         transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+         box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+         }	
+         .circle:hover {
+         background-color: #ffce00;
+         color: #333;
+         }
+         .circle.disabled {
+         opacity: 0.5;
+         pointer-events: none;
+         }
+        .loading {
+          background-color: #333;
+          color: #fff;
+          cursor: progress;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+          animation: flash 1s infinite;
+        }
+
+        @keyframes flash {
+          0% {
+            background-color: #333;
+            color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+          }
+          50% {
+            background-color: #ffce00;
+            color: #333;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+          }
+          100% {
+            background-color: #333;
+            color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+          }
+        }
+
+         .error {
+         border: 2px solid #dc3545;
+         padding: 10px;
+         margin: 10px 0;
+         font-weight: bold;
+         font-size: 16px;
+         color: #dc3545;
+         background-color: #ffe8e8;
+         border-radius: 5px;
+         box-shadow: 0 0 10px rgba(220, 53, 69, 0.3);
+         }
+         .traceback {
+         font-family: monospace;
+         font-size: 14px;
+         white-space: pre-wrap;
+         color: #dc3545;
+         }
+      </style>
+      <script>
+         function displayError(error) {
+         	const errorDiv = document.getElementById('error');
+         	errorDiv.innerHTML = error.split('\n').map(line => `<div>${line}</div>`).join('');
+         	errorDiv.style.display = 'block';
+         }
+         
+         function handleClick(event) {
+         	const circle = event.target;
+         	if (circle.classList.contains('disabled')) {
+         		return;
+         	}
+         	
+          const circles = document.getElementsByClassName('circle');
+          for (let i = 0; i < circles.length; i++) {
+            circles[i].setAttribute('disabled', true);
+          }
+         	circle.classList.add('disabled');
+         	circle.classList.add('loading');
+         	fetch(`/api/v1/${circle.textContent}`, {method: 'POST'})
+         		.then(response => response.json())
+         		.then(data => {
+              console.log("yolo");
+         			if (data.error !== "") {
+         				const errorContainer = document.createElement('div');
+         				errorContainer.classList.add('error');
+         				const tracebackContainer = document.createElement('div');
+         				tracebackContainer.classList.add('traceback');
+         				tracebackContainer.innerHTML = data.error;
+         				errorContainer.appendChild(tracebackContainer);
+         				document.body.appendChild(errorContainer);
+         			} else {
+                let output = document.getElementById('output')
+                output.innerHTML = data.output.split('\n').map(line => `<div>${line}</div>`).join('');
+         				console.log(data);
+         			}
+         		})
+         		.catch(error => console.error(error))
+         		.finally(() => {
+         			  const circles = document.getElementsByClassName('circle');
+         			  for (let i = 0; i < circles.length; i++) {
+         			    circles[i].removeAttribute('disabled');
+                  circles[i].classList.remove('disabled');
+                  circles[i].classList.remove('loading');
+         			  }
+         		});
+         }
+         console.log("Loaded");
+      </script>
+   </head>
+   <body>
+      <h1>Web Scale Console</h1>
+      <h2>Control the server via the browser</h2>
+      <div id="output"></div>
+      <div class="circle" onclick="handleClick(event)">GetPowerState</div>
+      <div class="circle" onclick="handleClick(event)">On</div>
+      <div class="circle" onclick="handleClick(event)">GracefulShutdown</div>
+      <div class="circle" onclick="handleClick(event)">ChangeBiosBootOrderREDFISH</div>
+      <div id="status"></div>
+      <div id="error"></div>
+      <h2>Video feed</h2>
+      <iframe src="https://192.168.0.120"></iframe>
+   </body>
+</html>
+
