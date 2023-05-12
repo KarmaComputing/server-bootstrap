@@ -1,0 +1,13 @@
+{
+  "name": "idrac-redfish-automation",
+  "version": "1.0.0",
+  "description": "[Redfish-boot-server-python-api-idrac-2023-03-16 20-48-51.webm](https://user-images.githubusercontent.com/1718624/225755339-faafd339-4d5f-4d12-b7a7-8187d7963362.webm)",
+  "main": "index.js",
+  "scripts": {},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.31.2"
+  }
+}
