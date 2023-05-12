@@ -1,6 +1,9 @@
-node_modules
 __pycache__
 .env
 *.swp
 venv
 ipxe
+node_modules
+/test-results/
+/playwright-report/
+/playwright/.cache/
