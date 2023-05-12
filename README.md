@@ -92,6 +92,8 @@ Test:
 qemu-system-x86_64 -cdrom bin/ipxe.iso -nographic
 ```
 
+> On a new Dell server, the factory default iDRAC username and password is often `root`/`calvin`.
+
 1. iDrac to server for inital user set-up
 
 
