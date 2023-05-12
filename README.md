@@ -1,19 +1,57 @@
 # Setup from blank server
 
+High-level steps:
+
+1. Factory reset server (careful you're on the correct server!)
+2. Configure HBA mode on disks
+2. Live boot an ISO using virtual media
+4. Install ZFS root mirror accross first two disks
+
 Purpose: Provision a blank server using automatin and minimal hands-on intevention so that servers may be treated as disposable (aka cattle not pets).
 
+
+> On a new Dell server, the factory default iDRAC username and password is often `root`/`calvin`.
+
 1. iDrac to server for inital user set-up
+
+
+
+
+# Factory reset server
+
+Press `F10` during a reboot.
+
+![](./img/Selection_189.png "Factory reset")
+
+
+# Reset BIOS/UEFI iDRAC
+
+![](./img/Selection_186.png "Confirm")
+
+Reboot
+![](./img/Selection_187.png "Reboot")
+
+
+
 
 > The rest will be done via playbook, this manual step is sadly needed to create the inital user (TODO perform via RedfishAPI + playwright see https://blog.karmacomputing.co.uk/devops-with-physical-servers-redfish-python-api-idrac/ and also https://github.com/microsoft/playwright/issues/21786#issuecomment-1481488488)
 	set boot device to virtual cd
 	launch virtual console
-	attach virtual media (debian 11 live cd)
-	wait for debian live to load
-	create non-root user called debian
+	attach virtual media ([Fedora live cd](https://download.fedoraproject.org/pub/fedora/linux/releases/37/Spins/x86_64/iso/Fedora-LXQt-Live-x86_64-37-1.7.iso))
+	wait for fedora live to load
 	
 Install ssh
 
+![](./img/Selection_184.png "Login to iDRAC")
+
+
+So that we can use Ansible to configure the server, open the virtual terminal and book into the LiveCD, become root and enable ssh.
+
+![](./img/Selection_260.png "Use virtual terminal to enable ssh within the liveCD environment")
+
+
 ```
+# From the LiveCD virtual terminal view
 sudo -i
 apt install -y openssh-server jq vim sshpass
 ```
@@ -513,3 +551,5 @@ zpool export -a
 
 # Ref
 https://openzfs.github.io/openzfs-docs/Getting%20Started/Debian/Debian%20Bullseye%20Root%20on%20ZFS.html#id8:~:text=Partition%20your%20disk(s)%3A
+
+- Make older iDRAC compatible with Playwright see https://github.com/microsoft/playwright/issues/21786
