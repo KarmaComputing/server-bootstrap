@@ -8,6 +8,11 @@ jobs:
   qemu:
     runs-on: ubuntu-latest
     steps:
-      -
-        name: Set up QEMU
+      - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
+      - name: Run QEMU
+        run: |
+          ls -l
+          qemu-system-x86_64
+          
+        
