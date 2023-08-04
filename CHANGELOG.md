@@ -1,3 +1,15 @@
+# v0.0.3 (Fri Aug 04 2023)
+
+#### ⚠️ Pushed to `main`
+
+- Create test.yml qemu ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.2 (Fri May 12 2023)
 
 #### ⚠️ Pushed to `main`
