@@ -10,7 +10,7 @@ jobs:
     steps:
       - name: Set up QEMU
         run: |
-          sudo apt-get install -y qemu
+          sudo apt-get install -y qemu-kvm
       - name: Run QEMU
         run: |
           ls -l
