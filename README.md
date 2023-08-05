@@ -2,6 +2,44 @@
 
 Purpose: Provision a blank server using automatin and minimal hands-on intevention so that servers may be treated as disposable (aka cattle not pets).
 
+
+## iPXE
+
+> For testing locally it's helpful to have quemu installed:
+  `sudo apt install qemu`
+
+```
+git clone https://github.com/ipxe/ipxe
+cd ipxe/src
+git checkout c1834f323f4f6b9b46cd5895b1457a117381363f
+```
+
+Embed the demo iPXE boot script
+```
+cat <<EOT > demo.ipxe
+#!ipxe
+dhcp
+chain http://boot.ipxe.org/demo/boot.php
+EOT
+```
+
+Build iPXE whilst embeding the iPXE script:
+
+```
+make EMBED=demo.ipxe # This will take quite a long time (over 5 mins)
+```
+
+The built ipxe ISO will then be inside folder:
+```
+bin/ipxe.iso
+```
+
+Test:
+
+```
+qemu-system-x86_64 -cdrom bin/ipxe.iso -nographic
+```
+
 1. iDrac to server for inital user set-up
 
 > The rest will be done via playbook, this manual step is sadly needed to create the inital user (TODO perform via RedfishAPI + playwright see https://blog.karmacomputing.co.uk/devops-with-physical-servers-redfish-python-api-idrac/ and also https://github.com/microsoft/playwright/issues/21786#issuecomment-1481488488)
