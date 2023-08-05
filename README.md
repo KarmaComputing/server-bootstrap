@@ -14,6 +14,11 @@ cd ipxe/src
 git checkout c1834f323f4f6b9b46cd5895b1457a117381363f
 ```
 
+Enable ping
+```
+sed -i 's$//#define PING_CMD$#define PING_CMD$' config/general.h
+```
+
 Embed the demo iPXE boot script
 ```
 cat <<EOT > demo.ipxe
