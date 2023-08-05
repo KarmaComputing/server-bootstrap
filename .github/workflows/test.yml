@@ -8,9 +8,21 @@ jobs:
   qemu:
     runs-on: ubuntu-latest
     steps:
-      - name: Set up QEMU
+      - name: Install dependencies
+        if: ${{ inputs.provision == 'true' && inputs.install-dependencies == 'true' }}
+        shell: bash
         run: |
-          sudo apt-get install -y qemu-kvm
+          n=0
+          until [ "$n" -ge 5 ]; do
+            success=1
+            sudo apt update && \
+            sudo apt install -y cpu-checker qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils virtinst virt-manager && \
+            break || success=0
+            n=$((n+1)) 
+            sleep 1
+          done
+          [ $success -eq 1 ] || exit 42
+          sudo kvm-ok
       - name: Run QEMU
         run: |
           ls -l
