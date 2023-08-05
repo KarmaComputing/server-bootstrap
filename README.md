@@ -20,7 +20,8 @@ sed -i 's$//#define PING_CMD$#define PING_CMD$' config/general.h
 ```
 
 Enable https
-edit `config/general.h` and ensure: `#define DOWNLOAD_PROTO_HTTPS        /* Secure Hypertext Transfer Protocol */`
+
+Edit `config/general.h` and ensure: `#define DOWNLOAD_PROTO_HTTPS        /* Secure Hypertext Transfer Protocol */`
 
 See https://ipxe.org/buildcfg/download_proto_https 
 
