@@ -1,3 +1,15 @@
+# v0.0.5 (Sat Aug 05 2023)
+
+#### ⚠️ Pushed to `main`
+
+- Update test.yml install qemu ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.4 (Fri Aug 04 2023)
 
 #### ⚠️ Pushed to `main`
