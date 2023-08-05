@@ -1,3 +1,16 @@
+# v0.0.12 (Sat Aug 05 2023)
+
+#### ⚠️ Pushed to `main`
+
+- Merge branch 'main' of github.com:KarmaComputing/server-bootstrap ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- added ipxe step by step ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.11 (Sat Aug 05 2023)
 
 #### ⚠️ Pushed to `main`
