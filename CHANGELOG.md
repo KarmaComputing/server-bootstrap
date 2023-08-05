@@ -1,3 +1,123 @@
+# v0.0.11 (Sat Aug 05 2023)
+
+#### ⚠️ Pushed to `main`
+
+- Update test.yml ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.0.10 (Sat Aug 05 2023)
+
+#### ⚠️ Pushed to `main`
+
+- Update test.yml ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.0.9 (Sat Aug 05 2023)
+
+#### ⚠️ Pushed to `main`
+
+- Update test.yml ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.0.8 (Sat Aug 05 2023)
+
+#### ⚠️ Pushed to `main`
+
+- Update test.yml ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.0.7 (Sat Aug 05 2023)
+
+#### ⚠️ Pushed to `main`
+
+- Update test.yml ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.0.6 (Sat Aug 05 2023)
+
+#### ⚠️ Pushed to `main`
+
+- Update test.yml ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.0.5 (Sat Aug 05 2023)
+
+#### ⚠️ Pushed to `main`
+
+- Update test.yml install qemu ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.0.4 (Fri Aug 04 2023)
+
+#### ⚠️ Pushed to `main`
+
+- Update test.yml run qemu-system-x86_64 ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.0.3 (Fri Aug 04 2023)
+
+#### ⚠️ Pushed to `main`
+
+- Create test.yml qemu ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.0.2 (Fri May 12 2023)
+
+#### ⚠️ Pushed to `main`
+
+- Update container to enable web console ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.1 (Fri May 12 2023)
 
 :tada: This release contains work from a new contributor! :tada:
