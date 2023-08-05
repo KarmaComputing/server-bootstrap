@@ -1,3 +1,15 @@
+# v0.0.15 (Sat Aug 05 2023)
+
+#### ⚠️ Pushed to `main`
+
+- Update README.md ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.14 (Sat Aug 05 2023)
 
 #### ⚠️ Pushed to `main`
