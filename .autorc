@@ -1,7 +1,6 @@
 {
   "plugins": [
     "git-tag",
-    "all-contributors",
     "first-time-contributor",
     ["upload-assets", ["./ipxe/src/bin/ipxe.iso"]],
     "released"
