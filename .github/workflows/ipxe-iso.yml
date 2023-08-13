@@ -39,7 +39,7 @@ jobs:
       run: |
         pwd
         ls -l \
-        cat script.ipxe
+        cat script.ipxe \
         make \
           DEBUG=tls,httpcore,x509,certstore \
           CERT=ca.pem,isrgrootx1.pem,lets-encrypt-r3.pem \
