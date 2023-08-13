@@ -48,3 +48,9 @@ jobs:
           TRUST=ca.pem,isrgrootx1.pem,lets-encrypt-r3.pem \
           bin/ipxe.iso \
           EMBED=script.ipxe
+        
+    - name: Publish iPXE ISO artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: ipxe-iso
+        path: ipxe/src/bin/ipxe.iso
