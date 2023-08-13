@@ -8,7 +8,7 @@ on:
       
 
 jobs:
-  build:
+  build-iPXE-iso:
     runs-on: ubuntu-latest
 
     steps:
@@ -29,6 +29,7 @@ jobs:
 
     - name: Prepare embedded script
       run: |
+        echo See https://ipxe.org/embed
         cd ipxe/src
         cat << EOF > script.ipxe
         #!ipxe
@@ -42,6 +43,12 @@ jobs:
         pwd
         ls -l
         cat script.ipxe
+        echo Enable ping command
+        echo See https://ipxe.org/buildcfg
+        sed -i 's$//#define PING_CMD$#define PING_CMD$g' config/general.h
+        echo Enable https download
+        sed -i 's/undef.*DOWNLOAD_PROTO_HTTPS/define DOWNLOAD_PROTO_HTTPS/g' config/general.h
+        echo Build iPXE ISO
         make \
           DEBUG=tls,httpcore,x509,certstore \
           CERT=ca.pem,isrgrootx1.pem,lets-encrypt-r3.pem \
