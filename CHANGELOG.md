@@ -1,3 +1,16 @@
+# v0.0.24 (Sun Aug 13 2023)
+
+#### ⚠️ Pushed to `main`
+
+- Delete test.yml ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- remove ipxe-iso.yml because combined in release.yml ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.23 (Sun Aug 13 2023)
 
 #### ⚠️ Pushed to `main`
