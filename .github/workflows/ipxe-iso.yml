@@ -29,6 +29,7 @@ jobs:
 
     - name: Prepare embedded script
       run: |
+        cd ipxe/src
         cat << EOF > script.ipxe
         #!ipxe
         dhcp
@@ -37,9 +38,10 @@ jobs:
 
     - name: Build iPXE ISO
       run: |
+        cd ipxe/src
         pwd
-        ls -l \
-        cat script.ipxe \
+        ls -l
+        cat script.ipxe
         make \
           DEBUG=tls,httpcore,x509,certstore \
           CERT=ca.pem,isrgrootx1.pem,lets-encrypt-r3.pem \
