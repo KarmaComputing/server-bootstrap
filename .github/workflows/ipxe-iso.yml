@@ -37,8 +37,10 @@ jobs:
 
     - name: Build iPXE ISO
       run: |
+        pwd
+        ls -l \
+        cat script.ipxe
         make \
-          -C ipxe/src \
           DEBUG=tls,httpcore,x509,certstore \
           CERT=ca.pem,isrgrootx1.pem,lets-encrypt-r3.pem \
           TRUST=ca.pem,isrgrootx1.pem,lets-encrypt-r3.pem \
