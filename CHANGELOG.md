@@ -1,3 +1,17 @@
+# v0.0.23 (Sun Aug 13 2023)
+
+#### ⚠️ Pushed to `main`
+
+- Update .gitignore ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Update .autorc ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- publish ipxe/src/bin/ipxe.iso with release ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.22 (Sun Aug 13 2023)
 
 #### ⚠️ Pushed to `main`
