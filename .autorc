@@ -3,10 +3,11 @@
     "git-tag",
     "all-contributors",
     "first-time-contributor",
+    ["upload-assets", ["./ipxe/src/bin/ipxe.iso"]],
     "released"
   ],
   "owner": "KarmaComputing",
   "repo": "server-bootstrap",
   "name": "KarmaComputing",
-  "email": "chris.j.simpson@live.co.uk",
+  "email": "chris.j.simpson@live.co.uk"
 }

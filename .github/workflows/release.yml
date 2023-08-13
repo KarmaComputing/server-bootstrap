@@ -23,6 +23,57 @@ jobs:
           curl -L -o /tmp/auto.gz https://github.com/intuit/auto/releases/download/v10.32.1/auto-linux.gz
           gzip -d /tmp/auto.gz
           chmod +x /tmp/auto
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl make isolinux
+
+      - name: Clone iPXE repository
+        run: git clone https://github.com/ipxe/ipxe.git
+
+      - name: iPXE Prepare certificates
+        run: |
+          cd ipxe/src
+          curl -s http://ca.ipxe.org/ca.crt > ca.pem
+          curl -s https://letsencrypt.org/certs/isrgrootx1.pem > isrgrootx1.pem
+          curl -s https://letsencrypt.org/certs/lets-encrypt-r3.pem > lets-encrypt-r3.pem
+
+      - name: iPXE Prepare embedded script
+        run: |
+          echo See https://ipxe.org/embed
+          cd ipxe/src
+          cat << EOF > script.ipxe
+          #!ipxe
+          dhcp
+          chain https://boot.karmacomputing.co.uk/boot.txt
+          EOF
+
+      - name: iPXE Build iPXE ISO
+        run: |
+          cd ipxe/src
+          pwd
+          ls -l
+          cat script.ipxe
+          echo Enable ping command
+          echo See https://ipxe.org/buildcfg
+          sed -i 's$//#define PING_CMD$#define PING_CMD$g' config/general.h
+          echo Enable https download
+          sed -i 's/undef.*DOWNLOAD_PROTO_HTTPS/define DOWNLOAD_PROTO_HTTPS/g' config/general.h
+          echo Build iPXE ISO
+          make \
+            DEBUG=tls,httpcore,x509,certstore \
+            CERT=ca.pem,isrgrootx1.pem,lets-encrypt-r3.pem \
+            TRUST=ca.pem,isrgrootx1.pem,lets-encrypt-r3.pem \
+            bin/ipxe.iso \
+            EMBED=script.ipxe
+          
+      - name: iPXE Publish iPXE ISO artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ipxe-iso
+          path: ipxe/src/bin/ipxe.iso
+
       - name: Create Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
