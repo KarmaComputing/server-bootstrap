@@ -1,3 +1,15 @@
+# v0.0.18 (Sun Aug 13 2023)
+
+#### ⚠️ Pushed to `main`
+
+- Update ipxe-iso.yml ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.17 (Sun Aug 13 2023)
 
 #### ⚠️ Pushed to `main`
