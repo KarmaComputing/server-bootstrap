@@ -1,3 +1,15 @@
+# v0.0.26 (Tue Aug 15 2023)
+
+#### ⚠️ Pushed to `main`
+
+- Update qemu.yml ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.25 (Tue Aug 15 2023)
 
 #### ⚠️ Pushed to `main`
