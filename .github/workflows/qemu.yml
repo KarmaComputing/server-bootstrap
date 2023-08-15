@@ -2,6 +2,12 @@ name: Qemu
 concurrency: qemu
 on:
   workflow_dispatch:
+    inputs:
+      debug_enabled:
+        type: boolean
+        description: 'Run the build with tmate debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate)'
+        required: false
+        default: false
   push:
     branches:
       - main
@@ -12,6 +18,10 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
+      # Enable tmate debugging of manually-triggered workflows if the input option was provided
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
       - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
       - name: List files in the repository
         run: |
