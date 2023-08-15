@@ -19,8 +19,8 @@ jobs:
       - name: Install quemu
         run: |
           set -x
-          apt-get update
-          apt-get install -y qemu-system
+          sudo apt-get update
+          sudo apt-get install -y qemu-system
           
       - name: Run quemu
         run: |
