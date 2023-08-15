@@ -1,0 +1,29 @@
+name: Qemu
+concurrency: qemu
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+jobs:
+  Deploy:
+    environment: testing
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
+      - name: List files in the repository
+        run: |
+          ls -la ${{ github.workspace }}
+      - name: Install quemu
+        run: |
+          set -x
+          apt-get update
+          apt-get install -y qemu-system
+          
+      - name: Run quemu
+        run: |
+          set -x
+          qemu-system-x86_64 -cpu ?
+          
