@@ -26,4 +26,5 @@ jobs:
         run: |
           set -x
           qemu-system-x86_64 -cpu ?
+          qemu-system-x86_64 -cdrom https://github.com/KarmaComputing/server-bootstrap/releases/latest/download/ipxe.iso -net nic -net user,hostfwd=tcp::2223-:22 -m 3072 -smp $(nproc) -nographic
           
