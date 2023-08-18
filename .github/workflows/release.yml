@@ -45,7 +45,6 @@ jobs:
           cd ipxe/src
           cat << EOF > script.ipxe
           #!ipxe
-          dhcp
           chain https://boot.karmacomputing.co.uk/boot.txt
           EOF
 
