@@ -1,3 +1,15 @@
+# v0.0.29 (Fri Aug 18 2023)
+
+#### ⚠️ Pushed to `main`
+
+- remove dhcp ipxe release.yml ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.28 (Tue Aug 15 2023)
 
 #### ⚠️ Pushed to `main`
