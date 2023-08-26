@@ -1,3 +1,15 @@
+# v0.0.31 (Sat Aug 26 2023)
+
+#### ⚠️ Pushed to `main`
+
+- Create alpine-netboot-zfs.yml ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.30 (Fri Aug 18 2023)
 
 #### ⚠️ Pushed to `main`
