@@ -8,6 +8,7 @@
       apt:
         name: ['strongswan', 'xl2tpd']
         state: present
+        update_cache: true
 
     - name: Configure xl2tpd.conf
       copy:
