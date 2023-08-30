@@ -1,0 +1,103 @@
+---
+- name: Install and configure L2TP IPsec vpn client on Ubuntu 22.04
+  hosts: vpn_clients
+  become: yes
+
+  tasks:
+    - name: Install strongswan and xl2tpd
+      apt:
+        name: ['strongswan', 'xl2tpd']
+        state: present
+
+    - name: Configure xl2tpd.conf
+      copy:
+        dest: "/etc/xl2tpd/xl2tpd.conf"
+        content: |
+          [lac testvpn]
+          lns = {{ vpn_server_ip }}
+          ppp debug = yes
+          pppoptfile = /etc/ppp/options.l2tpd.client
+          length bit = yes
+
+    - name: Edit options.l2tpd.client
+      copy:
+        dest: "/etc/ppp/options.l2tpd.client"
+        content: |
+          ipcp-accept-local
+          ipcp-accept-remote
+          refuse-eap
+          require-chap
+          noccp
+          noauth
+          mtu 1280
+          mru 1280
+          noipdefault
+          defaultroute
+          usepeerdns
+          debug
+          lock
+          connect-delay 5000
+          name {{ vpn_user }}
+          password {{ vpn_pass }}
+        mode: '0600'
+
+    - name: Ensure xl2tpd control directory exists
+      file:
+        path: "/var/run/xl2tpd"
+        state: directory
+
+    - name: Ensure l2tp-control exists
+      file:
+        path: "/var/run/xl2tpd/l2tp-control"
+        state: touch
+
+    - name: Configure ipsec.conf
+      copy:
+        dest: "/etc/ipsec.conf"
+        content: |
+          config setup
+
+          conn %default
+            ikelifetime=60m
+            keylife=20m
+            rekeymargin=3m
+            keyingtries=1
+            keyexchange=ikev1
+            authby=secret
+            ike=aes128-sha1-modp2048!
+            esp=aes128-sha1-modp2048!
+           
+          conn testvpn
+            keyexchange=ikev1
+            left=%defaultroute
+            auto=add
+            authby=secret
+            type=transport
+            leftprotoport=17/1701
+            rightprotoport=17/1701
+            right={{ vpn_server_ip }}
+
+    - name: Add the IPSec Secret
+      copy:
+        dest: "/etc/ipsec.secrets"
+        content: "{{ local_ip_gateway }} {{ vpn_server_ip }} : PSK \"{{ pre_shared_key }}\""
+
+    - name: Restart strongswan and xl2tpd services
+      service:
+        name: "{{ item }}"
+        state: restarted
+      loop:
+        - strongswan-starter
+        - xl2tpd
+
+    - name: Establish the VPN Connection
+      shell:
+        cmd: "{{ item }}"
+      loop:
+        - ipsec up testvpn
+        - 'echo "c testvpn" > /var/run/xl2tpd/l2tp-control'
+        - sleep 10
+
+    - name: Route the traffic
+      command: ip route add 10.100.49.2/32 via 10.100.49.10
+
