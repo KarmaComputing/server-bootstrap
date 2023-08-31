@@ -13,7 +13,7 @@ on:
         default: 'root'
       ansible_become_password:
         description: 'ansible_become_password'
-        required: true
+        required: false
         default: ''
       ansible_vault_password:
         description: 'ansible_vault_password'
