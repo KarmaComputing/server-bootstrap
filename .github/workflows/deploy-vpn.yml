@@ -1,4 +1,4 @@
-name: Deploy VPN
+name: Deploy VPN Client
 
 on:
   workflow_dispatch:
