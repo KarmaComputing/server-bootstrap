@@ -2,6 +2,8 @@
 - name: Install and configure L2TP IPsec vpn client on Ubuntu 22.04
   hosts: vpn_clients
   become: yes
+  vars:
+    wireguard_dir: "/etc/wireguard/"
 
   tasks:
     - name: Install strongswan and xl2tpd
@@ -102,3 +104,87 @@
     - name: Route the traffic
       command: ip route add 10.100.49.2/32 via 10.100.49.10
 
+    - name: Install wireguard
+      apt:
+        name: ['wireguard']
+        state: latest
+        update_cache: true
+      tags: [ wireguard ]
+
+
+    - name: Generate laptop-private.key
+      command: wg genkey
+      register: laptop_private_key
+      # command always generates new key but doesn't change system state
+      changed_when: false
+      tags: [ wireguard ]
+
+
+    - name: Save laptop-private.key to file
+      copy:
+        content: "{{ laptop_private_key.stdout }}"
+        dest: "{{ wireguard_dir }}laptop-private.key"
+        mode: '0600'
+      tags: [ wireguard ]
+
+
+    - name: Generate laptop-public.key
+      shell: wg pubkey < {{ wireguard_dir }}laptop-private.key > {{ wireguard_dir }}laptop-public.key
+      # command always generates new key but doesn't change system state
+      changed_when: false
+      tags: [ wireguard ]
+
+    - name: Register laptop-public.key
+      command: cat {{ wireguard_dir }}laptop-public.key
+      register: laptop_public_key
+      # command always generates new key but doesn't change system state
+      changed_when: false
+      tags: [ wireguard ]
+
+
+    - name: Generate router-private.key
+      command: wg genkey
+      register: router_private_key
+      # command always generates new key but doesn't change system state
+      changed_when: false
+      tags: [ wireguard ]
+
+
+    - name: Save router-private.key to file
+      copy:
+        content: "{{ router_private_key.stdout }}"
+        dest: "{{ wireguard_dir }}router-private.key"
+        mode: '0600'
+      tags: [ wireguard ]
+
+
+    - name: Generate router-public.key
+      shell: wg pubkey < {{ wireguard_dir }}router-private.key > {{ wireguard_dir }}router-public.key
+      # command always generates new key but doesn't change system state
+      changed_when: false
+      tags: [ wireguard ]
+
+    - name: Template wg0.conf to {{ wireguard_dir }}
+      ansible.builtin.template:
+        src: wg0.conf.j2
+        dest: "{{ wireguard_dir }}wg0.conf"
+        owner: root
+        group: root
+        mode: '0600'
+      tags: [ wireguard ]
+
+
+    - name: Register router-public.key
+      command: cat {{ wireguard_dir }}router-public.key
+      register: router_public_key
+      # command always generates new key but doesn't change system state
+      changed_when: false
+      tags: [ wireguard ]
+
+    - name: Template client config
+      become: yes
+      template:
+       src: wg-client.conf.j2
+       dest: "{{ wireguard_dir }}wg-client.conf"
+      delegate_to: localhost
+      tags: [ wireguard ]
