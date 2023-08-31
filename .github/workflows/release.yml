@@ -45,15 +45,22 @@ jobs:
           cd ipxe/src
           cat << EOF > script.ipxe
           #!ipxe
+          prompt --key 0x02 --timeout 4000 Press Ctrl-B for the iPXE command line... && shell ||
+
           ifstat
           ifopen
-          set net0/dns:ipv4 8.8.8.8
-          set net0/ip:ipv4 77.95.37.34
-          set net0/netmask:ipv4 255.255.255.240
-          set net0/gateway:ipv4 77.95.37.33
-          
+
+          set net1/ip:ipv4 77.95.37.34
+          set net1/netmask:ipv4 255.255.255.240
+          set net1/gateway:ipv4 77.95.37.33
+          set net1/dns:ipv4 8.8.8.8
+
+          :retry_ping
+          ping -c 1 8.8.8.8 || goto retry_ping
+
           ifstat
-          chain https://boot.karmacomputing.co.uk/boot.txt
+
+          chain https://boot.karmacomputing.co.uk/boot.txt?uuid=${uuid}
           EOF
 
       - name: iPXE Build iPXE ISO
