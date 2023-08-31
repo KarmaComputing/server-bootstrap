@@ -41,11 +41,6 @@ jobs:
       run: |
         ssh -o StrictHostKeyChecking=no ${{ inputs.ssh_username }}@${{ inputs.vpn_ip_address }} "date"
 
-    # Enable tmate debugging of manually-triggered workflows if the input option was provided
-    - name: Setup tmate session
-      uses: mxschmitt/action-tmate@v3
-      if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
-
     - name: Setup ansible
       run: |
         pip3 install ansible
@@ -59,7 +54,7 @@ jobs:
         echo Creating ANSIBLE_VAULT_PASSWORD_FILE
         TMPFILE=$(mktemp)
         trap "rm -f ${TMPFILE@Q}" EXIT
-        echo -n "%{{ inputs.ansible_vault_password }}" > $TMPFILE
+        echo -n "${{ inputs.ansible_vault_password }}" > $TMPFILE
         export ANSIBLE_VAULT_PASSWORD_FILE=$TMPFILE
         
         echo Setup inventory
@@ -68,3 +63,9 @@ jobs:
         echo Run deploy vpn playbook
         ansible-playbook -e ansible_become_password='{{ lookup("env"), "ansible_become_password" }}' -i inventory.ini playbooks/deploy-vpn-client.yml
         rm $TMPFILE
+
+    # Enable tmate debugging of manually-triggered workflows if the input option was provided
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
+      if: ${{ failure() }} && ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
+
