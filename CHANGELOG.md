@@ -1,3 +1,19 @@
+# v0.0.35 (Thu Aug 31 2023)
+
+#### 🐛 Bug Fix
+
+- Fix #9 vpn ipsec client ubuntu server [#10](https://github.com/KarmaComputing/server-bootstrap/pull/10) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### ⚠️ Pushed to `main`
+
+- Update deploy-vpn.yml ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.34 (Thu Aug 31 2023)
 
 #### ⚠️ Pushed to `main`
