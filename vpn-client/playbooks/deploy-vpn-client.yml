@@ -103,6 +103,9 @@
 
     - name: Route the traffic
       command: ip route add 10.100.49.2/32 via 10.100.49.10
+      
+    - name: Set DNS
+      command: resolvectl dns eth0 8.8.8.8 8.8.8.8
 
     - name: Install wireguard
       apt:
@@ -111,6 +114,13 @@
         update_cache: true
       tags: [ wireguard ]
 
+    - name: Ensure {{ wireguard_dir }} directory exists
+      file:
+        path: "{{ wireguard_dir }}"
+        state: directory
+        mode: '0755'
+        owner: root
+        group: root
 
     - name: Generate laptop-private.key
       command: wg genkey
