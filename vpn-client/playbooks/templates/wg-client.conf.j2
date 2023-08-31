@@ -1,0 +1,10 @@
+[Interface]
+PrivateKey = {{ laptop_private_key.stdout }}
+ListenPort = 51000
+Address = 10.10.11.2/24
+
+
+[Peer]
+PublicKey = {{ router_public_key.stdout }}
+Endpoint = {{ local_ip_gateway }}:51000
+AllowedIPs = 10.10.11.0/24,10.10.10.0/24,10.100.49.2/24
