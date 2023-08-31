@@ -26,7 +26,9 @@ python3 -m venv venv
 pip install -r requirements.txt
 ```
 
-> The VPN client & VPN Server deployment is completely [pipeline driven](https://github.com/KarmaComputing/server-bootstrap/blob/43053816a72d801fbf525c59c0a2eccc149a05d0/.github/workflows/deploy-vpn.yml#L64). But you can also 'break glass' and run the process locally:
+> The VPN client & VPN Server deployment is completely* [pipeline driven](https://github.com/KarmaComputing/server-bootstrap/blob/43053816a72d801fbf525c59c0a2eccc149a05d0/.github/workflows/deploy-vpn.yml#L64). But you can also 'break glass' and run the process locally:
+
+*Except for the server creation- to run the deploy-vpn pipeline you first need to create a small VPS and populate the needed pipline secret `VPN_SSH_PRIVATE_KEY` in [settings](https://github.com/KarmaComputing/server-bootstrap/settings/secrets/actions).
 
 1. Update `inventory.ini`
 2. Run playbook (below)
