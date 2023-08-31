@@ -121,6 +121,7 @@
         mode: '0755'
         owner: root
         group: root
+      delegate_to: localhost
 
     - name: Generate laptop-private.key
       command: wg genkey
