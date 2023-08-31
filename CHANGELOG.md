@@ -1,3 +1,16 @@
+# v0.0.33 (Thu Aug 31 2023)
+
+#### ⚠️ Pushed to `main`
+
+- Update deploy-vpn.yml ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Create deploy-vpn.yml ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.32 (Thu Aug 31 2023)
 
 #### ⚠️ Pushed to `main`
