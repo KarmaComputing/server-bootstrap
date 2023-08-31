@@ -17,14 +17,14 @@ flowchart TD
 The above diagram (<sub><sup>See [mermaid.live](https://mermaid.live/)</sub></sup>) is also a small lie: at time of writing only _one_ client is created but peer creation is [very]([url](https://www.youtube.com/watch?v=88GyLoZbDNw)) [simple](https://github.com/KarmaComputing/server-bootstrap/blob/43053816a72d801fbf525c59c0a2eccc149a05d0/vpn-client/playbooks/deploy-vpn-client.yml#L143).
 
 
-## Configure
+## Deploying manually
+
+### Configure
 ```
 python3 -m venv venv
 . venv/bin/activate
 pip install -r requirements.txt
 ```
-
-## Running manually
 
 > The VPN client & VPN Server deployment is completely [pipeline driven](https://github.com/KarmaComputing/server-bootstrap/blob/43053816a72d801fbf525c59c0a2eccc149a05d0/.github/workflows/deploy-vpn.yml#L64). But you can also 'break glass' and run the process locally:
 
@@ -46,7 +46,8 @@ Where `BECOME` is local admin password (to place client wiregard config file), a
 curl -v -k -L --compressed https://10.100.49.2
 ```
 
-## How do I connect as a client? (cli and gui methods both supported- including mobile 📱)
+## How do I connect as a client?
+> Both cli and gui methods are supported- including mobile 📱
 
 - Linux / Ubuntu / Debian: Use `wg-quick` (easiest)
 - (ubuntu desktop) use the [network-manager-gui](https://www.xmodulo.com/wireguard-vpn-network-manager-gui.html#:~:text=NetworkManager%27s%20Connection%20Editor-,GUI,-Next%2C%20run%20nm
