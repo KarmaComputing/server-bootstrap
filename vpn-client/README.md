@@ -1,6 +1,10 @@
 # VPN Client & VPN Server (IPsec client & Wireguard Server)
 
-Setup & deploy a IPsec VPN tunnel client on Ubuntu server.
+Setup & deploy a IPsec VPN tunnel client on Ubuntu server. 
+
+This is useful for when you want to securly connect to a traditional IPsec VPN* but you're willing to complicate matters for the benfit of your users:  By putting wireguard infront of the IPsec VPN,  this can make connecting to such VPNs 'effortless' for end users given Wireguard is comparatively simple for end users to configure, and even has support for mobile app clients 📱.
+
+_*which you may not have a lot of control or say over the running of._
 
 ## How does it work and what does it do?
 
