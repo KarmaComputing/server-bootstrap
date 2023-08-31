@@ -1,3 +1,15 @@
+# v0.0.38 (Thu Aug 31 2023)
+
+#### ⚠️ Pushed to `main`
+
+- set dns and Ensure {{ wireguard_dir }} directory exists ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.37 (Thu Aug 31 2023)
 
 #### ⚠️ Pushed to `main`
