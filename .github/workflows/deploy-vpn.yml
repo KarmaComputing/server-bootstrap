@@ -1,0 +1,29 @@
+name: Deploy VPN
+
+on:
+  workflow_dispatch:
+    inputs:
+      vpn_ip_address:
+        description: 'vpn_ip_address'
+        required: true
+        default: '192.0.2.1'
+      ssh_username:
+        description: 'ssh_username'
+        required: true
+        default: 'root'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setting up SSH key
+      uses: webfactory/ssh-agent@v0.8.0
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    - name: SSH into remote host
+      run: |
+        ssh -o StrictHostKeyChecking=no ${{ inputs.ssh_username }}@${{ inputs.vpn_ip_address }} "date"
