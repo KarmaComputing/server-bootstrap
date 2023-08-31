@@ -18,7 +18,7 @@ flowchart TD
     E --> G[Server y]
     E --> H[Server z]
 ```
-The above diagram (<sub><sup>See [mermaid.live](https://mermaid.live/)</sub></sup>) is also a small lie: at time of writing only _one_ client is created but peer creation is [very]([url](https://www.youtube.com/watch?v=88GyLoZbDNw)) [simple](https://github.com/KarmaComputing/server-bootstrap/blob/43053816a72d801fbf525c59c0a2eccc149a05d0/vpn-client/playbooks/deploy-vpn-client.yml#L143).
+The above diagram (<sub><sup>See [mermaid.live](https://mermaid.live/)</sub></sup>) is also a small lie: at time of writing only _one_ client is created but peer creation is [very](https://www.youtube.com/watch?v=88GyLoZbDNw) [simple](https://github.com/KarmaComputing/server-bootstrap/blob/43053816a72d801fbf525c59c0a2eccc149a05d0/vpn-client/playbooks/deploy-vpn-client.yml#L143).
 
 
 ## Deploying manually
