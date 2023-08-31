@@ -58,4 +58,6 @@ curl -v -k -L --compressed https://10.100.49.2
 - Read https://www.wireguard.com/install/
 
 
-see also: https://askubuntu.com/questions/1457052/cant-add-wireguard-vpn-connection-to-ubuntu-network-manager#:~:text=s%20GUI%20as-,described,-here.
+### See also
+- https://askubuntu.com/questions/1457052/cant-add-wireguard-vpn-connection-to-ubuntu-network-manager#:~:text=s%20GUI%20as-,described,-here.
+- https://ubuntu.com/server/docs/wireguard-vpn-peer2site-router
