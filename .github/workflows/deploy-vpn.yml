@@ -11,6 +11,14 @@ on:
         description: 'ssh_username'
         required: true
         default: 'root'
+      ansible_become_password:
+        description: 'ansible_become_password'
+        required: true
+        default: ''
+      ansible_vault_password:
+        description: 'ansible_vault_password'
+        required: true
+        default: ''
       debug_enabled:
         type: boolean
         description: 'Run the build with tmate debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate)'
@@ -41,3 +49,22 @@ jobs:
     - name: Setup ansible
       run: |
         pip3 install ansible
+
+    - name: Run ansible
+      run: |
+        cd vpn-client
+        echo setting ansible_become_password
+        export ansible_become_password=${{ inputs.ansible_become_password }}
+
+        echo Creating ANSIBLE_VAULT_PASSWORD_FILE
+        TMPFILE=$(mktemp)
+        trap "rm -f ${TMPFILE@Q}" EXIT
+        echo -n "%{{ inputs.ansible_vault_password }}" > $TMPFILE
+        export ANSIBLE_VAULT_PASSWORD_FILE=$TMPFILE
+        
+        echo Setup inventory
+        sed -i 's/changeme ansible_user=changeme/${{ inputs.vpn_ip_address }} ansible_user=${{ inputs.ssh_username }}/' inventory.ini
+        
+        echo Run deploy vpn playbook
+        ansible-playbook -e ansible_become_password='{{ lookup("env"), "ansible_become_password" }}' -i inventory.ini playbooks/deploy-vpn-client.yml
+        rm $TMPFILE
