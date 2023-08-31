@@ -1,3 +1,15 @@
+# v0.0.32 (Thu Aug 31 2023)
+
+#### ⚠️ Pushed to `main`
+
+- retry ping until interface up ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.31 (Sat Aug 26 2023)
 
 #### ⚠️ Pushed to `main`
