@@ -1,3 +1,15 @@
+# v0.0.43 (Thu Aug 31 2023)
+
+#### ⚠️ Pushed to `main`
+
+- Update README.md ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.42 (Thu Aug 31 2023)
 
 #### ⚠️ Pushed to `main`
