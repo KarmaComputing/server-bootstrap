@@ -1,3 +1,15 @@
+# v0.0.52 (Fri Sep 01 2023)
+
+#### ⚠️ Pushed to `main`
+
+- Create add-vpn-user.yml ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.51 (Fri Sep 01 2023)
 
 #### ⚠️ Pushed to `main`
