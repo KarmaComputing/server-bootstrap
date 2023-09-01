@@ -2,12 +2,35 @@
 
 set -euxo pipefail
 
-# Configuration parameters
-SERVER_PUBLIC_IP=$1
-SERVER_PORT=$2
-SERVER_PUBLIC_KEY=$(wg pubkey < router-private.key)
-DNS=$3
+# Generate new client vpn configs and
+# write them to file
+# does not distribute them.
 
+# Configuration parameters
+# Check if $1 is set and not empty
+if [[ $# -ge 1 ]]; then
+    SERVER_PUBLIC_IP=$1
+else
+    SERVER_PUBLIC_IP=$(ip route get 8.8.8.8 | head -n 1  | awk '{print $7}')
+fi
+
+echo "$SERVER_PUBLIC_IP"
+
+# Check if $2 is set and not empty
+if [[ $# -ge 2 ]]; then
+    SERVER_PORT=$2
+else
+    SERVER_PORT=3478
+    echo Using default port
+fi
+
+# Check if $3 is set and not empty
+if [[ $# -ge 3 ]]; then
+    DNS=$3
+else
+    DNS="8.8.8.8"
+    echo Using default DNS
+fi
 # Generate client keys
 CLIENT_PRIVATE_KEY=$(wg genkey)
 CLIENT_PUBLIC_KEY=$(wg pubkey <<< "${CLIENT_PRIVATE_KEY}")
