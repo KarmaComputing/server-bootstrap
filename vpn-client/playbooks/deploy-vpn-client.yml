@@ -214,3 +214,12 @@
     - name: Start the wg0 wireguard tunnel
       command: wg-quick up wg0
       tags: [ wireguard ]
+
+    - name: Template add-vpn-user.sh to {{ wireguard_dir }}
+      ansible.builtin.template:
+        src: add-vpn-user.sh
+        dest: "{{ wireguard_dir }}add-vpn-user.sh"
+        owner: root
+        group: root
+        mode: '0700'
+      tags: [ wireguard ]
