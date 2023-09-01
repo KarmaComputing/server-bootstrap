@@ -67,3 +67,6 @@ EOF
 
 echo "Client configuration saved as client_${CLIENT_IP}.conf"
 
+echo reloading wireguard without killing active connections
+wg syncconf wg0 <(wg-quick strip wg0)
+
