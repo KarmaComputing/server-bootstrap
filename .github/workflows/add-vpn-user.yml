@@ -38,6 +38,10 @@ jobs:
       run: |
         ssh -o StrictHostKeyChecking=no ${{ inputs.ssh_username }}@${{ inputs.vpn_ip_address }} "date"
 
+    - name: Generate new vpn peer config
+      run: |
+        ssh -o StrictHostKeyChecking=no ${{ inputs.ssh_username }}@${{ inputs.vpn_ip_address }} -C "cd /etc/wireguard && ./add-vpn-user.sh"
+
     - name: Add ssh user
       run: |
         ssh -o StrictHostKeyChecking=no ${{ inputs.ssh_username }}@${{ inputs.vpn_ip_address }} "date"
