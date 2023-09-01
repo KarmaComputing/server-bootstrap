@@ -1,3 +1,16 @@
+# v0.0.51 (Fri Sep 01 2023)
+
+#### ⚠️ Pushed to `main`
+
+- Update add-vpn-user.sh reload wg0 after ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- port ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.50 (Fri Sep 01 2023)
 
 #### ⚠️ Pushed to `main`
