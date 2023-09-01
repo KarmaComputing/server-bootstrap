@@ -1,3 +1,15 @@
+# v0.0.45 (Fri Sep 01 2023)
+
+#### ⚠️ Pushed to `main`
+
+- Ensure IP forwarding is enabled permanently ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.44 (Thu Aug 31 2023)
 
 #### ⚠️ Pushed to `main`
