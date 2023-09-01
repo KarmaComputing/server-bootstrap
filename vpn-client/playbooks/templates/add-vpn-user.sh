@@ -31,6 +31,8 @@ else
     DNS="8.8.8.8"
     echo Using default DNS
 fi
+
+SERVER_PUBLIC_KEY=$(wg pubkey < router-private.key)
 # Generate client keys
 CLIENT_PRIVATE_KEY=$(wg genkey)
 CLIENT_PUBLIC_KEY=$(wg pubkey <<< "${CLIENT_PRIVATE_KEY}")
