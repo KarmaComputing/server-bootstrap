@@ -17,10 +17,6 @@ on:
         description: 'PSONO_SECRET_ID'
         required: true
 
-      PSONO_SECRET_NEW_VALUE:
-        description: 'PSONO_SECRET_NEW_VALUE'
-        required: true
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -38,14 +34,9 @@ jobs:
       run: |
         ssh -o StrictHostKeyChecking=no ${{ inputs.ssh_username }}@${{ inputs.vpn_ip_address }} "date"
 
-    - name: Generate new vpn peer config
+    - name: Generate new vpn peer config & Add save client config to password manager
       run: |
-        ssh -o StrictHostKeyChecking=no ${{ inputs.ssh_username }}@${{ inputs.vpn_ip_address }} -C "cd /etc/wireguard && ./add-vpn-user.sh"
-
-    - name: Add ssh user
-      run: |
-        ssh -o StrictHostKeyChecking=no ${{ inputs.ssh_username }}@${{ inputs.vpn_ip_address }} "date"
-        ssh -o StrictHostKeyChecking=no ${{ inputs.ssh_username }}@${{ inputs.vpn_ip_address }} PSONO_CI_API_KEY_ID=${{ secrets.PSONO_CI_API_KEY_ID }} PSONO_CI_API_SECRET_KEY_HEX=${{ secrets.PSONO_CI_API_SECRET_KEY_HEX }} PSONO_CI_SERVER_URL=${{ secrets.PSONO_CI_SERVER_URL }} /etc/wireguard/save-vpn-credentials-to-password-vault.sh ${{ inputs.PSONO_SECRET_ID }} "${{ inputs.PSONO_SECRET_NEW_VALUE }}"
+        ssh -o StrictHostKeyChecking=no ${{ inputs.ssh_username }}@${{ inputs.vpn_ip_address }} -C "PSONO_CI_API_KEY_ID=${{ secrets.PSONO_CI_API_KEY_ID }} PSONO_CI_API_SECRET_KEY_HEX=${{ secrets.PSONO_CI_API_SECRET_KEY_HEX }} PSONO_CI_SERVER_URL=${{ secrets.PSONO_CI_SERVER_URL }} PSONO_SECRET_ID=${{ inputs.PSONO_SECRET_ID }} && cd /etc/wireguard && ./add-vpn-user.sh"
 
 
     # Enable tmate debugging of manually-triggered workflows if the input option was provided
