@@ -206,3 +206,7 @@
        dest: "{{ wireguard_dir }}wg-client.conf"
       delegate_to: localhost
       tags: [ wireguard ]
+
+    - name: Start the wg0 wireguard tunnel
+      command: wg-quick up wg0
+      tags: [ wireguard ]
