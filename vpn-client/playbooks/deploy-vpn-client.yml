@@ -103,6 +103,13 @@
 
     - name: Route the traffic
       command: ip route add 10.100.49.2/32 via 10.100.49.10
+
+    - name: Ensure IP forwarding is enabled permanently
+      lineinfile:
+        path: /etc/sysctl.conf
+        regexp: '^#?net.ipv4.ip_forward'
+        line: 'net.ipv4.ip_forward=1'
+        state: present
       
     - name: Set DNS
       command: resolvectl dns eth0 8.8.8.8 8.8.8.8
