@@ -19,11 +19,7 @@ on:
         description: 'ansible_vault_password'
         required: true
         default: ''
-      debug_enabled:
-        type: boolean
-        description: 'Run the build with tmate debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate)'
-        required: false
-        default: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -67,5 +63,5 @@ jobs:
     # Enable tmate debugging of manually-triggered workflows if the input option was provided
     - name: Setup tmate session
       uses: mxschmitt/action-tmate@v3
-      if: ${{ failure() }} && ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
+      if: ${{ failure() }}
 
