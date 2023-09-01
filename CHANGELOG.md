@@ -1,3 +1,15 @@
+# v0.0.54 (Fri Sep 01 2023)
+
+#### ⚠️ Pushed to `main`
+
+- add Generate new vpn peer config ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.53 (Fri Sep 01 2023)
 
 #### ⚠️ Pushed to `main`
