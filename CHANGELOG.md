@@ -1,3 +1,15 @@
+# v0.0.56 (Fri Sep 01 2023)
+
+#### ⚠️ Pushed to `main`
+
+- save last generated client config to pw manager ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.55 (Fri Sep 01 2023)
 
 #### ⚠️ Pushed to `main`
