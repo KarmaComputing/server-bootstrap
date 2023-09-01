@@ -70,3 +70,10 @@ echo "Client configuration saved as client_${CLIENT_IP}.conf"
 echo reloading wireguard without killing active connections
 wg syncconf wg0 <(wg-quick strip wg0)
 
+echo Prepare to send client config to password manager
+
+echo Get latest generated client config
+LAST_GENERATED_CLIENT_CONFIG_FILENAME=$(find . -name 'client_*' -mmin -1)
+LAST_GENERATED_CLIENT_CONFIG_CONTENT=$(cat $LAST_GENERATED_CLIENT_CONFIG_FILENAME)
+./save-vpn-credentials-to-password-vault.sh $PSONO_SECRET_ID "$LAST_GENERATED_CLIENT_CONFIG_CONTENT"
+
