@@ -1,3 +1,15 @@
+# v0.0.46 (Fri Sep 01 2023)
+
+#### ⚠️ Pushed to `main`
+
+- wg-quick up wg0 ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.45 (Fri Sep 01 2023)
 
 #### ⚠️ Pushed to `main`
