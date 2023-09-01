@@ -1,3 +1,15 @@
+# v0.0.48 (Fri Sep 01 2023)
+
+#### ⚠️ Pushed to `main`
+
+- added add-vpn-user.sh ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.47 (Fri Sep 01 2023)
 
 #### ⚠️ Pushed to `main`
