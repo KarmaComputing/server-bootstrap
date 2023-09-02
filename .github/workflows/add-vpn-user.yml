@@ -18,7 +18,7 @@ on:
         required: true
 
 jobs:
-  build:
+  generate-user-vpn-config:
     runs-on: ubuntu-latest
 
     steps:
