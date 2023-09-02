@@ -2,6 +2,8 @@
 
 Purpose: Provision a blank server using automatin and minimal hands-on intevention so that servers may be treated as disposable (aka cattle not pets).
 
+- [Deploy VPN](https://github.com/KarmaComputing/server-bootstrap/tree/main/vpn-client#readme)
+- [Add VPN user](https://github.com/KarmaComputing/server-bootstrap/tree/main/vpn-client#to-add-a-new-user-to-vpn)
 
 ## iPXE
 
