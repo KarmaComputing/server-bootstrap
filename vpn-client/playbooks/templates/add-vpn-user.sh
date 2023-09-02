@@ -61,7 +61,7 @@ DNS = ${DNS}
 [Peer]
 PublicKey = ${SERVER_PUBLIC_KEY}
 Endpoint = ${SERVER_PUBLIC_IP}:${SERVER_PORT}
-AllowedIPs = 0.0.0.0/0
+AllowedIPs = 10.10.11.0/24,10.10.10.0/24,10.100.49.0/24
 PersistentKeepalive = 25
 EOF
 
