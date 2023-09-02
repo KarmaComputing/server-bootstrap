@@ -65,3 +65,6 @@ jobs:
       uses: mxschmitt/action-tmate@v3
       if: ${{ failure() }}
 
+    - name: Smoke test wg0 interface by pinging it internally
+      run: |
+        ssh -o StrictHostKeyChecking=no ${{ inputs.ssh_username }}@${{ inputs.vpn_ip_address }} "ping -c 3 10.10.11.1"
