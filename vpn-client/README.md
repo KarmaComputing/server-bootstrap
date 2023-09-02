@@ -6,6 +6,19 @@ This is useful for when you want to securly connect to a traditional IPsec VPN* 
 
 _*which you may not have a lot of control or say over the running of._
 
+# Quickstart
+
+### To re-deploy VPN server/client from scratch
+
+1. Create Ubuntu server (Ubuntu 20.04 has been tested)
+2. Run [Deploy VPN Client pipeline](https://github.com/KarmaComputing/server-bootstrap/actions/workflows/deploy-vpn.yml) to deploy IPsec and Wireguard tunnel
+
+### To add a new user to VPN:
+1. Create new 'note' secret in Psono (e.g. 'Alice VPN config')
+2. Give permission for Psono API key to access this new secret ([see psono docs](https://doc.psono.com/user/api-key/creation.html#creation)) & copy the secret id to clipboard
+3. Run [Add VPN user pipeline](https://github.com/KarmaComputing/server-bootstrap/actions/workflows/add-vpn-user.yml) which will generate valid VPN credentials and put them in the Psono secret for that use to view
+4. The user can use that VPN credential to connect to the vpn using Wireguard client (laptop/mobile/ios/android) see [clients](https://www.wireguard.com/install/)
+
 ## How does it work and what does it do?
 
 ```mermaid
