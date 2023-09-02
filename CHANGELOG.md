@@ -1,3 +1,15 @@
+# v0.0.69 (Sat Sep 02 2023)
+
+#### ⚠️ Pushed to `main`
+
+- Publish alpine netboot image artifact ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.68 (Sat Sep 02 2023)
 
 #### ⚠️ Pushed to `main`
