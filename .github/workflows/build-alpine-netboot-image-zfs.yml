@@ -13,3 +13,9 @@ jobs:
       - name: Build alpine image
         run: |
           podman run  -it --rm -v $(pwd):/root/workdir alpine sh /root/workdir/build-alpine-netboot-zfs.sh
+
+      - name: Publish alpine netboot image artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: alpine-netboot-image
+          path: iso/*
