@@ -215,6 +215,9 @@
       template:
        src: save-vpn-credentials-to-password-vault.sh
        dest: "{{ wireguard_dir }}save-vpn-credentials-to-password-vault.sh"
+       owner: root
+       group: root
+       mode: '0700'
       tags: [ wireguard ]
 
     - name: Start the wg0 wireguard tunnel
