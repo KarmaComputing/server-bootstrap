@@ -211,6 +211,12 @@
       delegate_to: localhost
       tags: [ wireguard ]
 
+    - name: Template save-vpn-credentials-to-password-vault.sh
+      template:
+       src: save-vpn-credentials-to-password-vault.sh
+       dest: "{{ wireguard_dir }}save-vpn-credentials-to-password-vault.sh"
+      tags: [ wireguard ]
+
     - name: Start the wg0 wireguard tunnel
       command: wg-quick up wg0
       tags: [ wireguard ]
