@@ -1,3 +1,16 @@
+# v0.0.61 (Sat Sep 02 2023)
+
+#### ⚠️ Pushed to `main`
+
+- use shell for psonocli install ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- set owner/mode of save-vpn-credentials-to-password-vault.sh ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.60 (Sat Sep 02 2023)
 
 #### ⚠️ Pushed to `main`
