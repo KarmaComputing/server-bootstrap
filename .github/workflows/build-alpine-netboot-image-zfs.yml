@@ -9,7 +9,7 @@ jobs:
   build-alpine-zfs-netboot-image:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Build alpine image
         run: |
           podman run  -it --rm -v $(pwd):/root/workdir alpine sh /root/workdir/build-alpine-netboot-zfs.sh
@@ -17,5 +17,5 @@ jobs:
       - name: Publish alpine netboot image artifact
         uses: actions/upload-artifact@v3
         with:
-          name: alpine-netboot-image
+          name: alpine-zfs-netboot-image
           path: iso/*
