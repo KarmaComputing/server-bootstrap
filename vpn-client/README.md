@@ -18,6 +18,7 @@ _*which you may not have a lot of control or say over the running of._
 2. Give permission for Psono API key to access this new secret ([see psono docs](https://doc.psono.com/user/api-key/creation.html#creation)) & copy the secret id to clipboard
 3. Run [Add VPN user pipeline](https://github.com/KarmaComputing/server-bootstrap/actions/workflows/add-vpn-user.yml) which will generate valid VPN credentials and put them in the Psono secret for that use to view
 4. The user can use that VPN credential to connect to the vpn using Wireguard client (laptop/mobile/ios/android) see [clients](https://www.wireguard.com/install/)
+> Tip: For mobile, you can easily generate a qr code of the config to make the process of importing VPN config even easier for the end users on mobile: `cat <config> | qrencode -t ansiutf8`
 
 ## How does it work and what does it do?
 
