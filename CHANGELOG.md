@@ -1,3 +1,15 @@
+# v0.0.67 (Sat Sep 02 2023)
+
+#### ⚠️ Pushed to `main`
+
+- added build-alpine-netboot-zfs.sh ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.66 (Sat Sep 02 2023)
 
 #### ⚠️ Pushed to `main`
