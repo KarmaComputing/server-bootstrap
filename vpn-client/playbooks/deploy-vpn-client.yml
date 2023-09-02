@@ -229,3 +229,8 @@
         group: root
         mode: '0700'
       tags: [ wireguard ]
+
+
+    - name: Install psonoci
+      command: curl https://get.psono.com/psono/psono-ci/x86_64-linux/psonoci --output /usr/bin/psonoci && chmod +x /usr/bin/psonoci
+      changed_when: false
