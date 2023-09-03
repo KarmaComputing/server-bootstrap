@@ -1,3 +1,15 @@
+# v0.0.74 (Sun Sep 03 2023)
+
+#### ⚠️ Pushed to `main`
+
+- re-key vpn_user vpn_pass ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.73 (Sun Sep 03 2023)
 
 #### ⚠️ Pushed to `main`
