@@ -1,3 +1,76 @@
+# v0.0.72 (Sat Sep 02 2023)
+
+#### ⚠️ Pushed to `main`
+
+- Update README.md ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.0.71 (Sat Sep 02 2023)
+
+#### ⚠️ Pushed to `main`
+
+- Update add-vpn-user.yml ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.0.70 (Sat Sep 02 2023)
+
+#### ⚠️ Pushed to `main`
+
+- Update build-alpine-netboot-image-zfs.yml ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.0.69 (Sat Sep 02 2023)
+
+#### ⚠️ Pushed to `main`
+
+- Publish alpine netboot image artifact ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.0.68 (Sat Sep 02 2023)
+
+#### ⚠️ Pushed to `main`
+
+- Update build-alpine-netboot-image-zfs.yml ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Create build-alpine-netboot-image-zfs.yml ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
+# v0.0.67 (Sat Sep 02 2023)
+
+#### ⚠️ Pushed to `main`
+
+- added build-alpine-netboot-zfs.sh ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.66 (Sat Sep 02 2023)
 
 #### ⚠️ Pushed to `main`
