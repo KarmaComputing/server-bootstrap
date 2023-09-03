@@ -1,3 +1,16 @@
+# v0.0.73 (Sun Sep 03 2023)
+
+#### ⚠️ Pushed to `main`
+
+- Merge branch 'main' of github.com:KarmaComputing/server-bootstrap ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- re-key vpn_clients.yml vault ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.72 (Sat Sep 02 2023)
 
 #### ⚠️ Pushed to `main`
