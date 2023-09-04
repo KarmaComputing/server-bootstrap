@@ -1,0 +1,24 @@
+--- init.old	2023-09-04 13:51:43.491748438 +0100
++++ init	2023-09-04 13:53:02.331764604 +0100
+@@ -219,6 +219,21 @@
+ 		if ifconfig "$device" "$client_ip" netmask "$netmask"; then
+ 			[ -z "$gw_ip" ] || ip route add 0.0.0.0/0 via "$gw_ip" dev "$device"
+ 		fi
++
++		while true; do
++				ping -c 1 -w 1 8.8.8.8
++				if [ $? -eq 0 ]; then
++						echo "Ping successful!"
++						break
++				else
++						echo "Ping failed. Retrying..."
++						sleep 1
++				fi
++		done
++
++		echo Hard coding DNS entry
++		echo "nameserver 8.8.8.8" >> /etc/resolv.conf 
++
+ 		eend $?
+ 	fi
+ 
