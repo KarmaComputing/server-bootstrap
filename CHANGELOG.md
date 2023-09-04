@@ -1,3 +1,15 @@
+# v0.0.76 (Mon Sep 04 2023)
+
+#### ⚠️ Pushed to `main`
+
+- dir patch-alpine-netboot-image-with-zfs.sh ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.75 (Mon Sep 04 2023)
 
 #### ⚠️ Pushed to `main`
