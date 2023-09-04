@@ -13,10 +13,12 @@ set -x
 # Force a wait for interfaces to come up
 # on slow switches
 
-tar -xvf alpine-netboot-*.tar.gz
-
 WORK_DIR=$PWD
-cd iso/boot
+pwd
+ls -lh
+cd iso
+tar -xvf alpine-netboot-*.tar.gz
+cd ./boot
 
 mkdir patch
 
