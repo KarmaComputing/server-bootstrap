@@ -1,3 +1,16 @@
+# v0.0.75 (Mon Sep 04 2023)
+
+#### ⚠️ Pushed to `main`
+
+- Update build-alpine-netboot-image-zfs.yml Patch alpine image ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- add patch-alpine-netboot-image-with-zfs.sh PatchFile-init-ping ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.74 (Sun Sep 03 2023)
 
 #### ⚠️ Pushed to `main`
