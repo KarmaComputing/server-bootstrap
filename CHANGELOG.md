@@ -1,3 +1,15 @@
+# v0.0.81 (Tue Sep 05 2023)
+
+#### ⚠️ Pushed to `main`
+
+- scp boot image to boot server ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.80 (Tue Sep 05 2023)
 
 #### ⚠️ Pushed to `main`
