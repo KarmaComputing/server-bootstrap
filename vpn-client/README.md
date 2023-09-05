@@ -26,7 +26,8 @@ _*which you may not have a lot of control or say over the running of._
 flowchart TD
     A[Laptop x] -->|Wireguard tunnel| B(WireGuard VPN Server)
     C[Laptop y] -->|Wireguard tunnel| B(WireGuard VPN Server)
-
+    I[Mobile x] -->|Wireguard tunnel| B(WireGuard VPN Server)
+    J[Mobile y] -->|Wireguard tunnel| B(WireGuard VPN Server)
     B --> |L2TP tunnel -> IPsec tunnel| E(Traditional Datacenter VPN Server)
     E --> F[Server x]
     E --> G[Server y]
