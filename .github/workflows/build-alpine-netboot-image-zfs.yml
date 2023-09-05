@@ -10,9 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Build alpine image
-        run: |
-          podman run  -it --rm -v $(pwd):/root/workdir alpine sh /root/workdir/build-alpine-netboot-zfs.sh
 
       - name: Setting up SSH key to publish netboot image
         uses: webfactory/ssh-agent@v0.8.0
@@ -22,7 +19,10 @@ jobs:
       - name: SSH into remote host
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.BOOT_SERVER_SSH_USERNAME }}@${{ secrets.BOOT_SERVER_IP_ADDRESS }} "date"
-
+      
+      - name: Build alpine image
+        run: |
+          podman run  -it --rm -v $(pwd):/root/workdir alpine sh /root/workdir/build-alpine-netboot-zfs.sh
 
       - name: Patch alpine image
         run: |
