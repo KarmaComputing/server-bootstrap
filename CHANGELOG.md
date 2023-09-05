@@ -1,3 +1,15 @@
+# v0.0.77 (Tue Sep 05 2023)
+
+#### 🐛 Bug Fix
+
+- Update README.md [#12](https://github.com/KarmaComputing/server-bootstrap/pull/12) ([@jimmyedagawa78](https://github.com/jimmyedagawa78))
+
+#### Authors: 1
+
+- [@jimmyedagawa78](https://github.com/jimmyedagawa78)
+
+---
+
 # v0.0.76 (Mon Sep 04 2023)
 
 #### ⚠️ Pushed to `main`
