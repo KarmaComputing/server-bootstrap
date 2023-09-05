@@ -1,3 +1,15 @@
+# v0.0.84 (Tue Sep 05 2023)
+
+#### ⚠️ Pushed to `main`
+
+- Update build-alpine-netboot-zfs.sh zfs kernel options ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.83 (Tue Sep 05 2023)
 
 #### ⚠️ Pushed to `main`
