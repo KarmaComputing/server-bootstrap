@@ -25,6 +25,8 @@ cd workdir
 git clone --depth 1 https://gitlab.alpinelinux.org/alpine/aports
 cd aports
 mkdir -p ~/iso
+# Enable zfs kernel module
+sed -i '/arch=".*/a \        kernel_addons="zfs"' ./scripts/build-alpine-netboot-zfs.sh
 ./scripts/mkimage.sh --outdir ~/iso --arch x86_64 --repository http://dl-cdn.alpinelinux.org/alpine/edge/main --profile netboot
 EOF
 
