@@ -14,6 +14,16 @@ jobs:
         run: |
           podman run  -it --rm -v $(pwd):/root/workdir alpine sh /root/workdir/build-alpine-netboot-zfs.sh
 
+      - name: Setting up SSH key to publish netboot image
+        uses: webfactory/ssh-agent@v0.8.0
+        with:
+          ssh-private-key: ${{ secrets.BOOT_SERVER_SSH_PRIVATE_KEY }}
+    
+      - name: SSH into remote host
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.BOOT_SERVER_SSH_USERNAME }}@${{ secrets.BOOT_SERVER_IP_ADDRESS }} "date"
+
+
       - name: Patch alpine image
         run: |
           ./patch-alpine-netboot-image-with-zfs.sh
