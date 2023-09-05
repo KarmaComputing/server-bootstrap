@@ -11,15 +11,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Setting up SSH key to publish netboot image
-        uses: webfactory/ssh-agent@v0.8.0
-        with:
-          ssh-private-key: ${{ secrets.BOOT_SERVER_SSH_PRIVATE_KEY }}
-    
-      - name: SSH into remote host
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.BOOT_SERVER_SSH_USERNAME }}@${{ secrets.BOOT_SERVER_IP_ADDRESS }} "date"
-      
       - name: Build alpine image
         run: |
           podman run  -it --rm -v $(pwd):/root/workdir alpine sh /root/workdir/build-alpine-netboot-zfs.sh
@@ -27,6 +18,15 @@ jobs:
       - name: Patch alpine image
         run: |
           ./patch-alpine-netboot-image-with-zfs.sh
+
+      - name: Setting up SSH key to publish netboot image
+        uses: webfactory/ssh-agent@v0.8.0
+        with:
+          ssh-private-key: ${{ secrets.BOOT_SERVER_SSH_PRIVATE_KEY }}
+    
+      - name: scp netboot image to boot server
+        run: |
+          scp -o StrictHostKeyChecking=no iso/boot/alpine-netboot*.tar.gz ${{ secrets.BOOT_SERVER_SSH_USERNAME }}@${{ secrets.BOOT_SERVER_IP_ADDRESS }}:{{ secrets.BOOT_SERVER_IMG_DEST_DIR }}
 
       - name: Publish alpine netboot image artifact
         uses: actions/upload-artifact@v3
