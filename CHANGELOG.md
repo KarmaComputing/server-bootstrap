@@ -1,3 +1,15 @@
+# v0.0.78 (Tue Sep 05 2023)
+
+#### ⚠️ Pushed to `main`
+
+- enable zfs kernel module in build-alpine-netboot-zfs.sh ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.77 (Tue Sep 05 2023)
 
 #### 🐛 Bug Fix
