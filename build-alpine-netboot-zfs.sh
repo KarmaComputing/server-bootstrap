@@ -29,7 +29,18 @@ mkdir -p ~/iso
 sed -i '/arch=".*/a \        kernel_addons="zfs"' ./scripts/build-alpine-netboot-zfs.sh
 sed -i 's/linux-$_f linux-firmware wireless-regdb $modloop_addons/linux-$_f linux-firmware wireless-regdb zfs $modloop_addons/' ./scripts/mkimg.base.sh
 ./scripts/mkimage.sh --outdir ~/iso --arch x86_64 --repository http://dl-cdn.alpinelinux.org/alpine/edge/main --profile netboot
+sed '/output_format="netboot"/i \
+\        local _k _a\
+\        for _k in $kernel_flavors; do\
+\                apks="$apks linux-$_k"\
+\                for _a in $kernel_addons; do\
+\                    apks="$apks $_a-$_k"\
+\                done\
+\        done\
+' ./scripts/mkimg.netboot.sh
+cat ./scripts/mkimg.netboot.sh
 EOF
+
 
 mkdir -p /root/workdir/iso
 cp /home/build/iso/alpine-netboot-*.tar.gz /root/workdir/iso
