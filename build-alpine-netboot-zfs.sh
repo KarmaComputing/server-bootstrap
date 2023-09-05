@@ -27,6 +27,7 @@ cd aports
 mkdir -p ~/iso
 # Enable zfs kernel module
 sed -i '/arch=".*/a \        kernel_addons="zfs"' ./scripts/build-alpine-netboot-zfs.sh
+sed -i 's/linux-$_f linux-firmware wireless-regdb $modloop_addons/linux-$_f linux-firmware wireless-regdb zfs $modloop_addons/' ./scripts/mkimg.base.sh
 ./scripts/mkimage.sh --outdir ~/iso --arch x86_64 --repository http://dl-cdn.alpinelinux.org/alpine/edge/main --profile netboot
 EOF
 
