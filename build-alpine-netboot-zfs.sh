@@ -55,7 +55,7 @@ EOF
 
 
 mkdir -p /root/workdir/iso
-cp /home/build/iso/alpine-netboot-*.tar.gz /root/workdir/iso
+cp /home/build/iso/alpine-zfsnetboot-*.tar.gz /root/workdir/iso
 exit
 # back on the host machine
 ls -ltr | tail -n 1 # latest build
