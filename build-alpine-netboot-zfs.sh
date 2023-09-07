@@ -9,7 +9,7 @@
 
 set -x
 
-apk add alpine-sdk build-base apk-tools alpine-conf busybox fakeroot syslinux xorriso squashfs-tools sudo git
+apk add alpine-sdk build-base apk-tools alpine-conf busybox fakeroot syslinux xorriso squashfs-tools sudo git grub grub-efi
 
 
 adduser build --disabled-password -G abuild
