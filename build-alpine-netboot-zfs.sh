@@ -26,19 +26,32 @@ git clone --depth 1 https://gitlab.alpinelinux.org/alpine/aports
 cd aports
 mkdir -p ~/iso
 # Enable zfs kernel module
-sed -i '/arch=".*/a \        kernel_addons="zfs"' ./scripts/build-alpine-netboot-zfs.sh
-sed -i 's/linux-$_f linux-firmware wireless-regdb $modloop_addons/linux-$_f linux-firmware wireless-regdb zfs $modloop_addons/' ./scripts/mkimg.base.sh
-./scripts/mkimage.sh --outdir ~/iso --arch x86_64 --repository http://dl-cdn.alpinelinux.org/alpine/edge/main --profile netboot
-sed -i '/output_format="netboot"/i \
-\        local _k _a\
-\        for _k in $kernel_flavors; do\
-\                apks="$apks linux-$_k"\
-\                for _a in $kernel_addons; do\
-\                    apks="$apks $_a-$_k"\
-\                done\
-\        done\
-' ./scripts/mkimg.netboot.sh
-cat ./scripts/mkimg.netboot.sh
+cat > ./scripts/mkimg.zfsnetboot.sh << 'EOFINNER'
+profile_zfsnetboot() {
+        profile_standard
+        kernel_cmdline="unionfs_size=512M console=tty0 console=ttyS0,115200"
+        syslinux_serial="0 115200"
+        kernel_addons="zfs"
+        apks="$apks zfs-scripts zfs zfs-utils-py
+                mkinitfs
+                syslinux util-linux"
+        initfs_features="base network squashfs usb virtio"
+        local _k _a
+        for _k in $kernel_flavors; do
+                apks="$apks linux-$_k"
+                for _a in $kernel_addons; do
+                        apks="$apks $_a-$_k"
+                done
+        done
+        apks="$apks linux-firmware"
+        output_format="netboot"
+        image_ext="tar.gz"
+}
+EOFINNER
+cat ./scripts/mkimg.zfsnetboot.sh
+echo Running mkimage.sh
+./scripts/mkimage.sh --outdir ~/iso --arch x86_64 --repository http://dl-cdn.alpinelinux.org/alpine/edge/main --profile zfsne
+tboot
 EOF
 
 
