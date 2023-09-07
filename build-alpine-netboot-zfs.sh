@@ -50,8 +50,7 @@ profile_zfsnetboot() {
 EOFINNER
 cat ./scripts/mkimg.zfsnetboot.sh
 echo Running mkimage.sh
-./scripts/mkimage.sh --outdir ~/iso --arch x86_64 --repository http://dl-cdn.alpinelinux.org/alpine/edge/main --profile zfsne
-tboot
+./scripts/mkimage.sh --outdir ~/iso --arch x86_64 --repository http://dl-cdn.alpinelinux.org/alpine/edge/main --profile zfsnetboot
 EOF
 
 
