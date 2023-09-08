@@ -28,6 +28,10 @@ jobs:
         run: |
           scp -o StrictHostKeyChecking=no iso/boot/alpine-zfsnetboot.tar.gz ${{ secrets.BOOT_SERVER_SSH_USERNAME }}@${{ secrets.BOOT_SERVER_IP_ADDRESS }}:${{ secrets.BOOT_SERVER_IMG_DEST_DIR }}
 
+      - name: extract netboot image on boot server
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.BOOT_SERVER_SSH_USERNAME }}@${{ secrets.BOOT_SERVER_IP_ADDRESS }} -C 'cd ${{ secrets.BOOT_SERVER_IMG_DEST_DIR }} && tar xvf alpine-zfsnetboot.tar.gz'
+
       - name: Publish alpine netboot image artifact
         uses: actions/upload-artifact@v3
         with:
