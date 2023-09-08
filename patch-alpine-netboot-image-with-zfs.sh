@@ -17,7 +17,7 @@ WORK_DIR=$PWD
 pwd
 ls -lh
 cd iso
-tar -xvf alpine-netboot-*.tar.gz
+tar -xvf alpine-zfsnetboot-*.tar.gz
 cd ./boot
 
 mkdir patch
@@ -37,6 +37,5 @@ cd ../
 rm -rf patch
 
 # Re-tar the netbook image for sending to boot server
-tar -cvf alpine-netboot-zfs.tar.gz ./
-
+tar -cvf alpine-zfsnetboot.tar.gz ./
 cd $WORK_DIR
