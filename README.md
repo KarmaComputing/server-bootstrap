@@ -5,6 +5,29 @@ Purpose: Provision a blank server using automatin and minimal hands-on inteventi
 - [Deploy VPN](https://github.com/KarmaComputing/server-bootstrap/tree/main/vpn-client#readme)
 - [Add VPN user](https://github.com/KarmaComputing/server-bootstrap/tree/main/vpn-client#to-add-a-new-user-to-vpn)
 
+# How does this work?
+
+```mermaid
+
+flowchart TD
+    A[Day 0] --> B(Rack Server)
+    B --> |Ensure management port  iDRAC connected & two NICs for uplink diversity| C("Deploy VPN 🔗 (Automated ✅)")
+    C --> D("Deploy VPN user(s) 🔗 (Automated ✅)")
+    D --> | Verify VPN connection to iDRAC| E("Visit iDRAC interface & Login (Manual🤮)")
+    click C href "https://github.com/KarmaComputing/server-bootstrap/blob/main/vpn-client/README.md" "Deploy VPN Docs"
+    click D href "https://github.com/KarmaComputing/server-bootstrap/blob/main/vpn-client/README.md" "Deploy VPN Docs"
+    E --> F("In setup, set 'First Boot Device' to 'Virtual CD/DVD/ISO' (Manual🤮)")
+    F --> G("Launch Virtual Console (Manual🤮)")
+    G --> |"Latest virtual media hosted at <a href='https://github.com/KarmaComputing/server-bootstrap/releases/latest/download/ipxe.iso'>github.com/KarmaComputing/server-bootstrap/releases/latest/download/ipxe.iso</a>"| H("Connect Virtual Media CD & map device (Manual🤮) 🔗")
+    click H href "https://github.com/KarmaComputing/server-bootstrap/releases/latest/download/ipxe.iso" "Deploy VPN Docs"
+    H --> I("Power Cycle System (cold boot) (Manual🤮)")
+    I --> |"iPXE will bootstrap into Alpine Linux & start sshd (see <a href='https://boot.karmacomputing.co.uk/boot.txt'>boot.karmacomputing.co.uk/boot.txt</a>)"| J("Switch back to Virtual Console to observe boot process (Automated ✅)")
+    J --> K("Verify server has iPXE booted into Alpine Linux by viewing Virtual Console (Manual🤮)")
+    K --> L("Verify ssh access: From another host, ssh into the server using the injected `ssh_key` pair (Manual🤮)")
+    L --> M("Run ansible playbook to bootstrap server persistant install (Manual OpenZFS Docs)  🔗")
+   click M href "https://openzfs.github.io/openzfs-docs/Getting%20Started/Fedora/Root%20on%20ZFS.html" "Install ZFS root Fedora"
+```
+
 ## iPXE
 
 > For testing locally it's helpful to have quemu installed:
