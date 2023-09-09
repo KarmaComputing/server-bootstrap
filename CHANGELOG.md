@@ -1,3 +1,15 @@
+# v0.0.92 (Sat Sep 09 2023)
+
+#### ⚠️ Pushed to `main`
+
+- Update README.md added mermaid diagram how works ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.91 (Fri Sep 08 2023)
 
 #### ⚠️ Pushed to `main`
