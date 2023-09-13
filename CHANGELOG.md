@@ -1,3 +1,15 @@
+# v0.0.95 (Wed Sep 13 2023)
+
+#### ⚠️ Pushed to `main`
+
+- utils iDRAC-login iDRAC-logout ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.94 (Wed Sep 13 2023)
 
 #### ⚠️ Pushed to `main`
