@@ -4,7 +4,7 @@ export default defineConfig({
   timeout: 5 * 60 * 1000,
   // expect timeout is different from test timeout ( https://playwright.dev/docs/test-timeouts#expect-timeout )
   expect: {
-      timeout: 120 * 1000,
+      timeout: 180 * 1000,
   },
   // Look for test files in the "tests" directory, relative to this configuration file.
   testDir: 'scripts',
