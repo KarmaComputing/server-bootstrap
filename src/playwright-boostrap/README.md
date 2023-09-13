@@ -15,6 +15,14 @@ npm install
 IDRAC_USERNAME=root IDRAC_PASSWORD=calvin npx playwright test scripts/iDRAC-set-virtual-terminal-html5.spec.ts --debug
 ```
 
+To run without `--debug` but with headed mode, use `--headed`
+
+e.g:
+```
+IDRAC_USERNAME=root IDRAC_PASSWORD=calvin npx playwright test scripts/iDRAC-set-virtual-terminal-html5.spec.ts --headed
+```
+
+
 # Test generation / writing new scripts/tests
 
 ```
