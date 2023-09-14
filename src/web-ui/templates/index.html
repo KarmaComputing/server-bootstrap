@@ -19,11 +19,9 @@
          font-size: 28px;
          color: #333;
          }
-         .circle {
+         .button {
          display: inline-block;
-         width: 200px;
-         height: 200px;
-         border-radius: 50%;
+         padding: 10px;
          background-color: #333;
          margin: 50px;
          text-align: center;
@@ -33,12 +31,12 @@
          cursor: pointer;
          transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
          box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-         }	
-         .circle:hover {
+         }
+         .button:hover {
          background-color: #ffce00;
          color: #333;
          }
-         .circle.disabled {
+         .button.disabled {
          opacity: 0.5;
          pointer-events: none;
          }
@@ -88,50 +86,50 @@
       </style>
       <script>
          function displayError(error) {
-         	const errorDiv = document.getElementById('error');
-         	errorDiv.innerHTML = error.split('\n').map(line => `<div>${line}</div>`).join('');
-         	errorDiv.style.display = 'block';
+             const errorDiv = document.getElementById('error');
+             errorDiv.innerHTML = error.split('\n').map(line => `<div>${line}</div>`).join('');
+             errorDiv.style.display = 'block';
          }
          
          function handleClick(event) {
-         	const circle = event.target;
-         	if (circle.classList.contains('disabled')) {
-         		return;
-         	}
-         	
-          const circles = document.getElementsByClassName('circle');
-          for (let i = 0; i < circles.length; i++) {
-            circles[i].setAttribute('disabled', true);
+             const button = event.target;
+             if (button.classList.contains('disabled')) {
+                 return;
+             }
+
+          const buttons = document.getElementsByClassName('button');
+          for (let i = 0; i < buttons.length; i++) {
+            buttons[i].setAttribute('disabled', true);
           }
-         	circle.classList.add('disabled');
-         	circle.classList.add('loading');
-         	fetch(`/api/v1/${circle.textContent}`, {method: 'POST'})
-         		.then(response => response.json())
-         		.then(data => {
-              console.log("yolo");
-         			if (data.error !== "") {
-         				const errorContainer = document.createElement('div');
-         				errorContainer.classList.add('error');
-         				const tracebackContainer = document.createElement('div');
-         				tracebackContainer.classList.add('traceback');
-         				tracebackContainer.innerHTML = data.error;
-         				errorContainer.appendChild(tracebackContainer);
-         				document.body.appendChild(errorContainer);
-         			} else {
+             button.classList.add('disabled');
+             button.classList.add('loading');
+             fetch(`/api/v1/${button.textContent}`, {method: 'POST'})
+                 .then(response => response.json())
+                 .then(data => {
+              console.log("reply");
+                     if (data.error !== "") {
+                         const errorContainer = document.createElement('div');
+                         errorContainer.classList.add('error');
+                         const tracebackContainer = document.createElement('div');
+                         tracebackContainer.classList.add('traceback');
+                         tracebackContainer.innerHTML = data.error;
+                         errorContainer.appendChild(tracebackContainer);
+                         document.body.appendChild(errorContainer);
+                     } else {
                 let output = document.getElementById('output')
                 output.innerHTML = data.output.split('\n').map(line => `<div>${line}</div>`).join('');
-         				console.log(data);
-         			}
-         		})
-         		.catch(error => console.error(error))
-         		.finally(() => {
-         			  const circles = document.getElementsByClassName('circle');
-         			  for (let i = 0; i < circles.length; i++) {
-         			    circles[i].removeAttribute('disabled');
-                  circles[i].classList.remove('disabled');
-                  circles[i].classList.remove('loading');
-         			  }
-         		});
+                         console.log(data);
+                     }
+                 })
+                 .catch(error => console.error(error))
+                 .finally(() => {
+                 const buttons = document.getElementsByClassName('button');
+                       for (let i = 0; i < buttons.length; i++) {
+                         buttons[i].removeAttribute('disabled');
+                  buttons[i].classList.remove('disabled');
+                  buttons[i].classList.remove('loading');
+                       }
+                 });
          }
          console.log("Loaded");
       </script>
@@ -140,10 +138,16 @@
       <h1>Web Scale Console</h1>
       <h2>Control the server via the browser</h2>
       <div id="output"></div>
-      <div class="circle" onclick="handleClick(event)">GetPowerState</div>
-      <div class="circle" onclick="handleClick(event)">On</div>
-      <div class="circle" onclick="handleClick(event)">GracefulShutdown</div>
-      <div class="circle" onclick="handleClick(event)">ChangeBiosBootOrderREDFISH</div>
+      <div class="button" onclick="handleClick(event)">GetOnetimeBootValue</div>
+      <div class="button" onclick="handleClick(event)">SetOnetimeBootValueVirtualCD</div>
+      <div class="button" onclick="handleClick(event)">ForceRestart</div>
+      <div class="button" onclick="handleClick(event)">MountiPXE</div>
+      <div class="button" onclick="handleClick(event)">UnmountISO</div>
+      <div class="button" onclick="handleClick(event)">GetPowerState</div>
+      <div class="button" onclick="handleClick(event)">On</div>
+      <div class="button" onclick="handleClick(event)">ForceOff</div>
+      <div class="button" onclick="handleClick(event)">GracefulShutdown</div>
+      <div class="button" onclick="handleClick(event)">ChangeBiosBootOrderREDFISH</div>
       <div id="status"></div>
       <div id="error"></div>
       <h2>Video feed</h2>
