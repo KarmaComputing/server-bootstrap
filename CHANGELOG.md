@@ -1,3 +1,19 @@
+# v0.0.97 (Fri Sep 15 2023)
+
+:tada: This release contains work from a new contributor! :tada:
+
+Thank you, null[@joeltejeda](https://github.com/joeltejeda), for all your work!
+
+#### ⚠️ Pushed to `main`
+
+- changing add vpn user workflow name vpn_ip_address ([@joeltejeda](https://github.com/joeltejeda))
+
+#### Authors: 1
+
+- [@joeltejeda](https://github.com/joeltejeda)
+
+---
+
 # v0.0.96 (Thu Sep 14 2023)
 
 #### ⚠️ Pushed to `main`
