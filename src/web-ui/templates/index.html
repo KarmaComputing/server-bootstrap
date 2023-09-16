@@ -107,14 +107,14 @@
                  .then(response => response.json())
                  .then(data => {
               console.log("reply");
-                     if (data.error !== "") {
+                     if (data.error) {
                          const errorContainer = document.createElement('div');
                          errorContainer.classList.add('error');
                          const tracebackContainer = document.createElement('div');
                          tracebackContainer.classList.add('traceback');
                          tracebackContainer.innerHTML = data.error;
                          errorContainer.appendChild(tracebackContainer);
-                         document.body.appendChild(errorContainer);
+                         document.getElementById("output").appendChild(errorContainer);
                      } else {
                 let output = document.getElementById('output')
                 output.innerHTML = data.output.split('\n').map(line => `<div>${line}</div>`).join('');
@@ -138,8 +138,8 @@
       <h1>Web Scale Console</h1>
       <h2>Control the server via the browser</h2>
       <div id="output"></div>
+      <div class="button" onclick="handleClick(event)">VerifyiDRACAccess</div>
       <div class="button" onclick="handleClick(event)">GetOnetimeBootValue</div>
-      <div class="button" onclick="handleClick(event)">SetOnetimeBootValueVirtualCD</div>
       <div class="button" onclick="handleClick(event)">ForceRestart</div>
       <div class="button" onclick="handleClick(event)">MountiPXE</div>
       <div class="button" onclick="handleClick(event)">UnmountISO</div>
