@@ -50,10 +50,10 @@ jobs:
           ifstat
           ifopen
 
-          set net1/ip:ipv4 77.95.37.34
-          set net1/netmask:ipv4 255.255.255.240
-          set net1/gateway:ipv4 77.95.37.33
-          set net1/dns:ipv4 8.8.8.8
+          set net3/ip:ipv4 77.95.37.34
+          set net3/netmask:ipv4 255.255.255.240
+          set net3/gateway:ipv4 77.95.37.33
+          set net3/dns:ipv4 8.8.8.8
 
           :retry_ping
           ping -c 1 8.8.8.8 || goto retry_ping
