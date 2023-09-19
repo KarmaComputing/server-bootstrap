@@ -1,3 +1,15 @@
+# v0.0.99 (Tue Sep 19 2023)
+
+#### ⚠️ Pushed to `main`
+
+- Update release.yml net1->net3 ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.98 (Sat Sep 16 2023)
 
 #### ⚠️ Pushed to `main`
