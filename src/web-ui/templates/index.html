@@ -90,7 +90,7 @@
              errorDiv.innerHTML = error.split('\n').map(line => `<div>${line}</div>`).join('');
              errorDiv.style.display = 'block';
          }
-         
+
          function handleClick(event) {
              const button = event.target;
              if (button.classList.contains('disabled')) {
@@ -138,20 +138,21 @@
       <h1>Web Scale Console</h1>
       <h2>Control the server via the browser</h2>
       <div id="output"></div>
+      <div class="button" onclick="handleClick(event)">Bootstrap</div>
       <div class="button" onclick="handleClick(event)">VerifyiDRACAccess</div>
+      <div class="button" onclick="handleClick(event)">iDRACSetVirtualTerminalHTML5</div>
       <div class="button" onclick="handleClick(event)">GetOnetimeBootValue</div>
       <div class="button" onclick="handleClick(event)">ForceRestart</div>
-      <div class="button" onclick="handleClick(event)">MountiPXE</div>
+      <div class="button" onclick="handleClick(event)">MountISO</div>
       <div class="button" onclick="handleClick(event)">UnmountISO</div>
       <div class="button" onclick="handleClick(event)">GetPowerState</div>
-      <div class="button" onclick="handleClick(event)">On</div>
+      <div class="button" onclick="handleClick(event)">PowerOn</div>
       <div class="button" onclick="handleClick(event)">ForceOff</div>
       <div class="button" onclick="handleClick(event)">GracefulShutdown</div>
       <div class="button" onclick="handleClick(event)">ChangeBiosBootOrderREDFISH</div>
       <div id="status"></div>
       <div id="error"></div>
       <h2>Video feed</h2>
-      <iframe src="https://192.168.0.120"></iframe>
    </body>
 </html>
 
