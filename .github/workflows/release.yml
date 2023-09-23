@@ -54,7 +54,9 @@ jobs:
           set net3/netmask:ipv4 255.255.255.240
           set net3/gateway:ipv4 77.95.37.33
           set net3/dns:ipv4 8.8.8.8
-
+          ifopen net3
+          sleep 4
+          ifstat
           :retry_ping
           ping -c 1 8.8.8.8 || goto retry_ping
 
