@@ -1,3 +1,15 @@
+# v0.0.101 (Sat Sep 23 2023)
+
+#### ⚠️ Pushed to `main`
+
+- Update release.yml ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.100 (Wed Sep 20 2023)
 
 #### ⚠️ Pushed to `main`
