@@ -32,7 +32,7 @@ profile_zfsnetboot() {
         kernel_cmdline="unionfs_size=512M console=tty0 console=ttyS0,115200"
         syslinux_serial="0 115200"
         kernel_addons="zfs"
-        apks="$apks zfs-scripts zfs zfs-utils-py
+        apks="$apks zfs-scripts zfs zfs-utils-py python3
                 mkinitfs
                 syslinux util-linux"
         initfs_features="base network squashfs usb virtio"
