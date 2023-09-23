@@ -1,3 +1,15 @@
+# v0.0.102 (Sat Sep 23 2023)
+
+#### ⚠️ Pushed to `main`
+
+- add python3 to build-alpine-netboot-zfs.sh ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.101 (Sat Sep 23 2023)
 
 #### ⚠️ Pushed to `main`
