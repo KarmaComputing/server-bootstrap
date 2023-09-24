@@ -1,3 +1,15 @@
+# v0.0.103 (Sun Sep 24 2023)
+
+#### ⚠️ Pushed to `main`
+
+- add get-first-two-disks.sh ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.102 (Sat Sep 23 2023)
 
 #### ⚠️ Pushed to `main`
