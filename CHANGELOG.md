@@ -1,3 +1,15 @@
+# v0.0.104 (Sun Sep 24 2023)
+
+#### ⚠️ Pushed to `main`
+
+- update get-first-two-disks-install-openzfs-fedora-root.sh ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.103 (Sun Sep 24 2023)
 
 #### ⚠️ Pushed to `main`
