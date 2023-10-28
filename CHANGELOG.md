@@ -1,3 +1,17 @@
+# v0.0.106 (Sat Oct 28 2023)
+
+#### ⚠️ Pushed to `main`
+
+- Update README.md ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Update README.md mermaid web-ui ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Update README.md link to web-ui docs ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.105 (Sat Oct 28 2023)
 
 #### ⚠️ Pushed to `main`
