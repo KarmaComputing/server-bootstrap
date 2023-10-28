@@ -71,6 +71,7 @@ curl -v -k -L --compressed https://10.100.49.2
 > Both cli and gui methods are supported- including mobile 📱
 
 - Linux / Ubuntu / Debian: Use `wg-quick` (easiest)
+  - After placing your config in `/etc/wireguard/wg0.conf` you typically run `sudo wg-quick up wg0` to start the vpn connection
 - (ubuntu desktop) use the [network-manager-gui](https://www.xmodulo.com/wireguard-vpn-network-manager-gui.html#:~:text=NetworkManager%27s%20Connection%20Editor-,GUI,-Next%2C%20run%20nm
 )
 - Mobile: [Android](https://play.google.com/store/apps/details?id=com.wireguard.android) / [IOS](https://itunes.apple.com/us/app/wireguard/id1441195209?ls=1&mt=8)
