@@ -30,6 +30,10 @@ flowchart TD
 
 ```
 
+## [Web-UI](/src/web-ui#setup)
+
+See [Web-ui](/src/web-ui#setup)
+
 ## iPXE
 
 > For testing locally it's helpful to have quemu installed:
