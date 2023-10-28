@@ -9,7 +9,6 @@ Purpose: Provision a blank server using automatin and minimal hands-on inteventi
 
 ```mermaid
 
-
 flowchart TD
     A[Day 0] --> B(Rack Server)
     B --> |Ensure management port  iDRAC connected & two NICs for uplink diversity| C("Deploy VPN 🔗 (Automated 😀👌)")
@@ -17,7 +16,8 @@ flowchart TD
     D --> | Verify VPN connection to iDRAC| E("Visit iDRAC interface & Login (Manual🤮)")
     click C href "https://github.com/KarmaComputing/server-bootstrap/blob/main/vpn-client/README.md" "Deploy VPN Docs"
     click D href "https://github.com/KarmaComputing/server-bootstrap/blob/main/vpn-client/README.md" "Deploy VPN Docs"
-    E --> F("In setup, set 'First Boot Device' to 'Virtual CD/DVD/ISO' (Manual🤮)")
+    E --> F("Start web-ui & set 'First Boot Device' to 'Virtual CD/DVD/ISO' (Manual🤮)")
+    click F href "https://github.com/KarmaComputing/server-bootstrap/tree/main/src/web-ui" "Start web-ui Docs"
     F --> G("Launch Virtual Console (Manual🤮)")
     G --> |"Latest virtual media hosted at <a href='https://github.com/KarmaComputing/server-bootstrap/releases/latest/download/ipxe.iso'>github.com/KarmaComputing/server-bootstrap/releases/latest/download/ipxe.iso</a>"| H("Connect Virtual Media CD & map device (Manual🤮) 🔗")
     click H href "https://github.com/KarmaComputing/server-bootstrap/releases/latest/download/ipxe.iso" "Deploy VPN Docs"
@@ -27,7 +27,6 @@ flowchart TD
     K --> L("Verify ssh access: From another host, ssh into the server using the injected `ssh_key` pair (Manual🤮)")
     L --> M("Run ansible playbook to bootstrap server persistant install (Manual OpenZFS Docs)  🔗")
    click M href "https://openzfs.github.io/openzfs-docs/Getting%20Started/Fedora/Root%20on%20ZFS.html" "Install ZFS root Fedora"
-
 ```
 
 ## [Web-UI](/src/web-ui#setup)
