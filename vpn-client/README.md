@@ -1,5 +1,9 @@
 # VPN Client & VPN Server (IPsec client & Wireguard Server)
 
+> Known bug: Did your VPN mysteriously stop working?
+> Check for interface `ppp0` on the vpn server.
+> I think the ipsec tunner automatically turns of / goes away (this is a thing in ipSec tunnels) so need to enhance to keep it up/check for this/configure as required. 
+
 Setup & deploy a IPsec VPN tunnel client on Ubuntu server. 
 
 This is useful for when you want to securly connect to a traditional IPsec VPN* but you're willing to complicate matters for the benfit of your users:  By putting wireguard infront of the IPsec VPN,  this can make connecting to such VPNs 'effortless' for end users given Wireguard is comparatively simple for end users to configure, and even has support for mobile app clients 📱.
