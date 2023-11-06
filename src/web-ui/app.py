@@ -27,14 +27,13 @@ session_requests.verify = False
 
 
 def api_response(req):
-    error = None
-    if req.status_code not in range(200, 299):
-        error = req.text
-    return jsonify({"output": req.text, "error": error}), req.status_code
+    return (
+        jsonify({"resp": req.text, "status_code": req.status_code}),
+        req.status_code,
+    )
 
 
 def api_call(path=None, method=None, payload=None):
-    breakpoint()
     assert method is not None
     url = f"https://{session.get('IDRAC_HOST')}/redfish/v1/{path}"
     authHeaders = HTTPBasicAuth(
@@ -82,8 +81,6 @@ def load_idrac_settings():
             session[setting] = request.args.get(setting)
         exec(f"{setting}='{request.args.get(setting)}'")
 
-    breakpoint()
-
 
 @app.context_processor
 def inject_settings():
@@ -128,26 +125,16 @@ def execute_redfish_command(action):
         return PowerOn()
 
     if action == "ForceRestart":
-        url = f"https://{IDRAC_HOST}/redfish/v1/Systems/System.Embedded.1/Actions/ComputerSystem.Reset"  # noqa: E501
-        headers = {"Content-Type": "application/json"}
         payload = {"ResetType": "ForceRestart"}
-        auth = (IDRAC_USERNAME, IDRAC_PASSWORD)
-
-        req = requests.post(
-            url, headers=headers, json=payload, auth=auth, verify=False
-        )  # noqa: E501
+        req = api_call(
+            path="Systems/System.Embedded.1/Actions/ComputerSystem.Reset",
+            method="POST",
+            payload=payload,
+        )
         return api_response(req)
 
     if action == "GetOnetimeBootValue":
-        # URL
-        url = f"https://{IDRAC_HOST}/redfish/v1/Systems/System.Embedded.1"
-
-        # Making the request
-        req = requests.get(
-            url,
-            auth=HTTPBasicAuth(IDRAC_USERNAME, IDRAC_PASSWORD),
-            verify=False,
-        )
+        req = api_call(path="Systems/System.Embedded.1", method="GET")
         return api_response(req)
 
     if action == "ChangeBiosBootOrderREDFISH":
@@ -175,13 +162,8 @@ def bootstrap():
 
 @app.route("/api/v1/VerifyiDRACAccess", methods=["POST"])
 def VerifyiDRACAccess():
-    url = f"https://{IDRAC_HOST}/redfish/v1/Systems/"
-    headers = {"Content-Type": "application/json"}
-    payload = {"ResetType": "ForceRestart"}
-    auth = (IDRAC_USERNAME, IDRAC_PASSWORD)
-    req = requests.get(
-        url, headers=headers, json=payload, auth=auth, verify=False
-    )  # noqa: E501
+    req = api_call(path="Systems/", method="GET")
+
     return api_response(req)
 
 
@@ -218,7 +200,6 @@ def iDRACSetVirtualTerminalHTML5():
 @app.route("/api/v1/PowerOn", methods=["POST"])
 def PowerOn():
     print("PowerOn")
-    breakpoint()
     data = {"ResetType": "On"}
     req = api_call(
         path="Systems/System.Embedded.1/Actions/ComputerSystem.Reset",
@@ -233,23 +214,14 @@ def PowerOn():
 @app.route("/api/v1/PowerOff", methods=["POST"])
 def ForceOff():
     print("ForceOff")
-    # URL
-    url = f"https://{IDRAC_HOST}/redfish/v1/Systems/System.Embedded.1/Actions/ComputerSystem.Reset"  # noqa: E501
-
-    # Headers
-    headers = {"Content-Type": "application/json"}
-
-    # Data
     data = {"ResetType": "ForceOff"}
 
-    # Making the request
-    req = requests.post(
-        url,
-        headers=headers,
-        json=data,
-        auth=HTTPBasicAuth(IDRAC_USERNAME, IDRAC_PASSWORD),
-        verify=False,
+    req = api_call(
+        path="Systems/System.Embedded.1/Actions/ComputerSystem.Reset",
+        method="POST",  # noqa: E501
+        payload=data,
     )
+
     return api_response(req)
 
 
@@ -266,12 +238,15 @@ def set_power_graceful_shutdown():
 @app.route("/api/v1/GetPowerState", methods=["POST"])
 def GetPowerState():
     print("GetPowerState")
-    req = api_call(path="Systems/System.Embedded.1")
+    req = api_call(path="Systems/System.Embedded.1", method="GET")
 
     if req.status_code == 200:
-        response_text = (
-            f"Current server power state: {req.json()['PowerState']}"  # noqa: E501
-        )
+        power_state = req.json().get("PowerState")
+
+        response_text = {
+            "PowerState": power_state,
+            "msg": f"Current server power state: {power_state}",
+        }
         req = SimpleNamespace()
         req.status_code = 200
         req.text = response_text
@@ -286,22 +261,11 @@ def get_bios_boot_order():
 @app.route("/api/v1/MountISO", methods=["POST"])
 def MountISO():
     print("MountISO")
-    # URL
-    url = f"https://{IDRAC_HOST}/redfish/v1/Managers/iDRAC.Embedded.1/VirtualMedia/CD/Actions/VirtualMedia.InsertMedia"  # noqa: E501
-
-    # Headers
-    headers = {"Content-Type": "application/json"}
-
-    # Data
     data = {"Image": "http://138.201.59.208/sites/default/files/ipxe.iso"}
-
-    # Making the request
-    req = requests.post(
-        url,
-        headers=headers,
-        json=data,
-        auth=HTTPBasicAuth(IDRAC_USERNAME, IDRAC_PASSWORD),
-        verify=False,
+    req = api_call(
+        path="Managers/iDRAC.Embedded.1/VirtualMedia/CD/Actions/VirtualMedia.InsertMedia",  # noqa: E501
+        method="POST",  # noqa: E501
+        payload=data,
     )
 
     if req.status_code == "500":
@@ -325,23 +289,12 @@ def MountISO():
 @app.route("/api/v1/UnmountISO", methods=["POST"])
 def UnmountISO():
     print(UnmountISO)
-    # URL
-    url = f"https://{IDRAC_HOST}/redfish/v1/Managers/iDRAC.Embedded.1/VirtualMedia/CD/Actions/VirtualMedia.EjectMedia"  # noqa: E501
-
-    # Headers
-    headers = {"Content-Type": "application/json"}
-
-    # Data
-    data = {}
-
-    # Making the request
-    req = requests.post(
-        url,
-        headers=headers,
-        json=data,
-        auth=HTTPBasicAuth(IDRAC_USERNAME, IDRAC_PASSWORD),
-        verify=False,
+    req = api_call(
+        path="Managers/iDRAC.Embedded.1/VirtualMedia/CD/Actions/VirtualMedia.EjectMedia",  # noqa: E501
+        method="POST",
+        payload={},
     )
+
     return api_response(req)
 
 
