@@ -1,3 +1,16 @@
+# v0.0.108 (Fri Nov 03 2023)
+
+#### ⚠️ Pushed to `main`
+
+- Merge branch 'main' of github.com:KarmaComputing/server-bootstrap ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- get settings from url params ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.107 (Thu Nov 02 2023)
 
 #### ⚠️ Pushed to `main`
