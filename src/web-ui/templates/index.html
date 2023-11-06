@@ -85,6 +85,35 @@
          }
       </style>
       <script>
+        function timeAgo(date) {
+          const now = new Date();
+          const diff = now - date; // difference in milliseconds
+
+          const secondsAgo = Math.floor(diff / 1000);
+          const minutesAgo = Math.floor(secondsAgo / 60);
+
+          if (minutesAgo > 0) {
+            return `${minutesAgo} minute(s) ago`;
+          } else {
+            return `${secondsAgo} second(s) ago`;
+          }
+        }
+
+        // GetPowerState every x interval
+         window.setInterval( function() {
+          console.log("Logging..");
+             console.log("Checking GetPowerState");
+             const timeNow = new Date().getTime();
+             fetch('/api/v1/GetPowerState', {method: 'POST'})
+                 .then(response => response.json())
+             .then(api => {
+               console.log("Got GetPowerState response");
+               const timeSince = timeAgo(timeNow);
+               console.log(api);
+               GetPowerStateOutput.textContent= `${api['resp']['PowerState']} (${timeSince})`;
+             });
+         }, 15000)
+
          function displayError(error) {
              const errorDiv = document.getElementById('error');
              errorDiv.innerHTML = error.split('\n').map(line => `<div>${line}</div>`).join('');
@@ -105,9 +134,9 @@
              button.classList.add('loading');
              fetch(`/api/v1/${button.textContent}`, {method: 'POST'})
                  .then(response => response.json())
-                 .then(data => {
+                 .then(api => {
               console.log("reply");
-                     if (data.error) {
+                     if (api.error) {
                          const errorContainer = document.createElement('div');
                          errorContainer.classList.add('error');
                          const tracebackContainer = document.createElement('div');
@@ -117,8 +146,8 @@
                          document.getElementById("output").appendChild(errorContainer);
                      } else {
                 let output = document.getElementById('output')
-                output.innerHTML = data.output.split('\n').map(line => `<div>${line}</div>`).join('');
-                         console.log(data);
+                output.innerHTML = api.resp.split('\n').map(line => `<div>${line}</div>`).join('');
+                         console.log(api);
                      }
                  })
                  .catch(error => console.error(error))
@@ -137,10 +166,22 @@
    <body>
       <h1>Web Scale Console</h1>
       <h2>Control the server via the browser</h2>
-      <div id="output"></div>
+      <h3>Last known Server State</h3>
+      <ul>
+        <li>PowerState: <span id="GetPowerStateOutput">unknown</span></li>
+      </ul>
+      <h3>Loaded IDRAC settings:</h3>
+      <ul>
+        <li>IDRAC_HOST: {{ session.get("IDRAC_HOST") }}</li>
+        <li>IDRAC_USERNAME: {{ session.get("IDRAC_USERNAME") }}</li>
+        <li>IDRAC_PASSWORD: {{ session.get("IDRAC_PASSWORD") }}</li>
+      </ul>
+      <h2>Api responses</h2>
+      <div id="output"><hr />...<hr /></div>
       <div class="button" onclick="handleClick(event)">Bootstrap</div>
       <div class="button" onclick="handleClick(event)">VerifyiDRACAccess</div>
       <div class="button" onclick="handleClick(event)">iDRACSetVirtualTerminalHTML5</div>
+      <div class="button" onclick="handleClick(event)">ResetiDRAC</div>
       <div class="button" onclick="handleClick(event)">GetOnetimeBootValue</div>
       <div class="button" onclick="handleClick(event)">ForceRestart</div>
       <div class="button" onclick="handleClick(event)">MountISO</div>
