@@ -5,6 +5,7 @@ from apiflask import APIFlask
 import requests
 from requests.auth import HTTPBasicAuth
 from types import SimpleNamespace
+import json
 
 app = APIFlask(__name__)
 app.config.update(TESTING=True, SECRET_KEY=os.getenv("SECRET_KEY"))
@@ -33,7 +34,7 @@ def api_response(req):
     )
 
 
-def api_call(path=None, method=None, payload=None):
+def api_call(path=None, method=None, payload=None, raw_payload=False):
     assert method is not None
     url = f"https://{session.get('IDRAC_HOST')}/redfish/v1/{path}"
     authHeaders = HTTPBasicAuth(
@@ -48,13 +49,22 @@ def api_call(path=None, method=None, payload=None):
             verify=False,
         )
     elif method == "POST":
-        req = requests.post(
-            url,
-            auth=authHeaders,
-            verify=False,
-            json=payload,
-            headers={"Content-Type": "application/json"},
-        )
+        if raw_payload:
+            req = requests.post(
+                url,
+                auth=authHeaders,
+                verify=False,
+                data=payload,
+                headers={"Content-Type": "application/json"},
+            )
+        else:
+            req = requests.post(
+                url,
+                auth=authHeaders,
+                verify=False,
+                json=payload,
+                headers={"Content-Type": "application/json"},
+            )
 
     return req
 
@@ -293,6 +303,23 @@ def UnmountISO():
         path="Managers/iDRAC.Embedded.1/VirtualMedia/CD/Actions/VirtualMedia.EjectMedia",  # noqa: E501
         method="POST",
         payload={},
+    )
+
+    return api_response(req)
+
+
+@app.route("/api/v1/SetBootFromVirtualMedia", methods=["POST"])
+def SetBootFromVirtualMedia():
+    payload = {
+        "ShareParameters": {"Target": "ALL"},
+        "ImportBuffer": '<SystemConfiguration><Component FQDD="iDRAC.Embedded.1"><Attribute Name="ServerBoot.1#BootOnce">Enabled</Attribute><Attribute Name="ServerBoot.1#FirstBootDevice">VCD-DVD</Attribute></Component></SystemConfiguration>',  # noqa: E501
+    }
+
+    req = api_call(
+        path="Managers/iDRAC.Embedded.1/Actions/Oem/EID_674_Manager.ImportSystemConfiguration",  # noqa: E501
+        method="POST",
+        payload=json.dumps(payload),
+        raw_payload=True,
     )
 
     return api_response(req)
