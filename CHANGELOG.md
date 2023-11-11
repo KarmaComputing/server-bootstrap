@@ -1,3 +1,17 @@
+# v0.0.110 (Sat Nov 11 2023)
+
+#### ⚠️ Pushed to `main`
+
+- add SetBootFromVirtualMedia ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- Merge branch 'main' of github.com:KarmaComputing/server-bootstrap ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- add /api/v1/SetBootFromVirtualMedia ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.109 (Mon Nov 06 2023)
 
 #### ⚠️ Pushed to `main`
