@@ -6,6 +6,7 @@ import requests
 from requests.auth import HTTPBasicAuth
 from types import SimpleNamespace
 import json
+from time import sleep
 
 app = APIFlask(__name__)
 app.config.update(TESTING=True, SECRET_KEY=os.getenv("SECRET_KEY"))
@@ -119,16 +120,14 @@ def execute_redfish_command(action):
     if action == "Bootstrap":
         VerifyiDRACAccess()
         ForceOff()
-        sleepSecconds = 10
+        sleepSecconds = 15
         print(f"Sleeping for {sleepSecconds}")
+        sleep(sleepSecconds)
         iDRACSetVirtualTerminalHTML5()
         UnmountISO()
-        UnmountISO()
         MountISO()
-        MountISO()
+        SetBootFromVirtualMedia()
         GetPowerState()
-        from time import sleep
-
         sleepSecconds = 10
         print(f"Sleeping for {sleepSecconds}")
         sleep(sleepSecconds)
