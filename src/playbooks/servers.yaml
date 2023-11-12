@@ -6,10 +6,17 @@
 #
 - hosts: servers
   become: true
+  gather_facts: false
   tasks:
   - name: Debug
     ansible.builtin.debug:
       msg: "Running servers playbook"
+
+
+  - name: Install python
+    # TODO: Consider installing python3 during the alpine netboot image build instead of here 
+    raw: test -e /usr/bin/python3 || apk add python3
+    changed_when: false
 
   - name: Configure NTP client for time synchronization
     command: setup-ntp busybox
