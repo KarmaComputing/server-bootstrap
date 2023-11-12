@@ -1,5 +1,5 @@
 #!/bin/sh
-set -x
+set -eux -o pipefail
 
 # The two smallest disks are always used as the boot and root pool
 # as a ZFS mirror.
@@ -9,6 +9,9 @@ set -x
 # - Based on manual steps in OpenZFS docs:
 # https://openzfs.github.io/openzfs-docs/Getting%20Started/Fedora/Root%20on%20ZFS.html#:~:text=page%20for%20examples.-,Declare%20disk%20array,-DISK%3D%27/dev
 
+install_required_packages() {
+        apk add lsblk eudev jq curl arch-install-scripts eudev sgdisk wipefs parted findmnt
+}
 
 declare_disk_array() {
         # For each disk found, get it's /dev/disk/by-id address by querying udevadm
@@ -19,7 +22,7 @@ declare_disk_array() {
 
         for DISK_ADDRESS in $DISK_ADDRESSES
         do
-                DISK_UDEV_PATH=/dev/$(udevadm info --query=symlink  --name=/dev/"$DISK_ADDRESS"| cut -d ' ' -f 1)
+                DISK_UDEV_PATH=/dev/$(udevadm info --query=symlink  --name=/dev/"$DISK_ADDRESS"| awk '{for(i=1; i<=NF; i++) if($i ~ /^disk\/by-id\//) {print $i; exit}}')
                 # Append disk to $DISK list
                 DISK="$DISK $DISK_UDEV_PATH"
         done
@@ -165,7 +168,6 @@ format_and_mount_ESP(){
 }
 
 download_extract_minimal_Fedora_root_filesystem(){
-        apk add curl
         curl --fail-early --fail -L \
         https://dl.fedoraproject.org/pub/fedora/linux/releases/38/Container/x86_64/images/Fedora-Container-Base-38-1.6.x86_64.tar.xz \
         -o rootfs.tar.gz
@@ -200,7 +202,6 @@ enable_community_repo(){
 
 
 generate_fstab(){
-        apk add arch-install-scripts
         genfstab -t PARTUUID "${MNT}" \
         | grep -v swap \
         | sed "s|vfat.*rw|vfat rw,x-systemd.idle-timeout=1min,x-systemd.automount,noauto,nofail|" \
@@ -417,6 +418,7 @@ ZFS_export_all_pools(){
   zpool export -a
 }
 
+install_required_packages
 declare_disk_array
 set_mount_point
 set_swap_size
