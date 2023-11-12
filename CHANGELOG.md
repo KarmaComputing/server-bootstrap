@@ -1,3 +1,16 @@
+# v0.0.111 (Sun Nov 12 2023)
+
+#### ⚠️ Pushed to `main`
+
+- set APP_SECRET during web-ui run.sh helper script ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- update bootstrap app.py ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.110 (Sat Nov 11 2023)
 
 #### ⚠️ Pushed to `main`
