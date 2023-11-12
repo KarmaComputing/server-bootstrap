@@ -1,0 +1,4 @@
+iface {{ server_active_gateway_interface.stdout }} inet static
+        address {{ server_public_ip.stdout }}
+        netmask {{ server_ip_netmask.stdout }}
+        gateway {{ server_gateway_ip.stdout }}
