@@ -1,10 +1,9 @@
 Flask
-SQLAlchemy
-gunicorn
-
 PyMySQL
-coloredlogs
-python-dotenv
+SQLAlchemy
 ansible
-strictyaml
 apiflask
+coloredlogs
+gunicorn
+python-dotenv
+strictyaml
