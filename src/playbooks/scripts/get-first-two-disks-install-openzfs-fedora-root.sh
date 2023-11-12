@@ -10,7 +10,7 @@ set -eux -o pipefail
 # https://openzfs.github.io/openzfs-docs/Getting%20Started/Fedora/Root%20on%20ZFS.html#:~:text=page%20for%20examples.-,Declare%20disk%20array,-DISK%3D%27/dev
 
 install_required_packages() {
-        apk add lsblk eudev jq curl arch-install-scripts eudev sgdisk wipefs parted findmnt
+        apk add lsblk eudev jq curl arch-install-scripts eudev sgdisk wipefs parted findmnt zfs
 }
 
 declare_disk_array() {
