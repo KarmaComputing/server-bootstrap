@@ -374,10 +374,10 @@ EOL
 
 
 chroot_fedora_generate_grub_menu(){
-  chroot "${MNT}" /usr/bin/env DISK="${DISK}" bash << 'EOL'
+  chroot "${MNT}" /usr/bin/env ZPOOL_VDEV_NAME_PATH=1 DISK="${DISK}" bash << 'EOL'
   set -x
   mkdir -p /boot/grub2
-  grub2-mkconfig -o /boot/grub2/grub.cfg
+  ZPOOL_VDEV_NAME_PATH=1 grub2-mkconfig -o /boot/grub2/grub.cfg
   cp /boot/grub2/grub.cfg \
    /boot/efi/efi/fedora/grub.cfg
   cp /boot/grub2/grub.cfg \
@@ -450,10 +450,13 @@ chroot_fedora_set_root_password
 chroot_fedora_apply_grub_workaround
 chroot_fedora_grub_disable_module_boot_loader_specification
 chroot_fedora_install_grub
-chroot_fedora_generate_grub_menu #TODO fix /usr/sbin/grub2-probe: error: failed to get canonical path of /dev/<drive> (fine outside heredoc)
+chroot_fedora_generate_grub_menu #TODO fix /usr/sbin/grub2-probe: error: failed to get canonical path of /dev/<drive> (fine outside heredoc) ?? have added dnf install grub2-efi-*, and udevadm test /sys to populate /dev/disk/by-id
 chroot_fedora_mirror_ESP_conent_legacy_and_EFI_booting
 unmount_filesystems_and_create_initial_system_snapshot
 ZFS_list_snapshots
 ZFS_export_all_pools
-# We're at the end, last step reboot.
-reboot
+# We're at the end, last step poweroff.
+# This allows Perc controller to reset
+# completely (search 'f/w initializing devices)
+poweroff
+# TODO poweron
