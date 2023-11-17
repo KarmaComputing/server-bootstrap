@@ -390,7 +390,7 @@ chroot_fedora_generate_grub_menu(){
   set -x
   unalias -a
   mkdir -p /boot/grub2
-  grub2-mkconfig -o /boot/grub2/grub.cfg
+  ZPOOL_VDEV_NAME_PATH=1 grub2-mkconfig -o /boot/grub2/grub.cfg
   cp /boot/grub2/grub.cfg \
    /boot/efi/efi/fedora/grub.cfg
   cp /boot/grub2/grub.cfg \
