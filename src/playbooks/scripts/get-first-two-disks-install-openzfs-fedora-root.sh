@@ -1,5 +1,6 @@
 #!/bin/sh
-set -eux -o pipefail
+#set -eux -o pipefail
+set -x
 
 # The two smallest disks are always used as the boot and root pool
 # as a ZFS mirror.
@@ -197,6 +198,7 @@ enable_community_repo(){
 
 
 generate_fstab(){
+        apk add arch-install-scripts
         genfstab -t PARTUUID "${MNT}" \
         | grep -v swap \
         | sed "s|vfat.*rw|vfat rw,x-systemd.idle-timeout=1min,x-systemd.automount,noauto,nofail|" \
@@ -390,7 +392,7 @@ chroot_fedora_generate_grub_menu(){
   set -x
   unalias -a
   mkdir -p /boot/grub2
-  ZPOOL_VDEV_NAME_PATH=1 grub2-mkconfig -o /boot/grub2/grub.cfg
+  grub2-mkconfig -o /boot/grub2/grub.cfg
   cp /boot/grub2/grub.cfg \
    /boot/efi/efi/fedora/grub.cfg
   cp /boot/grub2/grub.cfg \
