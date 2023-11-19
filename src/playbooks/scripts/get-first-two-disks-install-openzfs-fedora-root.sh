@@ -1,14 +1,25 @@
 #!/bin/sh
+#set -eux -o pipefail
 set -x
 
 # The two smallest disks are always used as the boot and root pool
 # as a ZFS mirror.
 # This script automates:
 # - Finding the first two smallest disks (excluding Floppy and virtual disks)
+# - Note the use of chroot- there's no need to explicitly
+#   exit from these since each function wraps the chroot entery/exit
+#   by using bash heredoc syntax.
 # - TODO install ing the root & boot pools onto them
 # - Based on manual steps in OpenZFS docs:
 # https://openzfs.github.io/openzfs-docs/Getting%20Started/Fedora/Root%20on%20ZFS.html#:~:text=page%20for%20examples.-,Declare%20disk%20array,-DISK%3D%27/dev
 
+install_required_packages() {
+        apk add lsblk eudev jq curl arch-install-scripts eudev sgdisk wipefs parted findmnt zfs e2fsprogs cryptsetup util-linux
+}
+
+setup_devd_udev() {
+        setup-devd udev
+}
 
 declare_disk_array() {
         # For each disk found, get it's /dev/disk/by-id address by querying udevadm
@@ -19,7 +30,7 @@ declare_disk_array() {
 
         for DISK_ADDRESS in $DISK_ADDRESSES
         do
-                DISK_UDEV_PATH=/dev/$(udevadm info --query=symlink  --name=/dev/"$DISK_ADDRESS"| cut -d ' ' -f 1)
+                DISK_UDEV_PATH=/dev/$(udevadm info --query=symlink  --name=/dev/"$DISK_ADDRESS"| awk '{for(i=1; i<=NF; i++) if($i ~ /^disk\/by-id\//) {print $i; exit}}')
                 # Append disk to $DISK list
                 DISK="$DISK $DISK_UDEV_PATH"
         done
@@ -75,39 +86,27 @@ ZFS_destroy_rpool(){
 
 
 create_mirrored_boot_pool() {
-zpool create -f -d \
-    -o feature@async_destroy=enabled \
-    -o feature@bookmarks=enabled \
-    -o feature@embedded_data=enabled \
-    -o feature@empty_bpobj=enabled \
-    -o feature@enabled_txg=enabled \
-    -o feature@extensible_dataset=enabled \
-    -o feature@filesystem_limits=enabled \
-    -o feature@hole_birth=enabled \
-    -o feature@large_blocks=enabled \
-    -o feature@lz4_compress=enabled \
-    -o feature@spacemap_histogram=enabled \
-    -o ashift=12 \
-    -o autotrim=on \
-    -O acltype=posixacl \
-    -O canmount=off \
-    -O compression=lz4 \
-    -O devices=off \
-    -O normalization=formD \
-    -O relatime=on \
-    -O xattr=sa \
-    -O mountpoint=/boot \
-    -R "${MNT}" \
-    bpool \
-           mirror \
-    $(for i in ${DISK}; do
-       printf '%s ' "${i}-part2";
-      done)
+  zpool create -o compatibility=legacy  \
+      -o ashift=12 \
+      -o autotrim=on \
+      -O acltype=posixacl \
+      -O canmount=off \
+      -O devices=off \
+      -O normalization=formD \
+      -O relatime=on \
+      -O xattr=sa \
+      -O mountpoint=/boot \
+      -R "${MNT}" \
+      bpool \
+             mirror \
+      $(for i in ${DISK}; do
+         printf '%s ' "${i}-part2";
+        done)
 }
 
 
 create_mirrored_root_pool(){
-zpool create -f \
+zpool create \
     -o ashift=12 \
     -o autotrim=on \
     -R "${MNT}" \
@@ -165,7 +164,6 @@ format_and_mount_ESP(){
 }
 
 download_extract_minimal_Fedora_root_filesystem(){
-        apk add curl
         curl --fail-early --fail -L \
         https://dl.fedoraproject.org/pub/fedora/linux/releases/38/Container/x86_64/images/Fedora-Container-Base-38-1.6.x86_64.tar.xz \
         -o rootfs.tar.gz
@@ -208,9 +206,9 @@ generate_fstab(){
 }
 
 
-chroot_to_fedora(){
-        cp /etc/resolv.conf "${MNT}"/etc/resolv.conf
-        for i in /dev /proc /sys; do mkdir -p "${MNT}"/"${i}"; mount --rbind "${i}" "${MNT}"/"${i}"; done
+create_fedora_chroot(){
+  cp /etc/resolv.conf "${MNT}"/etc/resolv.conf
+  for i in /dev /proc /sys; do mkdir -p "${MNT}"/"${i}"; mount --rbind "${i}" "${MNT}"/"${i}"; done
 }
 
 chroot_install_fedora_base_packages(){
@@ -229,6 +227,8 @@ chroot_install_fedora_ZFS_packages(){
   chroot "${MNT}" /usr/bin/env DISK="${DISK}" bash << 'EOL'
   echo "Running in $SHELL"
   set -x
+  unalias -a
+
   dnf -y install \
   https://zfsonlinux.org/fedora/zfs-release-2-3"$(rpm --eval "%{dist}"||true)".noarch.rpm
 
@@ -239,6 +239,7 @@ EOL
 chroot_fedora_add_ZFS_modules_to_dracut(){
   chroot "${MNT}" /usr/bin/env DISK="${DISK}" bash << 'EOL'
   set -x
+  unalias -a
   echo 'add_dracutmodules+=" zfs "' >> /etc/dracut.conf.d/zfs.conf
   echo 'force_drivers+=" zfs "' >> /etc/dracut.conf.d/zfs.conf
 EOL
@@ -248,6 +249,7 @@ EOL
 chroot_fedora_add_mpt3sas_and_virtio_blk_drivers_to_dracut(){
   chroot "${MNT}" /usr/bin/env DISK="${DISK}" bash << 'EOL'
   set -x
+  unalias -a
   if grep mpt3sas /proc/modules; then
     echo 'force_drivers+=" mpt3sas "'  >> /etc/dracut.conf.d/zfs.conf
   fi
@@ -262,6 +264,7 @@ EOL
 chroot_fedora_build_initrd(){
   chroot "${MNT}" /usr/bin/env DISK="${DISK}" bash << 'EOL'
   set -x
+  unalias -a
   find -D exec /lib/modules -maxdepth 1 \
   -mindepth 1 -type d \
   -exec sh -vxc \
@@ -275,6 +278,7 @@ EOL
 
 chroot_fedora_SELinux_relabel_filesystem_on_reboot(){
   chroot "${MNT}" /usr/bin/env DISK="${DISK}" bash << 'EOL'
+  unalias -a
   set -x
   fixfiles -F onboot
 EOL
@@ -284,6 +288,7 @@ EOL
 chroot_fedora_enable_internet_time_synchronisation(){
   chroot "${MNT}" /usr/bin/env DISK="${DISK}" bash << 'EOL'
   set -x
+  unalias -a
   systemctl enable systemd-timesyncd
 EOL
 }
@@ -292,6 +297,7 @@ EOL
 chroot_fedora_ZFS_generate_host_id(){
   chroot "${MNT}" /usr/bin/env DISK="${DISK}" bash << 'EOL'
   set -x
+  unalias -a
   zgenhostid -f -o /etc/hostid
 EOL
 }
@@ -300,6 +306,7 @@ EOL
 chroot_fedora_install_locale_english(){
   chroot "${MNT}" /usr/bin/env DISK="${DISK}" bash << 'EOL'
   set -x
+  unalias -a
   dnf install -y glibc-minimal-langpack glibc-langpack-en
 EOL
 }
@@ -310,13 +317,15 @@ EOL
 chroot_fedora_set_locale_keymap_timezone_hostname(){
   chroot "${MNT}" /usr/bin/env DISK="${DISK}" bash << 'EOL'
   set -x
+  unalias -a
   rm -f /etc/localtime
+  rm -f /etc/hostname
   systemd-firstboot \
   --force \
   --locale=en_US.UTF-8 \
   --timezone=Etc/UTC \
   --hostname=testhost \
-  --keymap=us
+  --keymap=us || true
 EOL
 }
 
@@ -324,6 +333,7 @@ EOL
 chroot_fedora_set_root_password(){
   chroot "${MNT}" /usr/bin/env DISK="${DISK}" bash << 'EOL'
   set -x
+  unalias -a
   printf 'root:yourpassword' | chpasswd
 EOL
 }
@@ -334,7 +344,9 @@ chroot_fedora_apply_grub_workaround(){
   # as the update will overwrite the changes.
   chroot "${MNT}" /usr/bin/env DISK="${DISK}" bash << 'EOL'
   set -x
+  unalias -a
   echo 'export ZPOOL_VDEV_NAME_PATH=YES' >> /etc/profile.d/zpool_vdev_name_path.sh
+  # shellcheck disable=SC1091
   . /etc/profile.d/zpool_vdev_name_path.sh
 
   # GRUB fails to detect rpool name, hard code as "rpool"
@@ -352,7 +364,9 @@ chroot_fedora_grub_disable_module_boot_loader_specification(){
   # https://openzfs.github.io/openzfs-docs/Getting%20Started/Fedora/Root%20on%20ZFS.html
   chroot "${MNT}" /usr/bin/env DISK="${DISK}" bash << 'EOL'
   set -x
+  unalias -a
   echo 'GRUB_ENABLE_BLSCFG=false' >> /etc/default/grub
+
 EOL
 }
 
@@ -361,6 +375,7 @@ EOL
 chroot_fedora_install_grub(){
   chroot "${MNT}" /usr/bin/env DISK="${DISK}" bash << 'EOL'
   set -x
+  unalias -a
   mkdir -p /boot/efi/fedora/grub-bootdir/i386-pc/
   for i in ${DISK}; do
    grub2-install --target=i386-pc --boot-directory \
@@ -373,8 +388,9 @@ EOL
 
 
 chroot_fedora_generate_grub_menu(){
-  chroot "${MNT}" /usr/bin/env DISK="${DISK}" bash << 'EOL'
+  chroot "${MNT}" /usr/bin/env ZPOOL_VDEV_NAME_PATH=1 DISK="${DISK}" bash << 'EOL'
   set -x
+  unalias -a
   mkdir -p /boot/grub2
   grub2-mkconfig -o /boot/grub2/grub.cfg
   cp /boot/grub2/grub.cfg \
@@ -388,6 +404,7 @@ EOL
 chroot_fedora_mirror_ESP_conent_legacy_and_EFI_booting(){
   chroot "${MNT}" /usr/bin/env DISK="${DISK}" bash << 'EOL'
   set -x
+  unalias -a
   espdir=$(mktemp -d)
   find /boot/efi/ -maxdepth 1 -mindepth 1 -type d -print0 \
   | xargs -t -0I '{}' cp -r '{}' "${espdir}"
@@ -417,6 +434,9 @@ ZFS_export_all_pools(){
   zpool export -a
 }
 
+install_required_packages
+enable_community_repo
+setup_devd_udev
 declare_disk_array
 set_mount_point
 set_swap_size
@@ -431,9 +451,8 @@ create_root_system_container
 create_system_datasets_and_mount_them
 format_and_mount_ESP
 download_extract_minimal_Fedora_root_filesystem
-enable_community_repo
 generate_fstab
-chroot_to_fedora
+create_fedora_chroot
 chroot_install_fedora_base_packages
 chroot_install_fedora_ZFS_packages
 chroot_fedora_add_ZFS_modules_to_dracut
@@ -448,10 +467,13 @@ chroot_fedora_set_root_password
 chroot_fedora_apply_grub_workaround
 chroot_fedora_grub_disable_module_boot_loader_specification
 chroot_fedora_install_grub
-chroot_fedora_generate_grub_menu #TODO fix /usr/sbin/grub2-probe: error: failed to get canonical path of /dev/<drive> (fine outside heredoc)
+chroot_fedora_generate_grub_menu #TODO fix /usr/sbin/grub2-probe: error: failed to get canonical path of /dev/<drive> (fine outside heredoc) ?? have added dnf install grub2-efi-*, and udevadm test /sys to populate /dev/disk/by-id
 chroot_fedora_mirror_ESP_conent_legacy_and_EFI_booting
 unmount_filesystems_and_create_initial_system_snapshot
 ZFS_list_snapshots
 ZFS_export_all_pools
-# We're at the end, last step reboot.
-reboot
+# We're at the end, last step poweroff.
+# This allows Perc controller to reset
+# completely (search 'f/w initializing devices)
+poweroff
+# TODO poweron
