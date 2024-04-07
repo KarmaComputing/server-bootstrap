@@ -1,3 +1,17 @@
+# v0.0.112 (Sun Apr 07 2024)
+
+#### ⚠️ Pushed to `main`
+
+- bump auto from 10.32.1 -> 11.1.6 ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- enable NET_PROTO_IPV6 ipxe ([@chrisjsimpson](https://github.com/chrisjsimpson))
+- fix enable NET_PROTO_IPV6 ipxe ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.111 (Sun Nov 12 2023)
 
 #### ⚠️ Pushed to `main`
