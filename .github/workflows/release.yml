@@ -74,7 +74,7 @@ jobs:
           echo Enable ping command
           echo See https://ipxe.org/buildcfg
           sed -i 's$//#define PING_CMD$#define PING_CMD$g' config/general.h
-          sed -i 's$//#define NET_PROTO_IPV6#define NET_PROTO_IPV6' config/general.h
+          sed -i 's$//#define NET_PROTO_IPV6#define NET_PROTO_IPV6$g' config/general.h
           echo Enable https download
           sed -i 's/undef.*DOWNLOAD_PROTO_HTTPS/define DOWNLOAD_PROTO_HTTPS/g' config/general.h
           echo Build iPXE ISO
