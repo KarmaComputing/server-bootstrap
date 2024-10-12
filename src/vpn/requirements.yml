@@ -1,0 +1,6 @@
+---
+collections:
+  # Install Hetzner collection
+  - name: hetzner.hcloud
+    version: ">=3.1.1"
+    source: https://galaxy.ansible.com

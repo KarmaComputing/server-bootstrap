@@ -13,8 +13,17 @@ _*which you may not have a lot of control or say over the running of._
 # Quickstart
 
 ### To re-deploy VPN server/client from scratch
+```
+python3 -m venv venv
+source ./venv/bin/activate
+pip install -r requirements.txt
+ansible-galaxy collection install --force --collections-path ./ --requirements-file requirements.yml
 
-1. Create Ubuntu server (Ubuntu 20.04 has been tested)
+# Run playbook to create/rebuild fresh vpn server
+ansible-playbook -i inventory.ini --ask-vault-pass playbooks/create-rebuild-vpn-server.yml
+```
+
+1. Run playbook to create Ubuntu server (Ubuntu 20.04 has been tested)
 2. Run [Deploy VPN Client pipeline](https://github.com/KarmaComputing/server-bootstrap/actions/workflows/deploy-vpn.yml) to deploy IPsec and Wireguard tunnel
 
 ### To add a new user to VPN:
