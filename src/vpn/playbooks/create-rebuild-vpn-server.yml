@@ -1,0 +1,15 @@
+---
+- name: 
+  hosts: localhost
+  ignore_unreachable: true
+
+  tasks:
+    - name: Create/Rebuild vpn-server
+      hetzner.hcloud.server:
+        api_token: "{{ hetzner_hcloud_token }}"
+        name: vpn-server
+        location: eu-central
+        server_type: cx11
+        image: ubuntu-20.04
+        state: rebuild
+
