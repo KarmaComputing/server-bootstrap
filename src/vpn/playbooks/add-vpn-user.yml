@@ -1,19 +1,52 @@
----
-- name: Add a new VPN wireguard user & publish to psono via add-vpn-user.sh
-  hosts: "{{ vpn_servers | default('vpn_servers') }}"
-  become: yes
-  vars:
-    wireguard_dir: "/etc/wireguard/"
+name: Add VPN User
 
-  tasks:
+on:
+  workflow_dispatch:
+    inputs:
+      ansible_vault_password:
+        description: 'ansible_vault_password'
+        required: true
 
-    #    - name: Set PSONO_SECRET_ID from local (runner) environment
-    #      ansible.builtin.set_fact: PSONO_SECRET_ID="{{ lookup('PSONO_SECRET_ID')}}"
-    #      delegate_to: localhost
+      PSONO_SECRET_ID:
+        description: 'PSONO_SECRET_ID'
+        required: true
 
-    - name: Run add-vpn-user.sh
-      ansible.builtin.shell: "PSONO_CI_API_KEY_ID={{ PSONO_CI_API_KEY_ID }} PSONO_CI_API_SECRET_KEY_HEX={{ PSONO_CI_API_SECRET_KEY_HEX }} PSONO_CI_SERVER_URL={{ PSONO_CI_SERVER_URL }} PSONO_SECRET_ID={{ lookup('ansible.builtin.env', 'PSONO_SECRET_ID') }} {{ wireguard_dir }}add-vpn-user.sh"
-      args:
-        chdir: "{{ wireguard_dir }}"
-      tags: [ wireguard ]
+jobs:
+  generate-user-vpn-config:
+    runs-on: ubuntu-latest
 
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup ansible
+      run: |
+        pip3 install ansible
+        ansible-galaxy collection install --requirements-file ./src/vpn/requirements.yml
+
+
+    - name: Run ansible
+      run: |
+        cd src/vpn
+        echo Creating ANSIBLE_VAULT_PASSWORD_FILE
+        TMPFILE=$(mktemp)
+        trap "rm -f ${TMPFILE@Q}" EXIT
+        echo -n "${{ inputs.ansible_vault_password }}" > $TMPFILE
+        export ANSIBLE_VAULT_PASSWORD_FILE=$TMPFILE
+
+        echo About to run playbook add-vpn-user.yml
+
+        # Bend over backwards to keep storing secrets in ansible vault rather than a specific CI/CD runner.
+        # note this uses dynamic inventory. Since you can't set/get group_vars from a dynamic inventory,
+        # this is an 'inventive' way using 'localhost' group_vars to the vpn hosts (in this case hetzer VM(s))
+        # api token out of ansible vault. The api token is stord in group_vars/localhost.yml (where in fact)
+        # the api token is used on other host groups.
+        # The dynamic vpn hosts inventory is using the dynamic inventory file inventory-vpn-servers-hcloud.yml
+
+        PSONO_SECRET_ID=${{ inputs.PSONO_SECRET_ID }} ansible-playbook --extra-vars _vault_hetzner_cloud_token=$(ANSIBLE_LOAD_CALLBACK_PLUGINS=1 ANSIBLE_STDOUT_CALLBACK=ansible.posix.json ansible localhost -i inventory.ini -m debug -a "msg={{ hostvars[inventory_hostname].hetzner_hcloud_token }}" | jq '.plays[0]["tasks"][0]["hosts"]["localhost"]["msg"]') -i inventory-vpn-servers-hcloud.yml  playbooks/add-vpn-user.yml
+        rm $TMPFILE
+
+    # Enable tmate debugging of manually-triggered workflows if the input option was provided
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
+      if: ${{ failure() }}
