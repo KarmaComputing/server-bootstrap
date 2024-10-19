@@ -16,12 +16,13 @@ jobs:
     - id: mask-ansible_vault_password
       name: Mask ansible_vault_password
       run: |
-        echo "::add-mask::${{ inputs.ansible_vault_password }}"
-        echo "ansible_vault_password=$the_secret" >> "$GITHUB_OUTPUT"
+        ansible_vault_password=$(jq -r '.inputs.ansible_vault_password' $GITHUB_EVENT_PATH)
+        echo ::add-mask::$ansible_vault_password
+        echo "ansible_vault_password=$ansible_vault_password" >> "$GITHUB_OUTPUT"
 
     - name: Verify ansible_vault_password mask
       run: |
-        echo "the ansible_vault_password is ${{ steps.mask-ansible_vault_password.outputs.ansible_vault_password }}"
+        echo "the ansible_vault_password is ${{ env.ansible_vault_password }}"
 
     - name: Checkout code
       uses: actions/checkout@v4
@@ -37,7 +38,7 @@ jobs:
         echo Creating ANSIBLE_VAULT_PASSWORD_FILE
         TMPFILE=$(mktemp)
         trap "rm -f ${TMPFILE@Q}" EXIT
-        echo -n "${{ inputs.ansible_vault_password }}" > $TMPFILE
+        echo -n "${{ env.ansible_vault_password }}" > $TMPFILE
         export ANSIBLE_VAULT_PASSWORD_FILE=$TMPFILE
         
         echo Run deploy vpn playbook
