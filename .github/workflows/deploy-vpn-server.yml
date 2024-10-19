@@ -28,7 +28,7 @@ jobs:
         export ANSIBLE_VAULT_PASSWORD_FILE=$TMPFILE
         
         echo Run deploy vpn playbook
-        ansible-playbook -i inventory.ini playbooks/create-rebuild-vpn-server.yml
+        ansible-playbook -i inventory.ini -i inventory-vpn-servers-hcloud.yml playbooks/create-rebuild-vpn-server.yml
         rm $TMPFILE
 
     # Enable tmate debugging of manually-triggered workflows if the input option was provided
