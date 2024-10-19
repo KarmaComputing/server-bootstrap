@@ -16,7 +16,7 @@ jobs:
       run: |
         pip3 install ansible
         pip3 install -r src/vpn/requirements.txt
-        ansible-galaxy collection install --requirements-file ./src/vpn/requirements.yml
+        ansible-galaxy collection install --force --collections-path ./src/vpn --requirements-file ./src/vpn/requirements.yml
 
     - name: Run ansible
       run: |
