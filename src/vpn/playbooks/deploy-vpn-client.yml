@@ -1,6 +1,6 @@
 ---
 - name: Install and configure L2TP IPsec vpn client on Ubuntu 22.04
-  hosts: vpn_servers
+  hosts: "{{ vpn_servers | default('vpn_servers') }}"
   become: yes
   vars:
     wireguard_dir: "/etc/wireguard/"
@@ -132,7 +132,6 @@
         mode: '0755'
         owner: root
         group: root
-      delegate_to: localhost
 
     - name: Generate laptop-private.key
       command: wg genkey
@@ -208,7 +207,6 @@
       template:
        src: wg-client.conf.j2
        dest: "{{ wireguard_dir }}wg-client.conf"
-      delegate_to: localhost
       tags: [ wireguard ]
 
     - name: Template save-vpn-credentials-to-password-vault.sh
