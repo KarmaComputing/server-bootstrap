@@ -7,15 +7,6 @@
 
   tasks:
 
-    - name: Template ssh_private_key_server_bootstrap
-      ansible.builtin.template:
-        src: ./templates/ssh/ssh_private_key_server_bootstrap.j2
-        dest: "{{ ansible_ssh_private_key_file }}"
-      delegate_to: 127.0.0.1
-      tags:
-        - 'ssh'
-
-
     - name: Install strongswan and xl2tpd
       apt:
         name: ['strongswan', 'xl2tpd']
