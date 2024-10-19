@@ -1,0 +1,6 @@
+plugin: hetzner.hcloud.hcloud
+api_token: "{{ _vault_hetzner_cloud_token }}"
+groups:
+    # Get only instances named 'vpn-server'
+    vpn_servers: name == 'vpn-server'
+

@@ -1,15 +1,69 @@
 ---
 - name: 
   hosts: localhost
-  ignore_unreachable: true
 
   tasks:
+    - name: Attempt to destroy vpn-server regardless if exists or not
+      hetzner.hcloud.server:
+        api_token: "{{ hetzner_hcloud_token }}"
+        name: vpn-server
+        location: hel1
+        state: absent
+      ignore_errors: true
+
+    - name: Ensure public ssh_key published to Hetzner
+      hetzner.hcloud.ssh_key:
+        api_token: "{{ hetzner_hcloud_token }}"
+        name: server_bootstrap_public_ssh_key
+        public_key: "{{ server_bootstrap_public_ssh_key }}"
+        state: present
+      ignore_errors: true
+
     - name: Create/Rebuild vpn-server
       hetzner.hcloud.server:
         api_token: "{{ hetzner_hcloud_token }}"
         name: vpn-server
-        location: eu-central
-        server_type: cx11
+        location: hel1
+        server_type: cx22
         image: ubuntu-20.04
-        state: rebuild
+        state: present
+        ssh_keys:
+          - server_bootstrap_public_ssh_key
+      register: hcloud_server
 
+    - name: Store vpn_server_ipv4_address and vpn_server_ipv6_address
+      ansible.builtin.set_fact:
+        vpn_server_ipv4_address: "{{ hcloud_server.hcloud_server['ipv4_address'] }}"
+        vpn_server_ipv6_address: "{{ hcloud_server.hcloud_server['ipv6'] }}"
+
+    - name: Attempt to start vpn-server
+      hetzner.hcloud.server:
+        api_token: "{{ hetzner_hcloud_token }}"
+        name: vpn-server
+        state: started
+      ignore_errors: true
+      retries: 3
+      delay: 5
+
+    - name: Display vpn_server_ipv4_address & vpn_server_ipv6_address
+      debug:
+        msg:
+          - "{{ vpn_server_ipv4_address }}"
+          - "{{ vpn_server_ipv6_address }}"
+
+    - name: Replace first changeme with vpn_server_ipv4_address and second changeme with root
+      ansible.builtin.replace:
+        path: ../inventory.ini
+        regexp: '^(changeme)(.*ansible_user=)(changeme)$'
+        replace: '{{ vpn_server_ipv4_address }}\2root'
+
+    - name: Wait for port 22 on vpn_server
+      ansible.builtin.wait_for:
+        host: "{{ vpn_server_ipv4_address }}"
+        port: 22
+        state: started
+
+- name: Include deploy-vpn.yml play
+  ansible.builtin.import_playbook: deploy-vpn-client.yml
+  vars:
+    vpn_servers: "{{ vpn_server_ipv4_address }}"
