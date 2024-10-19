@@ -35,6 +35,7 @@ jobs:
         # the api token is used on other host groups.
         # The dynamic vpn hosts inventory is using the dynamic inventory file inventory-vpn-servers-hcloud.yml
 
+        export ANSIBLE_HOST_KEY_CHECKING=False
         ansible-playbook --extra-vars _vault_hetzner_cloud_token=$(ANSIBLE_LOAD_CALLBACK_PLUGINS=1 ANSIBLE_STDOUT_CALLBACK=ansible.posix.json ansible localhost -i inventory.ini -m debug -a "msg={{ hostvars[inventory_hostname].hetzner_hcloud_token }}" | jq '.plays[0]["tasks"][0]["hosts"]["localhost"]["msg"]') -i inventory.ini -i inventory-vpn-servers-hcloud.yml playbooks/create-rebuild-vpn-server.yml
         rm $TMPFILE
 
