@@ -37,7 +37,7 @@ jobs:
         cd src/vpn
         echo Creating ANSIBLE_VAULT_PASSWORD_FILE
         TMPFILE=$(mktemp)
-        trap "rm -f ${TMPFILE@Q}" EXIT
+        #trap "rm -f ${TMPFILE@Q}" EXIT
         echo -n "${{ env.ansible_vault_password }}" > $TMPFILE
         export ANSIBLE_VAULT_PASSWORD_FILE=$TMPFILE
         
