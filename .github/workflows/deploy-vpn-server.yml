@@ -2,27 +2,12 @@ name: Deploy VPN server(s)
 
 on:
   workflow_dispatch:
-    inputs:
-      ansible_vault_password:
-        description: 'ansible_vault_password'
-        required: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-
-    - id: mask-ansible_vault_password
-      name: Mask ansible_vault_password
-      run: |
-        ansible_vault_password=$(jq -r '.inputs.ansible_vault_password' $GITHUB_EVENT_PATH)
-        echo ::add-mask::$ansible_vault_password
-        echo "ansible_vault_password=$ansible_vault_password" >> "$GITHUB_OUTPUT"
-
-    - name: Verify ansible_vault_password mask
-      run: |
-        echo "the ansible_vault_password is ${{ env.ansible_vault_password }}"
 
     - name: Checkout code
       uses: actions/checkout@v4
@@ -38,7 +23,7 @@ jobs:
         echo Creating ANSIBLE_VAULT_PASSWORD_FILE
         TMPFILE=$(mktemp)
         #trap "rm -f ${TMPFILE@Q}" EXIT
-        echo -n "${{ env.ansible_vault_password }}" > $TMPFILE
+        echo -n "${{ secrets.ANSIBLE_VAULT_PASSWORD }}" > $TMPFILE
         export ANSIBLE_VAULT_PASSWORD_FILE=$TMPFILE
         
         echo Run deploy vpn playbook
