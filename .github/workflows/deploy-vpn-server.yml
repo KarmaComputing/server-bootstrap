@@ -1,0 +1,50 @@
+name: Deploy VPN server(s)
+
+on:
+  workflow_dispatch:
+    inputs:
+      ansible_vault_password:
+        description: 'ansible_vault_password'
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - id: mask-ansible_vault_password
+      name: Mask ansible_vault_password
+      run: |
+        the_secret=${{ inputs.ansible_vault_password }}
+        echo "::add-mask::$the_secret"
+        echo "ansible_vault_password=$the_secret" >> "$GITHUB_OUTPUT"
+
+    - name: Verify ansible_vault_password mask
+      run: |
+        echo "the ansible_vault_password is ${{ steps.mask-ansible_vault_password.outputs.ansible_vault_password }}"
+
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup ansible
+      run: |
+        pip3 install ansible
+
+    - name: Run ansible
+      run: |
+        cd src/vpn
+        echo Creating ANSIBLE_VAULT_PASSWORD_FILE
+        TMPFILE=$(mktemp)
+        trap "rm -f ${TMPFILE@Q}" EXIT
+        echo -n "${{ inputs.ansible_vault_password }}" > $TMPFILE
+        export ANSIBLE_VAULT_PASSWORD_FILE=$TMPFILE
+        
+        echo Run deploy vpn playbook
+        ansible-playbook -i inventory.ini playbooks/create-rebuild-vpn-server.yml
+        rm $TMPFILE
+
+    # Enable tmate debugging of manually-triggered workflows if the input option was provided
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
+      if: ${{ failure() }}
