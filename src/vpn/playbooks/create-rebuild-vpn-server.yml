@@ -51,12 +51,6 @@
           - "{{ vpn_server_ipv4_address }}"
           - "{{ vpn_server_ipv6_address }}"
 
-    - name: Replace first changeme with vpn_server_ipv4_address and second changeme with root
-      ansible.builtin.replace:
-        path: ../inventory.ini
-        regexp: '^(changeme)(.*ansible_user=)(changeme)$'
-        replace: '{{ vpn_server_ipv4_address }}\2root'
-
     - name: Wait for port 22 on vpn_server
       ansible.builtin.wait_for:
         host: "{{ vpn_server_ipv4_address }}"
