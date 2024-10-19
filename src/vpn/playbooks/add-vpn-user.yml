@@ -1,0 +1,19 @@
+---
+- name: Add a new VPN wireguard user & publish to psono via add-vpn-user.sh
+  hosts: "{{ vpn_servers | default('vpn_servers') }}"
+  become: yes
+  vars:
+    wireguard_dir: "/etc/wireguard/"
+
+  tasks:
+
+    #    - name: Set PSONO_SECRET_ID from local (runner) environment
+    #      ansible.builtin.set_fact: PSONO_SECRET_ID="{{ lookup('PSONO_SECRET_ID')}}"
+    #      delegate_to: localhost
+
+    - name: Run add-vpn-user.sh
+      ansible.builtin.shell: "PSONO_CI_API_KEY_ID={{ PSONO_CI_API_KEY_ID }} PSONO_CI_API_SECRET_KEY_HEX={{ PSONO_CI_API_SECRET_KEY_HEX }} PSONO_CI_SERVER_URL={{ PSONO_CI_SERVER_URL }} PSONO_SECRET_ID={{ lookup('ansible.builtin.env', 'PSONO_SECRET_ID') }} {{ wireguard_dir }}add-vpn-user.sh"
+      args:
+        chdir: "{{ wireguard_dir }}"
+      tags: [ wireguard ]
+
