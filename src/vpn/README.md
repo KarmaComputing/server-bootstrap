@@ -20,7 +20,8 @@ pip install -r requirements.txt
 ansible-galaxy collection install --force --collections-path ./ --requirements-file requirements.yml
 
 # Run playbook to create/rebuild fresh vpn server
-ansible-playbook -i inventory.ini --ask-vault-pass playbooks/create-rebuild-vpn-server.yml
+ansible-playbook -i inventory.ini --ask-vault-pass -i inventory-vpn-servers-hcloud.yml playbooks/create-rebuild-vpn-server.yml
+
 ```
 
 1. Run playbook to create Ubuntu server (Ubuntu 20.04 has been tested)
