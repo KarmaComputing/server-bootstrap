@@ -16,8 +16,7 @@ jobs:
     - id: mask-ansible_vault_password
       name: Mask ansible_vault_password
       run: |
-        the_secret=${{ inputs.ansible_vault_password }}
-        echo "::add-mask::$the_secret"
+        echo "::add-mask::${{ inputs.ansible_vault_password }}"
         echo "ansible_vault_password=$the_secret" >> "$GITHUB_OUTPUT"
 
     - name: Verify ansible_vault_password mask
