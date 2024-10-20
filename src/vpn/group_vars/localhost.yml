@@ -10,7 +10,6 @@ hetzner_hcloud_token: !vault |
           38323439613635323738
 server_bootstrap_public_ssh_key: |
           ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINJ1bghgIXT9CQu+stzt+XA+0U8kF7xruvL9Hhiij55A
-ansible_ssh_private_key_file: ~/.ssh/id_ed25519_server_bootstrap
 ssh_private_key_server_bootstrap: !vault |
           $ANSIBLE_VAULT;1.1;AES256
           64343762333662643930643836636532623038616339313964353530616263333563303631656239

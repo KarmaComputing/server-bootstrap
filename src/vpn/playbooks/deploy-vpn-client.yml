@@ -1,6 +1,7 @@
 ---
 - name: Install and configure L2TP IPsec vpn client on Ubuntu 22.04
   hosts: "{{ vpn_servers | default('vpn_servers') }}"
+  gather_facts: false
   become: yes
   vars:
     wireguard_dir: "/etc/wireguard/"
