@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  deploy-vpn-server:
     runs-on: ubuntu-24.04
 
     steps:
