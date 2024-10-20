@@ -4,6 +4,13 @@
 
   tasks:
 
+    - name: Ensure ~/.ssh directory exists on localhost/runner
+      delegate_to: localhost
+      ansible.builtin.file:
+        path: ~/.ssh
+        state: directory
+        mode: '0755'
+
     - name: Template ssh_private_key_server_bootstrap
       ansible.builtin.template:
         src: templates/ssh/ssh_private_key_server_bootstrap.j2
