@@ -2,11 +2,26 @@
 - name: Add VPN user
   hosts: "{{ vpn_servers | default('vpn_servers') }}"
   gather_facts: false
-  become: yes
   vars:
     wireguard_dir: "/etc/wireguard/"
 
   tasks:
+
+    - name: Ensure ~/.ssh directory exists on localhost/runner
+      delegate_to: localhost
+      ansible.builtin.file:
+        path: ~/.ssh
+        state: directory
+        mode: '0755'
+
+    - name: Template ssh_private_key_server_bootstrap
+      ansible.builtin.template:
+        src: templates/ssh/ssh_private_key_server_bootstrap.j2
+        dest: "{{ ansible_ssh_private_key_file }}"
+        mode: '0600'
+      delegate_to: localhost
+      tags:
+        - 'ssh'
 
     - name: Generate new vpn peer config & Add save client config to password manager
       ansible.builtin.shell: |
@@ -14,3 +29,4 @@
         exit 0
       args:
         chdir: "{{ wireguard_dir }}"
+      become: yes
