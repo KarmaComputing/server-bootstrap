@@ -7,26 +7,8 @@
 
   tasks:
 
-    - name: Ensure ~/.ssh directory exists on localhost/runner
-      delegate_to: localhost
-      ansible.builtin.file:
-        path: ~/.ssh
-        state: directory
-        mode: '0755'
-
-    - name: Template ssh_private_key_server_bootstrap
-      ansible.builtin.template:
-        src: templates/ssh/ssh_private_key_server_bootstrap.j2
-        dest: "{{ ansible_ssh_private_key_file }}"
-        mode: '0600'
-      delegate_to: localhost
-      tags:
-        - 'ssh'
-
-    - name: Generate new vpn peer config & Add save client config to password manager
-      ansible.builtin.shell: |
-        PSONO_CI_API_KEY_ID={{ PSONO_CI_API_KEY_ID }} PSONO_CI_API_SECRET_KEY_HEX={{ PSONO_CI_API_SECRET_KEY_HEX }} PSONO_CI_SERVER_URL={{ PSONO_CI_SERVER_URL }} PSONO_SECRET_ID={{ PSONO_SECRET_ID }} ./add-vpn-user.sh
-        exit 0
-      args:
-        chdir: "{{ wireguard_dir }}"
-      become: yes
+    - name: Include task list in play only if the condition is true
+      ansible.builtin.include_tasks: ./tasks/tasks_add_vpn_user.yaml
+      loop: "{{ WIREGUARD_VPN_PSONO_SECRET_IDS }}"
+      loop_control:
+        loop_var: PSONO_SECRET_ID
