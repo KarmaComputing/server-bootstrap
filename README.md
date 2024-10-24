@@ -5,6 +5,8 @@ Purpose: Provision a blank server using automatin and minimal hands-on inteventi
 - [Deploy VPN](https://github.com/KarmaComputing/server-bootstrap/tree/main/vpn-client#readme)
 - [Add VPN user](https://github.com/KarmaComputing/server-bootstrap/tree/main/vpn-client#to-add-a-new-user-to-vpn)
 
+[![Deploy VPN server(s)](https://github.com/KarmaComputing/server-bootstrap/actions/workflows/deploy-vpn-server.yml/badge.svg)](https://github.com/KarmaComputing/server-bootstrap/actions/workflows/deploy-vpn-server.yml)
+
 # How does this work?
 
 ```mermaid
