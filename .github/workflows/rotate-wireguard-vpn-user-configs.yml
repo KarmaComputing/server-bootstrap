@@ -2,6 +2,8 @@ name: Rotate Wireguard VPN User Configs
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '30 */2 * * *'
 
 jobs:
   rotate-wireguard-vpn-user-configs:
