@@ -27,7 +27,7 @@ jobs:
         echo -n "${{ secrets.ANSIBLE_VAULT_PASSWORD }}" > $TMPFILE
         export ANSIBLE_VAULT_PASSWORD_FILE=$TMPFILE
 
-        echo About to run playbook add-vpn-user.yml
+        echo About to run playbook add-vpn-user.yml and load all PSONO secret IDs via group_vars/all WIREGUARD_VPN_PSONO_SECRET_IDS
 
         # Bend over backwards to keep storing secrets in ansible vault rather than a specific CI/CD runner.
         # note this uses dynamic inventory. Since you can't set/get group_vars from a dynamic inventory,
@@ -37,7 +37,7 @@ jobs:
         # The dynamic vpn hosts inventory is using the dynamic inventory file inventory-vpn-servers-hcloud.yml
 
         export ANSIBLE_HOST_KEY_CHECKING=False
-        ansible-playbook --extra-vars "PSONO_SECRET_ID=${{ inputs.PSONO_SECRET_ID }} _vault_hetzner_cloud_token=$(ANSIBLE_LOAD_CALLBACK_PLUGINS=1 ANSIBLE_STDOUT_CALLBACK=ansible.posix.json ansible localhost -i inventory.ini -m debug -a "msg={{ hostvars[inventory_hostname].hetzner_hcloud_token }}" | jq '.plays[0]["tasks"][0]["hosts"]["localhost"]["msg"]')" -i inventory-vpn-servers-hcloud.yml  playbooks/add-vpn-user.yml
+        ansible-playbook --extra-vars "_vault_hetzner_cloud_token=$(ANSIBLE_LOAD_CALLBACK_PLUGINS=1 ANSIBLE_STDOUT_CALLBACK=ansible.posix.json ansible localhost -i inventory.ini -m debug -a "msg={{ hostvars[inventory_hostname].hetzner_hcloud_token }}" | jq '.plays[0]["tasks"][0]["hosts"]["localhost"]["msg"]')" -i inventory-vpn-servers-hcloud.yml  playbooks/add-vpn-user.yml
         rm $TMPFILE
 
     # Enable tmate debugging of manually-triggered workflows if the input option was provided
