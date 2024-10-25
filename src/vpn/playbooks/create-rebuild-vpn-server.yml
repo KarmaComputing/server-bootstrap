@@ -78,3 +78,8 @@
   ansible.builtin.import_playbook: deploy-vpn-client.yml
   vars:
     vpn_servers: "{{ vpn_server_ipv4_address }}"
+
+- name: Include add-vpn-user play to ensure all WIREGUARD_VPN_PSONO_SECRET_IDS are rotated
+  ansible.builtin.import_playbook: add-vpn-user.yml
+  vars:
+    vpn_servers: "{{ vpn_server_ipv4_address }}"
