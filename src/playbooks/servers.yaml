@@ -18,8 +18,28 @@
     raw: test -e /usr/bin/python3 || apk add python3
     changed_when: false
 
+  # template minimal (loopback*) /etc/network/interfaces 
+  # during bootstrap (interfaces are already configured with global IPs at this point,
+  # this is to satisfy `setup-ntp busybox` which can't operate on an
+  # empty /etc/network/interfaces file.
+  # *only loopback is needed because iPXE has configured interfaces already,
+  # there's no need to persist that to disk since we're booted into a minumal
+  # alpine image at this point (netboot) which will be blown away after
+  # Fedora/persistant operating system is installed
+  - name: Template /etc/network/interfaces
+    ansible.builtin.template:
+      src: etc/network/interfaces
+      dest: /etc/network/interfaces
+      owner: root
+      group: root
+      mode: '0644'
+    tags:
+    - network
+
   - name: Configure NTP client for time synchronization
     command: setup-ntp busybox
+    tags:
+    - network
 
   - name: Set up apk-repo
     command: setup-apkrepos -f
