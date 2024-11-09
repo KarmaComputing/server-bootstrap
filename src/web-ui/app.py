@@ -4,9 +4,9 @@ from flask import jsonify, render_template, request, session
 from apiflask import APIFlask
 import requests
 from requests.auth import HTTPBasicAuth
-from types import SimpleNamespace
 import json
 from time import sleep
+import platform
 
 app = APIFlask(__name__)
 app.config.update(TESTING=True, SECRET_KEY=os.getenv("SECRET_KEY"))
@@ -24,6 +24,8 @@ IDRAC_SCRIPTS_BASE_PATH = os.getenv(
     "IDRAC_SCRIPTS_BASE_PATH", "./iDRAC-Redfish-Scripting/Redfish Python/"
 )
 
+HOST_HEALTHCHECK_POLL_IP = os.getenv("HOST_HEALTHCHECK_POLL_IP")
+
 session_requests = requests.Session()
 session_requests.verify = False
 
@@ -37,9 +39,9 @@ def api_response(req):
 
 def api_call(path=None, method=None, payload=None, raw_payload=False):
     assert method is not None
-    url = f"https://{session.get('IDRAC_HOST')}/redfish/v1/{path}"
+    url = f"https://{os.getenv('IDRAC_HOST')}/redfish/v1/{path}"
     authHeaders = HTTPBasicAuth(
-        session.get("IDRAC_USERNAME"), session.get("IDRAC_PASSWORD")
+        os.getenv("IDRAC_USERNAME"), os.getenv("IDRAC_PASSWORD")
     )  # noqa: E501
 
     # Making the request
@@ -116,6 +118,73 @@ def wipefs():
     return {"message": "Server has been wiped"}
 
 
+def PollPingHostOSOnline(
+    ip=HOST_HEALTHCHECK_POLL_IP, interval=1, max_attempts=35
+):  # noqa: E501
+    """ "
+    Keep polling max_attempts until host os responds
+    """
+
+    def ping(ip):
+        """
+        Ping the IP address to check for a response.
+        Returns True if the IP is reachable, False otherwise.
+        """
+        # Determine the ping command based on the operating system
+        ping_command = (
+            "ping -c 1 " + ip
+            if platform.system().lower() != "windows"
+            else "ping -n 1 " + ip
+        )
+
+        # Execute the ping command and check the response
+        response = os.system(ping_command)
+
+        return response == 0  # Return True if ping was successful
+
+    print(f"Polling IP address {ip}...")
+
+    attempt = 0
+    while attempt < max_attempts:
+        if ping(ip):
+            print(f"IP address {ip} is now reachable.")
+            return True
+
+        attempt += 1
+        print(
+            f"Attempt {attempt}/{max_attempts}: "
+            "No response from {ip}. "
+            "Retrying in {interval} seconds..."
+        )
+        sleep(interval)
+
+    print(
+        f"Reached maximum attempts ({max_attempts}). "
+        "IP address {ip} is not reachable."
+    )
+    return False
+
+
+def justKeepRedeploying(max_repeated_deploys=-1, delayBetweenRedeploy=10):
+    print("Starting justKeepRedeploying")
+
+    execute_redfish_command("Bootstrap")
+    deploy_count = 0
+
+    while deploy_count < max_repeated_deploys or max_repeated_deploys == -1:
+        print(f"Deployment #{deploy_count + 1}")
+        print(f"Sleeping for {delayBetweenRedeploy} seconds")
+        sleep(delayBetweenRedeploy)
+
+        execute_redfish_command("Bootstrap")
+
+        deploy_count += 1
+        if max_repeated_deploys != -1 and deploy_count >= max_repeated_deploys:
+            break
+
+    print("Deployment loop finished")
+
+
 def execute_redfish_command(action):
     if action == "Bootstrap":
         VerifyiDRACAccess()
@@ -123,7 +192,7 @@ def execute_redfish_command(action):
         sleepSecconds = 15
         print(f"Sleeping for {sleepSecconds}")
         sleep(sleepSecconds)
-        iDRACSetVirtualTerminalHTML5()
+        # iDRACSetVirtualTerminalHTML5()
         UnmountISO()
         MountISO()
         SetBootFromVirtualMedia()
@@ -131,7 +200,11 @@ def execute_redfish_command(action):
         sleepSecconds = 10
         print(f"Sleeping for {sleepSecconds}")
         sleep(sleepSecconds)
-        return PowerOn()
+        PowerOn()
+        # Setup host disks
+        # Run install
+        # HealthCheckBootedHost
+        return PollPingHostOSOnline()
 
     if action == "ForceRestart":
         payload = {"ResetType": "ForceRestart"}
@@ -169,10 +242,14 @@ def bootstrap():
     return execute_redfish_command("Bootstrap")
 
 
-@app.route("/api/v1/VerifyiDRACAccess", methods=["POST"])
 def VerifyiDRACAccess():
     req = api_call(path="Systems/", method="GET")
+    return req
 
+
+@app.route("/api/v1/VerifyiDRACAccess", methods=["POST"])
+def route_VerifyiDRACAccess():
+    req = VerifyiDRACAccess()
     return api_response(req)
 
 
@@ -181,7 +258,6 @@ def ResetiDRAC():
     return api_response("Not implemented")
 
 
-@app.route("/api/v1/iDRACSetVirtualTerminalHTML5", methods=["POST"])
 def iDRACSetVirtualTerminalHTML5():
     command = (
         f"IDRAC_HOST=http://{IDRAC_HOST} IDRAC_USERNAME={IDRAC_USERNAME} "
@@ -206,23 +282,56 @@ def iDRACSetVirtualTerminalHTML5():
     )
 
 
-@app.route("/api/v1/PowerOn", methods=["POST"])
+@app.route("/api/v1/iDRACSetVirtualTerminalHTML5", methods=["POST"])
+def route_iDRACSetVirtualTerminalHTML5():
+    resp = iDRACSetVirtualTerminalHTML5()
+    return resp
+
+
 def PowerOn():
     print("PowerOn")
+    print("Ensuring PowerState is 'Off' before attempting power On")
+    req = GetPowerState()
+    power_state = req.json()["PowerState"]
+    if power_state != "Off":
+        print(f"PowerState is currently {power_state}")
+        Exception(
+            "PowerState is not 'Off' "
+            f"(it's {power_state}). Refusing to Power on"  # noqa: E501
+        )
     data = {"ResetType": "On"}
     req = api_call(
         path="Systems/System.Embedded.1/Actions/ComputerSystem.Reset",
         method="POST",  # noqa: E501
         payload=data,
     )
+    return req
 
+
+@app.route("/api/v1/PowerOn", methods=["POST"])
+def route_PowerOn():
+    req = PowerOn()
     return api_response(req)
 
 
-@app.route("/api/v1/ForceOff", methods=["POST"])
-@app.route("/api/v1/PowerOff", methods=["POST"])
+def PowerOff():
+    print("Power OFF (GracefulShutdown)")
+    data = {"ResetType": "GracefulShutdown"}
+    req = api_call(
+        path="Systems/System.Embedded.1/Actions/ComputerSystem.Reset",
+        method="POST",  # noqa: E501
+        payload=data,
+    )
+    return req
+
+
 def ForceOff():
     print("ForceOff")
+    req = GetPowerState()
+    power_state = req.json()["PowerState"]
+    if power_state != "On":
+        print(f"PowerState is currently {power_state}")
+        Exception(f"PowerState is {power_state}. Refusing to Power off")
     data = {"ResetType": "ForceOff"}
 
     req = api_call(
@@ -230,7 +339,13 @@ def ForceOff():
         method="POST",  # noqa: E501
         payload=data,
     )
+    return req
 
+
+@app.route("/api/v1/ForceOff", methods=["POST"])
+@app.route("/api/v1/PowerOff", methods=["POST"])
+def route_ForceOff():
+    req = ForceOff()
     return api_response(req)
 
 
@@ -244,21 +359,19 @@ def set_power_graceful_shutdown():
     return execute_redfish_command("GracefulShutdown")
 
 
-@app.route("/api/v1/GetPowerState", methods=["POST"])
 def GetPowerState():
     print("GetPowerState")
     req = api_call(path="Systems/System.Embedded.1", method="GET")
 
     if req.status_code == 200:
         power_state = req.json().get("PowerState")
+        print(f"PowerState is {power_state}")
+    return req
 
-        response_text = {
-            "PowerState": power_state,
-            "msg": f"Current server power state: {power_state}",
-        }
-        req = SimpleNamespace()
-        req.status_code = 200
-        req.text = response_text
+
+@app.route("/api/v1/GetPowerState", methods=["POST"])
+def route_GetPowerState():
+    req = GetPowerState()
     return api_response(req)
 
 
@@ -267,7 +380,6 @@ def get_bios_boot_order():
     return execute_redfish_command("ChangeBiosBootOrderREDFISH")
 
 
-@app.route("/api/v1/MountISO", methods=["POST"])
 def MountISO():
     print("MountISO")
     data = {"Image": "http://138.201.59.208/sites/default/files/ipxe.iso"}
@@ -288,14 +400,21 @@ def MountISO():
             ):  # noqa: E501
                 print("The Virtual Media image server is already connected.")
             else:
-                breakpoint()
+                print(f"req.status_code: {req.status_code}")
+                pass
         except Exception as e:
             print(e)
+    elif req.status_code == 204:
+        print("http 204 No Content successful - (ISO mounted)")
+    return req
 
+
+@app.route("/api/v1/MountISO", methods=["POST"])
+def route_MountISO():
+    req = MountISO()
     return api_response(req)
 
 
-@app.route("/api/v1/UnmountISO", methods=["POST"])
 def UnmountISO():
     print(UnmountISO)
     req = api_call(
@@ -303,11 +422,15 @@ def UnmountISO():
         method="POST",
         payload={},
     )
+    return req
 
+
+@app.route("/api/v1/UnmountISO", methods=["POST"])
+def route_UnmountISO():
+    req = UnmountISO()
     return api_response(req)
 
 
-@app.route("/api/v1/SetBootFromVirtualMedia", methods=["POST"])
 def SetBootFromVirtualMedia():
     payload = {
         "ShareParameters": {"Target": "ALL"},
@@ -320,7 +443,14 @@ def SetBootFromVirtualMedia():
         payload=json.dumps(payload),
         raw_payload=True,
     )
+    if req.status_code == 202:
+        print("HTTP 202 Accepted - Boot device set/setting to VirtualMedia")
+    return req
 
+
+@app.route("/api/v1/SetBootFromVirtualMedia", methods=["POST"])
+def route_SetBootFromVirtualMedia():
+    req = SetBootFromVirtualMedia()
     return api_response(req)
 
 
