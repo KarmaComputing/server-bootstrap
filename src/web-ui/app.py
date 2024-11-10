@@ -13,6 +13,8 @@ app.config.update(TESTING=True, SECRET_KEY=os.getenv("SECRET_KEY"))
 IDRAC_HOST = None  # noqa: F841
 IDRAC_USERNAME = None  # noqa: F841
 IDRAC_PASSWORD = None  # noqa: F841
+HOST_HEALTHCHECK_POLL_IP = None
+DEFAULT_HTTP_REQ_TIMEOUT = os.getenv("DEFAULT_HTTP_REQ_TIMEOUT", 20)
 
 playwright_working_dir = os.getenv(
     "PLAYWRIGHT_WORKING_DIR", "../playwright-boostrap/"
@@ -187,6 +189,7 @@ def api_call(path=None, method=None, payload=None, raw_payload=False):
             url,
             auth=authHeaders,
             verify=False,
+            timeout=DEFAULT_HTTP_REQ_TIMEOUT,  # noqa: E501
         )
     elif method == "POST":
         if raw_payload:
@@ -196,6 +199,7 @@ def api_call(path=None, method=None, payload=None, raw_payload=False):
                 verify=False,
                 data=payload,
                 headers={"Content-Type": "application/json"},
+                timeout=DEFAULT_HTTP_REQ_TIMEOUT,
             )
         else:
             req = requests.post(
