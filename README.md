@@ -6,6 +6,7 @@ Purpose: Provision a blank server using automatin and minimal hands-on inteventi
 - [Add VPN user](https://github.com/KarmaComputing/server-bootstrap/tree/main/vpn-client#to-add-a-new-user-to-vpn)
 
 [![Deploy VPN server(s)](https://github.com/KarmaComputing/server-bootstrap/actions/workflows/deploy-vpn-server.yml/badge.svg)](https://github.com/KarmaComputing/server-bootstrap/actions/workflows/deploy-vpn-server.yml)
+[![Build Alpine ZFS Netboot Image](https://github.com/KarmaComputing/server-bootstrap/actions/workflows/build-alpine-netboot-image-zfs.yml/badge.svg)](https://github.com/KarmaComputing/server-bootstrap/actions/workflows/build-alpine-netboot-image-zfs.yml)
 
 # How does this work?
 
