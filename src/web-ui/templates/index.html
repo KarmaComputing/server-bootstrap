@@ -99,20 +99,31 @@
           }
         }
 
+        // Define GetPowerState
+        function GetPowerState() {
+          console.log("Checking GetPowerState");
+          const timeNow = new Date().getTime();
+          fetch('{{ url_for('route_GetPowerState') }}', {method: 'POST'})
+              .then(response => response.json())
+          .then(api => {
+            console.log("Got GetPowerState response");
+            const timeSince = timeAgo(timeNow);
+            console.log(api);
+            let PowerState = api.resp['PowerState'];
+            document.querySelector("#SystemUUIDOutput").textContent = api.resp['UUID'];
+            GetPowerStateOutput.textContent= `${PowerState} (${timeSince})`;
+          });
+        }
+
+        // GetPowerState as soon as DOMContentLoaded
+        document.addEventListener("DOMContentLoaded", (event) => {
+          console.log("DOM fully loaded and parsed");
+          GetPowerState();
+        });
+
+
         // GetPowerState every x interval
-         window.setInterval( function() {
-          console.log("Logging..");
-             console.log("Checking GetPowerState");
-             const timeNow = new Date().getTime();
-             fetch('/api/v1/GetPowerState', {method: 'POST'})
-                 .then(response => response.json())
-             .then(api => {
-               console.log("Got GetPowerState response");
-               const timeSince = timeAgo(timeNow);
-               console.log(api);
-               GetPowerStateOutput.textContent= `${api['resp']['PowerState']} (${timeSince})`;
-             });
-         }, 15000)
+         window.setInterval( GetPowerState, 15000);
 
          function displayError(error) {
              const errorDiv = document.getElementById('error');
@@ -132,7 +143,17 @@
           }
              button.classList.add('disabled');
              button.classList.add('loading');
-             fetch(`/api/v1/${button.textContent}`, {method: 'POST'})
+             let postData = '';
+             if (button.textContent == "RawRequest") {
+               postData = document.querySelector("#RawRequestURL").value;
+             }
+             fetch(`/api/v1/${button.textContent}`, {
+               method: 'POST',
+                   headers: {
+                  'Content-Type': 'application/json'
+               },
+               body: JSON.stringify({data: postData})
+             })
                  .then(response => response.json())
                  .then(api => {
               console.log("reply");
@@ -146,13 +167,17 @@
                          document.getElementById("output").appendChild(errorContainer);
                      } else {
                 let output = document.getElementById('output')
-                output.innerHTML = api.resp.split('\n').map(line => `<div>${line}</div>`).join('');
-                         console.log(api);
-                     }
+                if (typeof(api) == 'object') {
+                  output.innerHTML = "<pre>" + JSON.stringify(api.resp, null, 2) + "</pre>";
+                } else {
+                  output.innerHTML = api.resp.split('\n').map(line => `<div>${line}</div>`).join('');
+                }
+                 console.log(api);
+                }
                  })
                  .catch(error => console.error(error))
                  .finally(() => {
-                 const buttons = document.getElementsByClassName('button');
+                 const buttons = document.querySelectorAll('.button, .rawRequestBtn');
                        for (let i = 0; i < buttons.length; i++) {
                          buttons[i].removeAttribute('disabled');
                   buttons[i].classList.remove('disabled');
@@ -168,7 +193,10 @@
       <h2>Control the server via the browser</h2>
       <h3>Last known Server State</h3>
       <ul>
-        <li>PowerState: <span id="GetPowerStateOutput">unknown</span></li>
+        <li>Server UUID: <span id="SystemUUIDOutput"></span></li>
+        <li>Server PowerState: <span id="GetPowerStateOutput">unknown</span></li>
+        <li>Server Operating System Boot State (<a href="https://github.com/dell/iDRAC-Redfish-Scripting/issues/274" target="_blank">?</a>): 
+          <span id="GetSystemBootProgressLastStateOutput">unknown</span></li>
       </ul>
       <h3>Loaded IDRAC settings:</h3>
       <ul>
@@ -176,6 +204,9 @@
         <li>IDRAC_USERNAME: {{ session.get("IDRAC_USERNAME") }}</li>
         <li>IDRAC_PASSWORD: {{ session.get("IDRAC_PASSWORD") }}</li>
       </ul>
+      <h3>Make a raw request</h3>
+      <label for="RawRequestURL">Url: </label><input type="url" id="RawRequestURL" name="raw-request" placeholder="/redfish/v1/Managers" /></input>
+      <button onclick="handleClick(event)" class="display: inlinei rawRequestBtn">RawRequest</button>
       <h2>Api responses</h2>
       <div id="output"><hr />...<hr /></div>
       <div class="button" onclick="handleClick(event)">Bootstrap</div>
@@ -186,6 +217,7 @@
       <div class="button" onclick="handleClick(event)">ForceRestart</div>
       <div class="button" onclick="handleClick(event)">MountISO</div>
       <div class="button" onclick="handleClick(event)">UnmountISO</div>
+      <div class="button" onclick="handleClick(event)">EnableHostWatchdogTimer</div>
       <div class="button" onclick="handleClick(event)">SetBootFromVirtualMedia</div>
       <div class="button" onclick="handleClick(event)">GetPowerState</div>
       <div class="button" onclick="handleClick(event)">PowerOn</div>
