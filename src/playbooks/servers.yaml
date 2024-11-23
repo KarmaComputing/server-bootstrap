@@ -41,8 +41,15 @@
     tags:
     - network
 
-  - name: Set up apk-repo
-    command: setup-apkrepos -f
+  - name: Template /etc/apk/repositories
+    ansible.builtin.template:
+      src: etc/apk/repositories
+      dest: /etc/apk/repositories
+      owner: root
+      group: root
+      mode: '0644'
+    tags:
+    - repositories
 
   # - name: Template ~/.vimrc
   #   ansible.builtin.template:
@@ -105,4 +112,6 @@
     - scripts
 
   - name: Disable swap during play
-    command: swapoff --all
+    command: swapoff -a
+    tags:
+    - swapoff
