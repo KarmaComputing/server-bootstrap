@@ -5,7 +5,7 @@
 #   (note the 'alpine extended iso' includes the zfs module
 #    but that is not a netboot image)
 # - ping delay wait until network links are up and can
-#   reach gateway
+#   reach gateway for download of additional packages
 #
 
 set -x
