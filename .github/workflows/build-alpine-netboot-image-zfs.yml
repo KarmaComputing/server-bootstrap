@@ -4,12 +4,19 @@ on:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      branch:
+        description: "Optional branch name to checkout"
+        required: false
+        default: "main"
 
 jobs:
   build-alpine-zfs-netboot-image:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch || 'main' }}
 
       - name: Build alpine image
         run: |
