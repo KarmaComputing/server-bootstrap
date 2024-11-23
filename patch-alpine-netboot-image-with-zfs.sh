@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Purpose: Patch alpine netboot image with
 # - include zfs kernel module by default
@@ -10,13 +10,23 @@
 
 set -x
 
+
 # Force a wait for interfaces to come up
 # on slow switches
 
 WORK_DIR=$PWD
+NETBOOT_OUTPUT_FILENAME=alpine-zfsnetboot-patched-init.tar.gz
 pwd
 ls -lh
 cd iso
+echo Removing previously extracted ./boot if exists
+rm -rf ./boot
+echo "Removing previous $NETBOOT_OUTPUT_FILENAME if exists"
+rm -rf $NETBOOT_OUTPUT_FILENAME
+# Clean up previous runs
+find . -maxdepth 1 -type f -name "*.tar.gz" -mtime +0 # Remove older than today
+
+
 tar -xvf alpine-zfsnetboot-*.tar.gz
 cd ./boot
 
@@ -36,6 +46,10 @@ mv initramfs-lts ../
 cd ../
 rm -rf patch
 
-# Re-tar the netbook image for sending to boot server
-tar -cvf alpine-zfsnetboot.tar.gz ./
+echo Re-taring the netbook image for sending to boot server
+echo -n patched-init makes reference to the fact init will poll ping to verify network
+echo is up before attempting to pull down additional packages over network
+
+tar -cvf $NETBOOT_OUTPUT_FILENAME ./
+mv $NETBOOT_OUTPUT_FILENAME ../
 cd $WORK_DIR

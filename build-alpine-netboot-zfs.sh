@@ -4,15 +4,16 @@
 # Build netboot image with zfs kernel module included
 
 # USAGE:
-
-# podman run  -it --rm -v $(pwd)/scratch:/root/workdir alpine sh /root/workdir/build-alpine-netboot-zfs.sh
+# podman run  -it --rm -v $(pwd):/root/workdir alpine sh /root/workdir/build-alpine-netboot-zfs.sh
 
 
 set -x
 
 apk add alpine-sdk build-base apk-tools busybox fakeroot syslinux xorriso squashfs-tools sudo git grub grub-efi
 
-# Note we build alpine-conf from source due to issue https://github.com/KarmaComputing/server-bootstrap/issues/20
+# Note we now build alpine-conf from source (rather than doing apk add alpine-conf)
+# due to issue https://github.com/KarmaComputing/server-bootstrap/issues/20
+
 # Clone and build latest alpine-conf
 git clone https://gitlab.alpinelinux.org/alpine/alpine-conf.git
 cd alpine-conf
