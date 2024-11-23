@@ -7,7 +7,7 @@ from requests.auth import HTTPBasicAuth
 import json
 from time import sleep
 import platform
-from settings import load_settings
+from settings import settings
 from tenacity import retry, wait_exponential, before_log, stop_after_attempt
 import logging
 import sys
@@ -21,14 +21,13 @@ log = logging.getLogger(__name__)
 
 app = APIFlask(__name__)
 app.config.update(TESTING=True, SECRET_KEY=os.getenv("SECRET_KEY"))
-settings = load_settings()
 IDRAC_HOST = None  # noqa: F841
 IDRAC_USERNAME = None  # noqa: F841
 IDRAC_PASSWORD = None  # noqa: F841
 HOST_HEALTHCHECK_POLL_IP = None
-DEFAULT_HTTP_REQ_TIMEOUT = os.getenv("DEFAULT_HTTP_REQ_TIMEOUT", 60)
-IDRAC_HTTP_REQ_TIMEOUT = os.getenv("IDRAC_HTTP_REQ_TIMEOUT", 15)
-IDRAC_SLEEP_AFTER_RESET_REQUEST_REQ = os.getenv(
+DEFAULT_HTTP_REQ_TIMEOUT = settings.get("DEFAULT_HTTP_REQ_TIMEOUT", 20)
+IDRAC_HTTP_REQ_TIMEOUT = settings.get("IDRAC_HTTP_REQ_TIMEOUT", 15)
+IDRAC_SLEEP_AFTER_RESET_REQUEST_REQ = settings.get(
     "IDRAC_SLEEP_AFTER_RESET_REQUEST_REQ", 3
 )
 
@@ -90,18 +89,18 @@ def ConnectToVPN():
     # Fetch credentials using the psonoci tool
     PSONO_CI_VPN_SECRET_NOTE_ID = settings.get(
         "PSONO_CI_VPN_SECRET_NOTE_ID"
-    ).value  # noqa: E501
+    )  # noqa: E501
 
     try:
         os.environ["PSONO_CI_API_KEY_ID"] = settings.get(
             "PSONO_CI_API_KEY_ID"
-        ).value  # noqa: E501
+        )  # noqa: E501
         os.environ["PSONO_CI_API_SECRET_KEY_HEX"] = settings.get(
             "PSONO_CI_API_SECRET_KEY_HEX"
-        ).value
+        )
         os.environ["PSONO_CI_SERVER_URL"] = settings.get(
             "PSONO_CI_SERVER_URL"
-        ).value  # noqa: E501
+        )  # noqa: E501
         result = subprocess.run(
             [
                 "./psonoci",
