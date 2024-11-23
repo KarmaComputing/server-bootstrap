@@ -15,7 +15,7 @@ set -x
 # on slow switches
 
 WORK_DIR=$PWD
-NETBOOT_OUTPUT_FILENAME=alpine-zfsnetboot-patched-init.tar.gz
+NETBOOT_OUTPUT_FILENAME=alpine-zfsnetboot.tar.gz
 pwd
 ls -lh
 cd iso

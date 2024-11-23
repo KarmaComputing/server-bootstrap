@@ -36,4 +36,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: alpine-zfs-netboot-image
-          path: iso/alpine-zfsnetboot-patched-init.tar.gz
+          path: iso/alpine-zfsnetboot.tar.gz
