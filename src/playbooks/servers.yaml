@@ -16,6 +16,33 @@
       repo: deb http://deb.debian.org/debian bullseye-backports main contrib
       state: present
 
+  # - name: Template ~/.vimrc
+  #   ansible.builtin.template:
+  #     src: ./.vimrc
+  #     dest: /root/.vimrc
+  #     owner: root
+  #     group: root
+  #     mode: '0644'
+  #   tags:
+  #   - dotfiles
+
+  # template minimal (loopback*) /etc/network/interfaces 
+  # during bootstrap (interfaces are already configured with global IPs at this point,
+  # this is to satisfy `setup-ntp busybox` which can't operate on an
+  # empty /etc/network/interfaces file.
+  # *only loopback is needed because iPXE has configured interfaces already,
+  # there's no need to persist that to disk since we're booted into a minumal
+  # alpine image at this point (netboot) which will be blown away after
+  # Fedora/persistant operating system is installed
+  - name: Template /etc/network/interfaces
+    ansible.builtin.template:
+      src: etc/network/interfaces
+      dest: /etc/network/interfaces
+      owner: root
+      group: root
+      mode: '0644'
+    tags:
+    - network
 
   - name: Install openssh-server
     ansible.builtin.apt:
@@ -30,10 +57,37 @@
       - dpkg-dev
       - linux-headers-amd64
 
-  - name: Install zfsutils-linux
-    ansible.builtin.apt:
-      name: zfsutils-linux
-      state: latest
+  - apk:
+      name: eudev,lsblk,sgdisk,jq,wipefs
+      update_cache: yes
+    tags:
+    - packages
+
+  - name: Run udev
+    command: setup-devd udev
+    tags:
+    - udev
+
+
+  - name: Copy file wipe-all-disks.sh
+    ansible.builtin.copy:
+      src: ./scripts/wipe-all-disks.sh
+      dest: /root/wipe-all-disks.sh
+      owner: root
+      group: root
+      mode: '0755'
+    tags:
+    - scripts
+
+  - name: Copy file install-fedora-root-on-zfs.sh
+    ansible.builtin.copy:
+      src: ./scripts/install-fedora-root-on-zfs.sh
+      dest: /root/install-fedora-root-on-zfs.sh
+      owner: root
+      group: root
+      mode: '0755'
+    tags:
+    - scripts
 
   - name: Disable swap during play
     command: swapoff --all

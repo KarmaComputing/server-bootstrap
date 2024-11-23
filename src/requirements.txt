@@ -5,3 +5,6 @@ gunicorn
 PyMySQL
 coloredlogs
 python-dotenv
+ansible
+strictyaml
+apiflask

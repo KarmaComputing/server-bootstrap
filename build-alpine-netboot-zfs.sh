@@ -4,61 +4,63 @@
 # Build netboot image with zfs kernel module included
 
 # USAGE:
-# podman run  -it --rm -v $(pwd):/root/workdir alpine sh /root/workdir/build-alpine-netboot-zfs.sh
+
+# podman run  -it --rm -v $(pwd)/scratch:/root/workdir alpine sh /root/workdir/build-alpine-netboot-zfs.sh
 
 
 set -x
 
-apk add alpine-sdk build-base apk-tools alpine-conf busybox fakeroot syslinux xorriso squashfs-tools sudo git grub grub-efi
+apk add alpine-sdk build-base apk-tools busybox fakeroot syslinux xorriso squashfs-tools sudo git grub grub-efi
+
+# Note we build alpine-conf from source due to issue https://github.com/KarmaComputing/server-bootstrap/issues/20
+# Clone and build latest alpine-conf
+git clone https://gitlab.alpinelinux.org/alpine/alpine-conf.git
+cd alpine-conf
+make
+make install
+cd -
 
 
+# Start build
 adduser build --disabled-password -G abuild
 # Set password non interactively
 echo -e "password\npassword" | passwd build
 echo "build ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/abuild
-cp -R /root/workdir /home/build/
-chown -R build /home/build/workdir
+
 su - build << 'EOF'
 set -x
 SUDO=sudo abuild-keygen -n -i -a
-cd workdir
+# aports contains build utilities such as mkimage.sh
 git clone --depth 1 https://gitlab.alpinelinux.org/alpine/aports
 cd aports
-mkdir -p ~/iso
-# Enable zfs kernel module
+
+# Create & build alpine netboot profile with zfs kernel module enabled
 cat > ./scripts/mkimg.zfsnetboot.sh << 'EOFINNER'
+
 profile_zfsnetboot() {
         profile_standard
-        kernel_cmdline="unionfs_size=512M console=tty0 console=ttyS0,115200"
+        kernel_cmdline="overlay_size=0 console=tty0 console=ttyS0,115200"
         syslinux_serial="0 115200"
         kernel_addons="zfs"
-        apks="$apks zfs-scripts zfs zfs-utils-py python3
-                mkinitfs
-                syslinux util-linux"
+        apks="$apks zfs-scripts zfs zfs-utils-py python3 mkinitfs syslinux util-linux linux-firmware"
         initfs_features="base network squashfs usb virtio"
-        local _k _a
-        for _k in $kernel_flavors; do
-                apks="$apks linux-$_k"
-                for _a in $kernel_addons; do
-                        apks="$apks $_a-$_k"
-                done
-        done
-        apks="$apks linux-firmware"
         output_format="netboot"
         image_ext="tar.gz"
 }
 EOFINNER
 cat ./scripts/mkimg.zfsnetboot.sh
 echo Running mkimage.sh
+mkdir -p ~/iso
 ./scripts/mkimage.sh --outdir ~/iso --arch x86_64 --repository http://dl-cdn.alpinelinux.org/alpine/edge/main --profile zfsnetboot
 EOF
 
 
+ls -l /home/build/iso
 mkdir -p /root/workdir/iso
 cp /home/build/iso/alpine-zfsnetboot-*.tar.gz /root/workdir/iso
 exit
-# back on the host machine
+# We're back outside the container at this point
 ls -ltr | tail -n 1 # latest build
 # Upload (scp) and extract latest build (e.g.
-# alpine-netboot-230813-x86_64.tar.gz to boot server)
+# alpine-zfsnetboot-*-x86_64.tar.gz to boot server)
 

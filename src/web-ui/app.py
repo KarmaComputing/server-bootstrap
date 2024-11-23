@@ -24,10 +24,144 @@ IDRAC_SCRIPTS_BASE_PATH = os.getenv(
     "IDRAC_SCRIPTS_BASE_PATH", "./iDRAC-Redfish-Scripting/Redfish Python/"
 )
 
-HOST_HEALTHCHECK_POLL_IP = os.getenv("HOST_HEALTHCHECK_POLL_IP")
+HOST_HEALTHCHECK_POLL_IP = settings.get("HOST_HEALTHCHECK_POLL_IP")
 
 session_requests = requests.Session()
 session_requests.verify = False
+
+
+def countdown(seconds):
+    log.info(f"Sleeping for {seconds} seconds")
+    for remaining in range(seconds, 0, -1):
+        sys.stdout.write(f"\rTime left: {remaining} seconds")
+        sys.stdout.flush()
+        time.sleep(1)
+    # Clear the line after countdown ends
+    sys.stdout.write("\rCountdown finished!\n")
+
+
+def ConnectToVPN():
+    """
+    Attempt to connect to VPN
+    Assumptions:
+    - Any existing VPN connection will be torn down
+    - Credentials for VPN will be fetched using secret(s)
+      required to fetch them
+    - VPN tunnel (wireguard) will be started
+    """
+    log.info(
+        "Tear down any existing VPN connection "
+        "(assumes wg-quick is used for WireGuard"
+    )
+    subprocess.run(["wg-quick", "down", "wg0"], check=False)
+
+    log.info("Download the psonoci tool")
+    subprocess.run(
+        [
+            "curl",
+            "https://get.psono.com/psono/psono-ci/x86_64-linux/psonoci",
+            "--output",
+            "./psonoci",
+        ],
+        check=True,
+    )
+
+    log.info("Mark psonoci as executable")
+    subprocess.run(["chmod", "+x", "./psonoci"], check=True)
+
+    # Fetch credentials using the psonoci tool
+    PSONO_CI_VPN_SECRET_NOTE_ID = settings.get(
+        "PSONO_CI_VPN_SECRET_NOTE_ID"
+    ).value  # noqa: E501
+
+    try:
+        os.environ["PSONO_CI_API_KEY_ID"] = settings.get(
+            "PSONO_CI_API_KEY_ID"
+        ).value  # noqa: E501
+        os.environ["PSONO_CI_API_SECRET_KEY_HEX"] = settings.get(
+            "PSONO_CI_API_SECRET_KEY_HEX"
+        ).value
+        os.environ["PSONO_CI_SERVER_URL"] = settings.get(
+            "PSONO_CI_SERVER_URL"
+        ).value  # noqa: E501
+        result = subprocess.run(
+            [
+                "./psonoci",
+                "secret",
+                "get",
+                PSONO_CI_VPN_SECRET_NOTE_ID,
+                "notes",
+            ],  # noqa: E501
+            check=True,
+            capture_output=True,
+            text=True,
+            env=os.environ,
+        )
+        log.info(result)
+    except Exception as e:
+        log.error(e)
+
+    vpn_config = result.stdout.strip()
+
+    log.debug("Write the VPN configuration to /etc/wireguard/wg0.conf")
+    with open("/etc/wireguard/wg0.conf", "w") as vpn_file:
+        vpn_file.write(vpn_config)
+
+    try:
+        log.debug("Start the VPN tunnel")
+        sleep(3)
+        subprocess.run(["wg-quick", "up", "wg0"], check=False)
+        print("VPN connected successfully.")
+
+    except subprocess.CalledProcessError as e:
+        print(f"An error occurred while executing a command: {e}")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+
+
+def recover_from_error_vpn_not_active(retry_state):
+    """Attempt to recover from error VPN
+    not active.
+    """
+    log.debug(retry_state)
+    ConnectToVPN()
+
+
+@retry(
+    wait=wait_exponential(multiplier=1, min=5, max=10),
+    before=before_log(log, logging.DEBUG),
+    stop=stop_after_attempt(4),
+    retry_error_callback=recover_from_error_vpn_not_active,
+)
+def vpn_must_be_up(f):
+    """
+    Checks for a route to the IDRAC_HOST
+    The/a valid VPN connection
+    must be up for the majority of the server
+    bootstrap process to work.
+
+    If the VPN is *up*, then the IDRAC_HOST
+    will be reachable (there will be a route to
+    that host/IP).
+    If the VPN is *down* then the IDRAC_HOST will
+    likely be 'no route to host'.
+    """
+
+    @wraps(f)
+    def wrapper(*args, **kwds):
+        log.info("Calling wrapper vpn_must_be_up")
+        try:
+            print(settings.get('IDRAC_HOST'))
+            url = f"https://{settings.get('IDRAC_HOST')}/start.html"
+            log.info(f"Contacting: {url}")
+            #requests.get(url, verify=False, timeout=DEFAULT_HTTP_REQ_TIMEOUT)
+        except Exception as e:
+            log.error(f"Verify VPN connection is up & functioning. {e}")
+            log.debug("Attempting reconnect of VPN")
+            #ConnectToVPN()
+        return f(*args, **kwds)
+
+    return wrapper
 
 
 def api_response(req):
@@ -39,9 +173,12 @@ def api_response(req):
 
 def api_call(path=None, method=None, payload=None, raw_payload=False):
     assert method is not None
-    url = f"https://{os.getenv('IDRAC_HOST')}/redfish/v1/{path}"
+    if "redfish" not in path and "http" not in path:
+        url = f"https://{settings.get('IDRAC_HOST')}/redfish/v1/{path}"
+    if "redfish" in path:
+        url = f"https://{settings.get('IDRAC_HOST')}/{path}"
     authHeaders = HTTPBasicAuth(
-        os.getenv("IDRAC_USERNAME"), os.getenv("IDRAC_PASSWORD")
+        settings.get("IDRAC_USERNAME"), settings.get("IDRAC_PASSWORD")
     )  # noqa: E501
 
     # Making the request
@@ -97,7 +234,7 @@ def load_idrac_settings():
 
 @app.context_processor
 def inject_settings():
-    return dict(IDRAC_HOST=os.getenv("IDRAC_HOST"))
+    return dict(IDRAC_HOST=settings.get("IDRAC_HOST"))
 
 
 @app.route("/")
