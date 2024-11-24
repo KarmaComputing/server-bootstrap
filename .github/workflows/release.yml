@@ -86,7 +86,7 @@ jobs:
             EMBED=script.ipxe
           
       - name: iPXE Publish iPXE ISO artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: ipxe-iso
           path: ipxe/src/bin/ipxe.iso
