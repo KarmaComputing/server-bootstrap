@@ -1,3 +1,15 @@
+# v0.0.114 (Sun Nov 24 2024)
+
+#### ⚠️ Pushed to `main`
+
+- Create feature_request.md ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.113 (Sun Nov 24 2024)
 
 #### 🐛 Bug Fix
