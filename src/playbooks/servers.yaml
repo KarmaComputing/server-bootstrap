@@ -80,7 +80,7 @@
     - network
 
   - apk:
-      name: eudev,lsblk,sgdisk,jq,wipefs
+      name: zfs,eudev,lsblk,sgdisk,jq,wipefs
       update_cache: yes
     tags:
     - packages
