@@ -44,8 +44,8 @@ jobs:
         ansible-playbook --extra-vars _vault_hetzner_cloud_token=$(ANSIBLE_LOAD_CALLBACK_PLUGINS=1 ANSIBLE_STDOUT_CALLBACK=ansible.posix.json ansible localhost -i inventory.ini -m debug -a "msg={{ hostvars[inventory_hostname].hetzner_hcloud_token }}" | jq '.plays[0]["tasks"][0]["hosts"]["localhost"]["msg"]') -i inventory.ini -i inventory-vpn-servers-hcloud.yml playbooks/create-rebuild-vpn-server.yml
         rm $TMPFILE
 
-    # Enable tmate debugging of manually-triggered workflows if the input option was provided
-    - name: Setup tmate session
-      uses: mxschmitt/action-tmate@v3
-      if: ${{ failure() }}
+    # Enable tmate debugging if desired.
+    # - name: Setup tmate session
+    #  uses: mxschmitt/action-tmate@v3
+    #  if: ${{ failure() }}
 
