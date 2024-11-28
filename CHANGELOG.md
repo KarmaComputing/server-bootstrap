@@ -1,3 +1,15 @@
+# v0.0.115 (Thu Nov 28 2024)
+
+#### ⚠️ Pushed to `main`
+
+- Update deploy-vpn-server.yml disable automated tmate debugging ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.114 (Sun Nov 24 2024)
 
 #### ⚠️ Pushed to `main`
