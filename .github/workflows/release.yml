@@ -66,6 +66,11 @@ jobs:
           EOF
 
       - name: iPXE Build iPXE ISO
+        # Why do I see "file:autoexec.ipxe not found" when
+        # this ipxe.iso boots?
+        # Answer: It's not an error, it's information and not requried.
+        # See https://github.com/ipxe/ipxe/issues/643#issuecomment-2486543385
+        #
         run: |
           cd ipxe/src
           pwd
@@ -78,11 +83,10 @@ jobs:
           echo Enable https download
           sed -i 's/undef.*DOWNLOAD_PROTO_HTTPS/define DOWNLOAD_PROTO_HTTPS/g' config/general.h
           echo Build iPXE ISO
-          make \
+          make bin-x86_64-efi/ipxe.iso \
             DEBUG=tls,httpcore,x509,certstore \
             CERT=ca.pem,isrgrootx1.pem,lets-encrypt-r3.pem \
             TRUST=ca.pem,isrgrootx1.pem,lets-encrypt-r3.pem \
-            bin/ipxe.iso \
             EMBED=script.ipxe
           
       - name: iPXE Publish iPXE ISO artifact
