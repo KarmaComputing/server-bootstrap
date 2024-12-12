@@ -1,3 +1,19 @@
+# v0.0.116 (Thu Dec 12 2024)
+
+#### 🐛 Bug Fix
+
+- Fix #23 build UEFI iPXE image [#24](https://github.com/KarmaComputing/server-bootstrap/pull/24) ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### ⚠️ Pushed to `main`
+
+- Update release.yml add mtools ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.115 (Thu Nov 28 2024)
 
 #### ⚠️ Pushed to `main`
