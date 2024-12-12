@@ -94,7 +94,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ipxe-iso
-          path: ipxe/src/bin/ipxe.iso
+          path: ipxe/src/bin-x86_64-efi/ipxe.(iso|efi)
+
 
       - name: Create Release
         env:
