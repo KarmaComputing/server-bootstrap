@@ -1,3 +1,15 @@
+# v0.0.119 (Thu Dec 12 2024)
+
+#### ⚠️ Pushed to `main`
+
+- Update release.yml ipxe/src/bin-x86_64-efi/ipxe.iso ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.118 (Thu Dec 12 2024)
 
 #### ⚠️ Pushed to `main`
