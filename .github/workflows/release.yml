@@ -27,7 +27,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y curl make isolinux
+          sudo apt-get install -y curl make isolinux mtools
 
       - name: Clone iPXE repository
         run: git clone https://github.com/ipxe/ipxe.git
