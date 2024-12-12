@@ -1,3 +1,15 @@
+# v0.0.117 (Thu Dec 12 2024)
+
+#### ⚠️ Pushed to `main`
+
+- Update release.yml add issues: write permission ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.116 (Thu Dec 12 2024)
 
 #### 🐛 Bug Fix
