@@ -1,6 +1,7 @@
 name: Cut Release
 permissions:
     contents: write
+    issues: write
 
 on:
   push:
