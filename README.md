@@ -1,3 +1,7 @@
+# Table of Contents
+
+[API Docs](api/README.md)
+
 # Bazinga
 
 ```
