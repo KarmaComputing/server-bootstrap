@@ -1,0 +1,7 @@
+services:
+  controller:
+    build:
+      dockerfile: ../../container/controller.Containerfile
+      context: ./internal/controller
+    ports:
+      - 8080:8080
