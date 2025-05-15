@@ -3,4 +3,5 @@ APIFlask
 flask
 gunicorn
 requests
+strictyaml
 tenacity
