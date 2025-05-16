@@ -16,10 +16,10 @@ func main() {
 
 	for {
 		fmt.Println("Toggling power from")
-		currentState := server.getPower()
+		currentState := server.getPowerState()
 		server.PowerToggle()
 
-		for currentState == server.getPower() {
+		for currentState == server.getPowerState() {
 			time.Sleep(1 * time.Second)
 			fmt.Println("Waiting for power state to change...")
 		}

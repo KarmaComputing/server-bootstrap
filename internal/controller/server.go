@@ -74,12 +74,12 @@ func (c *Server) GetSystem() *redfish.ComputerSystem {
 
 	return systems[0]
 }
-func (server *Server) getPower() string {
+func (server *Server) getPowerState() string {
 	return string(server.GetSystem().PowerState)
 }
 
 func (server *Server) isPoweredOn() bool {
-	if server.getPower() == "On" {
+	if server.getPowerState() == "On" {
 		return true
 	} else {
 		return false
@@ -87,7 +87,7 @@ func (server *Server) isPoweredOn() bool {
 }
 
 func (server *Server) isPoweredOff() bool {
-	if server.getPower() == "Off" {
+	if server.getPowerState() == "Off" {
 		return true
 	} else {
 		return false
