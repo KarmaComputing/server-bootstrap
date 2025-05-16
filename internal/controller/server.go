@@ -66,8 +66,8 @@ func (server *Server) Restart() error {
 	return nil
 }
 
-func (c *Server) GetSystem() *redfish.ComputerSystem {
-	systems, err := c.Service.Systems()
+func (server *Server) GetSystem() *redfish.ComputerSystem {
+	systems, err := server.Service.Systems()
 	if err != nil {
 		panic(err)
 	}
@@ -94,6 +94,6 @@ func (server *Server) isPoweredOff() bool {
 	}
 }
 
-func (c *Server) Destroy() {
-	c.APIClient.Logout()
+func (server *Server) Destroy() {
+	server.APIClient.Logout()
 }
