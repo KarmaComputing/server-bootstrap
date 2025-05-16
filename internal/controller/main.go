@@ -61,6 +61,6 @@ func main() {
 			fmt.Println("Waiting for power state to change...")
 		}
 		fmt.Printf("Waiting for %d seconds\n", wipeIntervalInt)
-		time.Sleep(time.Duration(wipeIntervalInt))
+		time.Sleep(time.Second * time.Duration(wipeIntervalInt))
 	}
 }
