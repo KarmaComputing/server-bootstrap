@@ -72,19 +72,11 @@ func (server *Server) getPowerState() string {
 }
 
 func (server *Server) isPoweredOn() bool {
-	if server.getPowerState() == "On" {
-		return true
-	} else {
-		return false
-	}
+	return server.getPowerState() == "On"
 }
 
 func (server *Server) isPoweredOff() bool {
-	if server.getPowerState() == "Off" {
-		return true
-	} else {
-		return false
-	}
+	return server.getPowerState() == "Off"
 }
 
 func (server *Server) Destroy() {
