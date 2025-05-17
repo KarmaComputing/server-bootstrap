@@ -7,48 +7,22 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/stmcginnis/gofish"
 )
 
-func main() {
-	urlAddress := os.Getenv("URL")
-	if urlAddress == "" {
-		log.Fatal("URL is not set, expects format e.g. 'https://192.168.0.230'")
-	}
-	username := os.Getenv("USERNAME")
-	if username == "" {
-		log.Fatal("USERNAME is not set, expects string")
-	}
-	password := os.Getenv("PASSWORD")
-	if password == "" {
-		log.Fatal("PASSWORD is not set, expects string")
-	}
-	validCert := os.Getenv("VALIDCERT")
-	if validCert == "" {
-		log.Fatal("VALIDCERT is not set, expects boolean")
-	}
-	var isValidCert bool
-	switch strings.ToLower(validCert) {
-	case "true":
-		isValidCert = true
-	case "false":
-		isValidCert = false
-	default:
-		log.Fatal("validCert is not <true|false>")
-	}
-	wipeInterval := os.Getenv("WIPEINTERVAL")
-	if wipeInterval == "" {
-		log.Fatal("WIPEINTERVAL is not set, expects seconds in an integer")
-	}
-	wipeIntervalInt, err := strconv.Atoi(wipeInterval)
-	if err != nil {
-		log.Fatal("WIPEINTERVAL is not an integer")
-	}
+type Config struct {
+	gofish.ClientConfig
+	wipeInterval int
+}
 
-	server, err := NewServer(urlAddress, username, password, isValidCert)
+func main() {
+	config := tryGetConfigFromEnvironment()
+
+	server, err := NewServer(&config.ClientConfig)
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	defer server.Destroy()
 
 	for {
@@ -60,7 +34,61 @@ func main() {
 			time.Sleep(1 * time.Second)
 			fmt.Println("Waiting for power state to change...")
 		}
-		fmt.Printf("Waiting for %d seconds\n", wipeIntervalInt)
-		time.Sleep(time.Second * time.Duration(wipeIntervalInt))
+		fmt.Printf("Waiting for %d seconds\n", config.wipeInterval)
+		time.Sleep(time.Second * time.Duration(config.wipeInterval))
+	}
+}
+
+func tryGetConfigFromEnvironment() *Config {
+	urlAddress := os.Getenv("URL")
+	if urlAddress == "" {
+		log.Fatal("URL is not set, expects format e.g. 'https://192.168.0.230'")
+	}
+
+	username := os.Getenv("USERNAME")
+	if username == "" {
+		log.Fatal("USERNAME is not set, expects string")
+	}
+
+	password := os.Getenv("PASSWORD")
+	if password == "" {
+		log.Fatal("PASSWORD is not set, expects string")
+	}
+
+	var allowValidCert bool
+	{
+		env := os.Getenv("VALIDCERT")
+		if env == "" {
+			log.Fatal("VALIDCERT is not set, expects boolean")
+		}
+		switch strings.ToLower(env) {
+		case "true":
+			allowValidCert = true
+		case "false":
+			allowValidCert = false
+		default:
+			log.Fatal("validCert is not <true|false>")
+		}
+	}
+
+	var wipeInterval int
+	{
+		env := os.Getenv("WIPEINTERVAL")
+		if env == "" {
+			log.Fatal("WIPEINTERVAL is not set, expects seconds in an integer")
+		}
+		value, err := strconv.Atoi(env)
+		if err != nil {
+			log.Fatal("WIPEINTERVAL is not an integer")
+		}
+		wipeInterval = value
+	}
+
+	return &Config{
+		ClientConfig: gofish.ClientConfig{Endpoint: urlAddress,
+			Username: username,
+			Password: password,
+			Insecure: !allowValidCert},
+		wipeInterval: wipeInterval,
 	}
 }

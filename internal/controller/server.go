@@ -12,21 +12,14 @@ type Server struct {
 	gofish.APIClient
 }
 
-func NewServer(endpoint, username, password string, secure bool) (*Server, error) {
-	clientConfig := gofish.ClientConfig{
-		Endpoint: endpoint,
-		Username: username,
-		Password: password,
-		Insecure: !secure,
-	}
-
-	apiClient, err := gofish.Connect(clientConfig)
+func NewServer(clientConfig *gofish.ClientConfig) (*Server, error) {
+	apiClient, err := gofish.Connect(*clientConfig)
 	if err != nil {
 		return nil, err
 	}
 
 	system := Server{
-		ClientConfig: clientConfig,
+		ClientConfig: *clientConfig,
 		APIClient:    *apiClient,
 	}
 
