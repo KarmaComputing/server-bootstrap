@@ -55,7 +55,7 @@ func tryGetConfigFromEnvironment() *Config {
 		log.Fatal("PASSWORD is not set, expects string")
 	}
 
-	var allowValidCert bool
+	var validCertOnly bool
 	{
 		env := os.Getenv("VALIDCERT")
 		if env == "" {
@@ -63,9 +63,9 @@ func tryGetConfigFromEnvironment() *Config {
 		}
 		switch strings.ToLower(env) {
 		case "true":
-			allowValidCert = true
+			validCertOnly = true
 		case "false":
-			allowValidCert = false
+			validCertOnly = false
 		default:
 			log.Fatal("validCert is not <true|false>")
 		}
@@ -88,7 +88,7 @@ func tryGetConfigFromEnvironment() *Config {
 		ClientConfig: gofish.ClientConfig{Endpoint: urlAddress,
 			Username: username,
 			Password: password,
-			Insecure: !allowValidCert},
+			Insecure: !validCertOnly},
 		wipeInterval: wipeInterval,
 	}
 }
