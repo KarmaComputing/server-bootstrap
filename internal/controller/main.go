@@ -19,21 +19,22 @@ type Config struct {
 func main() {
 	config := tryGetConfigFromEnvironment()
 
-	server, err := NewServer(&config.ClientConfig)
+	lom, err := NewLOM(&config.ClientConfig)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer server.Destroy()
+	defer lom.Destroy()
 
 	for {
-		fmt.Println("Toggling power from")
-		currentState := server.getPowerState()
-		server.PowerToggle()
+		fmt.Println("Toggling power")
+		currentState := lom.getServerPowerState()
+		lom.ServerPowerToggle()
 
-		for currentState == server.getPowerState() {
+		for currentState == lom.getServerPowerState() {
 			time.Sleep(1 * time.Second)
 			fmt.Println("Waiting for power state to change...")
 		}
+
 		fmt.Printf("Waiting for %d seconds\n", config.wipeInterval)
 		time.Sleep(time.Second * time.Duration(config.wipeInterval))
 	}

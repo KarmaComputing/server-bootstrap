@@ -7,51 +7,49 @@ import (
 	"github.com/stmcginnis/gofish/redfish"
 )
 
-type Server struct {
+type LOM struct {
 	gofish.ClientConfig
 	gofish.APIClient
 }
 
-func NewServer(clientConfig *gofish.ClientConfig) (*Server, error) {
+func NewLOM(clientConfig *gofish.ClientConfig) (*LOM, error) {
 	apiClient, err := gofish.Connect(*clientConfig)
 	if err != nil {
 		return nil, err
 	}
 
-	system := Server{
+	return &LOM{
 		ClientConfig: *clientConfig,
 		APIClient:    *apiClient,
-	}
-
-	return &system, nil
+	}, nil
 }
 
-func (server *Server) PowerOn() {
-	system := server.GetSystem()
+func (lom *LOM) ServerPowerOn() {
+	system := lom.GetSystem()
 	err := system.Reset(redfish.OnResetType)
 	if err != nil {
 		return
 	}
 }
 
-func (server *Server) PowerOff() {
-	system := server.GetSystem()
+func (lom *LOM) ServerPowerOff() {
+	system := lom.GetSystem()
 	err := system.Reset(redfish.ForceOffResetType)
 	if err != nil {
 		return
 	}
 }
 
-func (server *Server) PowerToggle() {
-	if server.isPoweredOn() {
-		server.PowerOff()
+func (lom *LOM) ServerPowerToggle() {
+	if lom.serverIsPoweredOn() {
+		lom.ServerPowerOff()
 	} else {
-		server.PowerOn()
+		lom.ServerPowerOn()
 	}
 }
 
-func (server *Server) Restart() error {
-	system := server.GetSystem()
+func (lom *LOM) ServerRestart() error {
+	system := lom.GetSystem()
 	err := system.Reset(redfish.ForceRestartResetType)
 	if err != nil {
 		log.Fatal(err)
@@ -59,26 +57,26 @@ func (server *Server) Restart() error {
 	return nil
 }
 
-func (server *Server) GetSystem() *redfish.ComputerSystem {
-	systems, err := server.Service.Systems()
+func (lom *LOM) GetSystem() *redfish.ComputerSystem {
+	systems, err := lom.Service.Systems()
 	if err != nil {
 		panic(err)
 	}
 
 	return systems[0]
 }
-func (server *Server) getPowerState() string {
-	return string(server.GetSystem().PowerState)
+func (lom *LOM) getServerPowerState() string {
+	return string(lom.GetSystem().PowerState)
 }
 
-func (server *Server) isPoweredOn() bool {
-	return server.getPowerState() == "On"
+func (lom *LOM) serverIsPoweredOn() bool {
+	return lom.getServerPowerState() == "On"
 }
 
-func (server *Server) isPoweredOff() bool {
-	return server.getPowerState() == "Off"
+func (lom *LOM) serverIsPoweredOff() bool {
+	return lom.getServerPowerState() == "Off"
 }
 
-func (server *Server) Destroy() {
-	server.APIClient.Logout()
+func (lom *LOM) Destroy() {
+	lom.APIClient.Logout()
 }
