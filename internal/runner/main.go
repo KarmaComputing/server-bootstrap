@@ -20,19 +20,18 @@ type Config struct {
 }
 
 func main() {
-	// config := tryGetConfigFromEnvironment()
+	config := tryGetConfigFromEnvironment()
 
-	// lom, err := lom.NewFromConfig(&config.ClientConfig)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-	// defer lom.Logout()
-
-	for accessible := true; accessible; accessible = canSSH(/* Alpine IP */, "22", "root") {
-		time.Sleep(time.Second * 1)
+	lom, err := lom.NewFromConfig(&config.ClientConfig)
+	if err != nil {
+		log.Fatal(err)
 	}
+	defer lom.Logout()
 
-	fmt.Println("Alpine accessible")
+	err = bootstrap(lom)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func tryGetConfigFromEnvironment() *Config {
@@ -89,23 +88,30 @@ func tryGetConfigFromEnvironment() *Config {
 	}
 }
 
-func Bootstrap(lom *lom.LOM) error {
+func bootstrap(lom *lom.LOM) error {
 	systems := *lom.AllSystems()
 
 	bootOverride := redfish.Boot{
-		BootSourceOverrideTarget:  redfish.PxeBootSourceOverrideTarget,
+		BootSourceOverrideTarget:  redfish.CdBootSourceOverrideTarget,
 		BootSourceOverrideEnabled: redfish.OnceBootSourceOverrideEnabled,
 	}
+
 	for _, system := range systems {
-		fmt.Printf("Setting boot option of system: %#v\n\n", system)
+		fmt.Printf("Setting boot option of system: %s\n", system.HostName)
 		err := system.SetBoot(bootOverride)
 		if err != nil {
 			return err
 		}
 
+		fmt.Printf("Setting virtual media for system: %s\n", system.HostName)
+		_, err = lom.APIClient.Patch("/redfish/v1/managers/1/virtualmedia/2", map[string]string{"Image": "http://192.168.0.170/iso/alpine-netboot/ipxe.iso"})
+		if err != nil {
+			return err
+		}
+
 		// Reboot
-		fmt.Printf("Restarting system: %#v\n\n", system)
-		err = system.Reset(redfish.ForceRestartResetType)
+		fmt.Printf("Restarting system: %s\n", system.HostName)
+		err = system.Reset(redfish.OnResetType)
 		if err != nil {
 			return err
 		}
