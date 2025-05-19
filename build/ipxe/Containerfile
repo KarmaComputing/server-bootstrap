@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM docker.io/library/ubuntu:latest
 
 RUN apt update && apt install -y gcc binutils make perl liblzma-dev mtools mkisofs syslinux isolinux build-essential git
 
@@ -7,4 +7,4 @@ WORKDIR /build
 RUN git clone https://github.com/ipxe/ipxe.git
 WORKDIR /build/ipxe/src
 
-CMD make bin/ipxe.iso EMBED=/input/${FILE} && mv bin/ipxe.iso /output
+CMD make bin/ipxe.iso EMBED=/input/${FILE} && mv --force bin/ipxe.iso /output
