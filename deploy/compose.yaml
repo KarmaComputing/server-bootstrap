@@ -1,0 +1,15 @@
+services:
+  ipxe-builder:
+    build: ./ipxe
+    environment:
+      - FILE=alpinebooter.ipxe
+    volumes:
+      - ./ipxe/input:/input:z
+      #- ./ipxe/output:/output:z
+      - ../www:/output:z
+  apache:
+    build: ./web-server
+    volumes:
+      - ../www:/usr/local/apache2/htdocs:z
+    ports:
+      - 8080:80
