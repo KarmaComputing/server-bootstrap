@@ -8,6 +8,10 @@
 URL=https://192.168.0.230 USERNAME=Administrator PASSWORD=A0F7HKUU VALIDCERT=false WIPEINTERVAL=300 go run .
 ```
 
+# Logical Flow
+
+![diagram](docs/diagram.drawio.png)
+
 # Bazinga
 
 ```
