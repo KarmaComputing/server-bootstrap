@@ -1,8 +1,6 @@
 services:
   controller:
-    build:
-      dockerfile: ../../container/controller.Containerfile
-      context: ./internal/controller
+    build: ./internal/controller
     ports:
       - 8081:8080
   apache:
