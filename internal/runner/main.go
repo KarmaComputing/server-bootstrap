@@ -7,11 +7,9 @@ import (
 	"server_bootstrap/lom"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/stmcginnis/gofish"
 	"github.com/stmcginnis/gofish/redfish"
-	"golang.org/x/crypto/ssh"
 )
 
 type Config struct {
@@ -95,23 +93,32 @@ func bootstrap(lom *lom.LOM) error {
 		BootSourceOverrideTarget:  redfish.CdBootSourceOverrideTarget,
 		BootSourceOverrideEnabled: redfish.OnceBootSourceOverrideEnabled,
 	}
+	emptyVirtualMediaPayload := map[string]any{"Image": nil}
+	occupiedVirtualMediaPayload := map[string]string{"Image": "http://192.168.0.170/iso/alpine-netboot/ipxe.iso"}
 
 	for _, system := range systems {
+		// Ensure boot option is actually set
 		fmt.Printf("Setting boot option of system: %s\n", system.HostName)
 		err := system.SetBoot(bootOverride)
 		if err != nil {
 			return err
 		}
 
+		fmt.Printf("Removing virtual media for system: %s\n", system.HostName)
+		_, err = lom.APIClient.Patch("/redfish/v1/managers/1/virtualmedia/2", emptyVirtualMediaPayload)
+		if err != nil {
+			return err
+		}
+
 		fmt.Printf("Setting virtual media for system: %s\n", system.HostName)
-		_, err = lom.APIClient.Patch("/redfish/v1/managers/1/virtualmedia/2", map[string]string{"Image": "http://192.168.0.170/iso/alpine-netboot/ipxe.iso"})
+		_, err = lom.APIClient.Patch("/redfish/v1/managers/1/virtualmedia/2", occupiedVirtualMediaPayload)
 		if err != nil {
 			return err
 		}
 
 		// Reboot
 		fmt.Printf("Restarting system: %s\n", system.HostName)
-		err = system.Reset(redfish.OnResetType)
+		err = system.Reset(redfish.ForceRestartResetType)
 		if err != nil {
 			return err
 		}
@@ -123,21 +130,4 @@ func bootstrap(lom *lom.LOM) error {
 	// Ansible playbook 2: electric boogaloo?
 
 	return nil
-}
-
-func canSSH(host, port, username string) bool {
-	config := &ssh.ClientConfig{
-		User:            username,
-		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
-		Timeout:         5 * time.Second,
-	}
-
-	addr := fmt.Sprintf("%s:%s", host, port)
-	client, err := ssh.Dial("tcp", addr, config)
-	if err != nil {
-		return false
-	}
-	client.Close()
-
-	return true
 }
