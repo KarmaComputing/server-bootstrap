@@ -14,26 +14,34 @@ URL=https://192.168.0.230 USERNAME=Administrator PASSWORD=A0F7HKUU VALIDCERT=fal
 
 # How to Use This
 
-1. Ensure appropriate `build/build.sh` configs
+1. Building
   - Building ipxe.iso image
-    - Use new/existing iPXE config file in `build/ipxe/input`
-    - Input its name as FILE variable in `build/build.sh`
+    - Use new/existing iPXE config file in `deploy/build/ipxe/scripts`
+    - Input its name as FILE variable in `deploy/scripts/build-ipxe-iso.sh`
+    - Run `deploy/scripts/build-ipxe-iso.sh`
+    - `ipxe.iso` is placed in `deploy/serve/www`
   - Building alpine-netboot image
-    - TBD
+    - Run `deploy/scripts/build-alpine.sh`
+    - Files are placed in `deploy/serve/www/iso
   - ssh-keys
-    - Place intended public SSH key into `build/ssh-key`
-2. `cd build && bash ./build.sh`
-  - ipxe.iso and alpine image will be ready in `www`
-3. `podman compose up -d`
-  - apache web server will expose `www` at port 8080
+    <!-- - Place intended public SSH key into `build/ssh-key` -->
+    - TODO
+2. Run stack
+  - Ensure the files are correctly placed from step 1
+  - `podman compose up -d` in repository root
+3. !! VM FOR TESTING !!
+  - Ensure `qemu` is installed and runnable
+  - Ensure web server is accessible at \<machine-ip\>:8080
+  - `qemu-system-x86_64 -cdrom <ipxe.iso> -net nic -net user,hostfwd=tcp::2223-:22 -m 3072 -smp $(nproc)`
+
 
 # Bazinga
 
 ```
- ____            _                   
-| __ )  __ _ ___(_)_ __   __ _  __ _ 
+ ____            _
+| __ )  __ _ ___(_)_ __   __ _  __ _
 |  _ \ / _` |_  / | '_ \ / _` |/ _` |
 | |_) | (_| |/ /| | | | | (_| | (_| |
 |____/ \__,_/___|_|_| |_|\__, |\__,_|
-                        |___/       
+                        |___/
 ```
