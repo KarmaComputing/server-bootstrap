@@ -32,7 +32,7 @@ su - build << 'EOF'
 set -x
 SUDO=sudo abuild-keygen -n -i -a
 # aports contains build utilities such as mkimage.sh
-git clone --depth 1 https://gitlab.alpinelinux.org/alpine/aports
+git clone --depth 1 https://gitlab.alpinelinux.org/alpine/aports.git
 cd aports
 
 # Create & build alpine netboot profile with zfs kernel module enabled
@@ -56,5 +56,7 @@ echo Running mkimage.sh
 EOF
 
 ls -la /home/build/aports
+cp /home/build/aports/alpine-zfsnetboot-*.tar.gz /output --force
 tar -xvf /home/build/aports/alpine-zfsnetboot-*.tar.gz --directory /output
+chmod 0644 /output/boot/* # fix permissions, specifically for initramfs for some reason
 exit
