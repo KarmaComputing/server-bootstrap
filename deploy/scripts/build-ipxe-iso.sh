@@ -3,7 +3,7 @@
 FILE="vm-test.ipxe"
 
 WWW_DIR="../serve/www"
-BUILD_DIR="../build/iso"
+BUILD_DIR="../build/ipxe"
 PODMAN_IMAGE_NAME="ipxe_builder"
 ISO_MAKE_THREADS=16
 
@@ -23,6 +23,6 @@ echo "--- Building ipxe.iso with ${FILE} embedded, writing to ${WWW_DIR} (using 
 podman run \
     --rm \
     -e FILE="$FILE" \
-    --volume ${BUILD_DIR}/pxe:/input:z \
+    --volume ${BUILD_DIR}/scripts:/input:z \
     --volume ${WWW_DIR}:/output:z \
     localhost/${PODMAN_IMAGE_NAME}:latest

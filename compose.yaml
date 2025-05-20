@@ -4,8 +4,8 @@ services:
     ports:
       - 8081:8080
   apache:
-    build: ./deploy/web-server
+    build: ./deploy/serve
     volumes:
-      - ./www:/usr/local/apache2/htdocs:z
+      - ./deploy/server/www:/usr/local/apache2/htdocs:z
     ports:
       - 8080:80
