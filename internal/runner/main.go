@@ -7,9 +7,11 @@ import (
 	"server_bootstrap/lom"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/stmcginnis/gofish"
 	"github.com/stmcginnis/gofish/redfish"
+	"golang.org/x/crypto/ssh"
 )
 
 type Config struct {
@@ -30,6 +32,29 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+}
+
+func awaitAndConnectSSH(signer ssh.Signer, user, addr string) (*ssh.Client, error) {
+	config := &ssh.ClientConfig{
+		User:            user,
+		Auth:            []ssh.AuthMethod{ssh.PublicKeys(signer)},
+		HostKeyCallback: ssh.InsecureIgnoreHostKey(), // TODO: Verify host? Not sure if that is possible (ssh.FixedHostKey())
+		Timeout:         5 * time.Second,
+	}
+
+	var conn *ssh.Client
+	for {
+		c, err := ssh.Dial("tcp", addr, config)
+		if err == nil {
+			conn = c
+			break
+		}
+		time.Sleep(5 * time.Second)
+		fmt.Println("Failed connection. Retrying...")
+	}
+
+	return conn, nil
 }
 
 func tryGetConfigFromEnvironment() *Config {
@@ -125,6 +150,28 @@ func bootstrap(lom *lom.LOM) error {
 	}
 
 	// Await Alpine SSH access
+	addr := "192.168.0.231:22"
+	privateKeyBytes, _ := os.ReadFile("./key")
+	user := "root"
+
+	signer, err := ssh.ParsePrivateKey(privateKeyBytes)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("Waiting for SSH access to %s@%s\n", user, addr)
+	conn, err := awaitAndConnectSSH(signer, user, addr)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer conn.Close()
+
+	session, err := conn.NewSession()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer session.Close()
+
 	// Run ansible playbook
 	// Wait for real OS SSH access
 	// Ansible playbook 2: electric boogaloo?
