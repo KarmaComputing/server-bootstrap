@@ -1,0 +1,21 @@
+FROM alpine:latest
+
+RUN apk update && apk add --no-cache alpine-sdk \
+    build-base \
+    apk-tools \
+    busybox \
+    fakeroot \
+    syslinux \
+    xorriso \
+    squashfs-tools \
+    sudo \
+    git \
+    grub \
+    grub-efi
+
+WORKDIR /build
+COPY build.sh .
+
+RUN chmod +x build.sh
+
+CMD ["sh", "/build/build.sh"]

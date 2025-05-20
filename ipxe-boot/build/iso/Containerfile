@@ -1,6 +1,15 @@
 FROM alpine:latest
 
-RUN apk update && apk add --no-cache build-base git gcc binutils make perl xz-dev mtools syslinux xorriso
+RUN apk update && apk add --no-cache build-base \
+    git \
+    gcc \
+    binutils \
+    make \
+    perl \
+    xz-dev \
+    mtools \
+    syslinux \
+    xorriso
 
 WORKDIR /build
 
