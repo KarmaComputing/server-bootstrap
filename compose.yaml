@@ -6,6 +6,6 @@ services:
   apache:
     build: ./deploy/serve
     volumes:
-      - ./deploy/server/www:/usr/local/apache2/htdocs:z
+      - ./deploy/serve/www:/usr/local/apache2/htdocs:z
     ports:
       - 8080:80
