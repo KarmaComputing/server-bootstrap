@@ -21,6 +21,9 @@ mv -f ../build/key.pub ${WWW_DIR}/ssh/key.pub
 echo "--- Setting correct permissions for private key ---"
 chmod 600 ../build/key
 
+echo "--- Copying private SSH key to ../../internal/runner/key ---"
+mv -f ../build/key ../../internal/runner/key
+
 echo "--- Building ${PODMAN_IMAGE_NAME} ---"
 podman build \
     --tag ${PODMAN_IMAGE_NAME} \
