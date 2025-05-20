@@ -10,8 +10,15 @@ ISO_MAKE_THREADS=16
 echo "--- Creating serve directory at ${WWW_DIR} ---"
 mkdir -p ${WWW_DIR}
 
-#echo "--- Copying public SSH key from ${BUILD_DIR}/ssh-key to ${WWW_DIR} ---"
-#cp -f ${BUILD_DIR}/ssh-key/*.pub ${WWW_DIR}
+echo "--- Generating new SSH key pair ---"
+ssh-keygen -t rsa -f ../build/key -N ""
+
+echo "--- Copying public SSH key to ${WWW_DIR} ---"
+mkdir -p ${WWW_DIR}/ssh
+mv -f ../build/key.pub ${WWW_DIR}/ssh/key.pub
+
+echo "--- Setting correct permissions for private key ---"
+chmod 600 ../build/key
 
 echo "--- Building ${PODMAN_IMAGE_NAME} ---"
 podman build \
