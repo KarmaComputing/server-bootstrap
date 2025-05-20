@@ -1,6 +1,6 @@
 #!/bin/bash
 
-FILE="alpinebooter.ipxe"
+FILE="vm-test.ipxe"
 
 WWW_DIR="../serve/www"
 BUILD_DIR="../build/iso"
