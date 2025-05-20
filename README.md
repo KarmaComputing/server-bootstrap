@@ -22,7 +22,7 @@ URL=https://192.168.0.230 USERNAME=Administrator PASSWORD=A0F7HKUU VALIDCERT=fal
     - `ipxe.iso` is placed in `deploy/serve/www`
   - Building alpine-netboot image
     - Run `deploy/scripts/build-alpine.sh`
-    - Files are placed in `deploy/serve/www/iso
+    - Files are placed in `deploy/serve/www/iso`
   - ssh-keys
     <!-- - Place intended public SSH key into `build/ssh-key` -->
     - TODO
