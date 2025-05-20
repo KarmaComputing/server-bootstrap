@@ -1,0 +1,14 @@
+---
+- name: Test
+  hosts: local
+  gather_facts: false
+
+  tasks:
+    - name: Install python
+      # TODO: Consider installing python3 during the alpine netboot image build instead of here?
+      raw: test -e /usr/bin/python3 || apk add --no-cache python3
+
+    - name: Gather facts
+      setup:
+      vars:
+        ansible_python_interpreter: /usr/bin/python3

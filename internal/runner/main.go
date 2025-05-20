@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/exec"
 	"server_bootstrap/lom"
 	"strconv"
 	"strings"
@@ -20,19 +21,44 @@ type Config struct {
 }
 
 func main() {
-	config := tryGetConfigFromEnvironment()
+	// config := tryGetConfigFromEnvironment()
 
-	lom, err := lom.NewFromConfig(&config.ClientConfig)
+	// lom, err := lom.NewFromConfig(&config.ClientConfig)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// defer lom.Logout()
+
+	// err = bootstrap(lom)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// Await Alpine SSH access
+	addr := "localhost:2223"
+	privateKeyBytes, _ := os.ReadFile("./key")
+	user := "root"
+
+	signer, err := ssh.ParsePrivateKey(privateKeyBytes)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer lom.Logout()
 
-	err = bootstrap(lom)
+	fmt.Printf("Waiting for SSH access to %s@%s\n", user, addr)
+	conn, err := awaitAndConnectSSH(signer, user, addr)
 	if err != nil {
 		log.Fatal(err)
 	}
+	conn.Close()
 
+	fmt.Println("Running playbook")
+	cmd := exec.Command("ansible-playbook", "-i", "./ansible/inventory.ini", "./ansible/playbook.yml")
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	err = cmd.Run()
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func awaitAndConnectSSH(signer ssh.Signer, user, addr string) (*ssh.Client, error) {
@@ -164,13 +190,7 @@ func bootstrap(lom *lom.LOM) error {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer conn.Close()
-
-	session, err := conn.NewSession()
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer session.Close()
+	conn.Close()
 
 	// Run ansible playbook
 	// Wait for real OS SSH access
