@@ -1,0 +1,19 @@
+FROM alpine:latest
+
+RUN apk update && apk add --no-cache build-base \
+    git \
+    gcc \
+    binutils \
+    make \
+    perl \
+    xz-dev \
+    mtools \
+    syslinux \
+    xorriso
+
+WORKDIR /build
+
+RUN git clone https://github.com/ipxe/ipxe.git
+WORKDIR /build/ipxe/src
+
+CMD make -j${ISO_MAKE_THREADS} bin/ipxe.iso EMBED=/input/${FILE} && mv bin/ipxe.iso /output/ipxe.iso
