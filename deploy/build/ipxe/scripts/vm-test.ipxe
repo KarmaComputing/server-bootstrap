@@ -7,17 +7,19 @@
 
 dhcp
 
-set serverip 192.168.1.29:8080
 set console console=tty0
-set cmdline modules=loop,squashfs,sd-mod,usb-storage nomodeset
+set cmdline modules=loop,squashfs nomodeset
 set branch v3.20
 set flavor lts
 set arch x86_64
-set base-url http://${serverip}/iso/alpine-netboot/boot
-set modloop-url ${base-url}/modloop-${flavor}
+
+set serverip 192.168.1.29:8080
+set server-url http://${serverip}
+set base-url ${server-url}/iso/alpine-netboot/boot
 set repo-url http://dl-cdn.alpinelinux.org/alpine/${branch}/main
+set sshkey-url ${server-url}/sshkeys/id_ed25519.pub
 
 imgfree
-kernel ${base-url}/vmlinuz-${flavor} ${cmdline} ${console} ip=dhcp alpine_repo=${repo-url} modloop=${modloop-url} alpine_dev=tmpfs
+kernel ${base-url}/vmlinuz-${flavor} ${cmdline} ${console} ip=dhcp alpine_repo=${repo-url} modloop=${base-url}/modloop-${flavor} alpine_dev=tmpfs ssh_key=${sshkey-url}
 initrd ${base-url}/initramfs-${flavor}
 boot
