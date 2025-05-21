@@ -14,7 +14,7 @@ URL=https://192.168.0.230 USERNAME=Administrator PASSWORD=A0F7HKUU VALIDCERT=fal
 
 # How to Use This
 
-1. Building (NOTE: Ensure you are running the scripts from the `deploy/scripts` directory as they use relative paths)
+1. Building
   - Building ipxe.iso image
     - Use new/existing iPXE config file in `deploy/build/ipxe/scripts`
     - Input its name as FILE variable in `deploy/scripts/build-ipxe-iso.sh`
