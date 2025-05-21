@@ -33,8 +33,9 @@ func main() {
 	// if err != nil {
 	// 	log.Fatal(err)
 	// }
+
 	// Await Alpine SSH access
-	addr := "localhost:2223"
+	hosts := []string{"host.containers.internal:2223"}
 	privateKeyBytes, _ := os.ReadFile("./key")
 	user := "root"
 
@@ -43,15 +44,16 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("Waiting for SSH access to %s@%s\n", user, addr)
-	conn, err := awaitAndConnectSSH(signer, user, addr)
+	fmt.Printf("Waiting for SSH access to %s@%s\n", user, hosts[0])
+	conn, err := awaitAndConnectSSH(signer, user, hosts[0])
 	if err != nil {
 		log.Fatal(err)
 	}
 	conn.Close()
 
 	fmt.Println("Running playbook")
-	cmd := exec.Command("ansible-playbook", "-i", "./ansible/inventory.ini", "./ansible/playbook.yml")
+	cmd := exec.Command("ansible-playbook", "-i", strings.Join(hosts, ",")+",", "--private-key", "/app/key", "./ansible/playbook.yml")
+	cmd.Env = append(cmd.Env, "ANSIBLE_SSH_COMMON_ARGS='-o StrictHostKeyChecking=no'")
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 

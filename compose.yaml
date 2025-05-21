@@ -1,8 +1,13 @@
 services:
   controller:
-    build: ./internal/controller
-    ports:
-      - 8081:8080
+    build: ./internal/runner
+    # ports:
+    # - 8081:8080
+    volumes:
+      - ./internal/runner/key:/app/key:z
+      - ./internal/runner/ansible:/app/ansible:z
+    environment:
+      - LC_ALL=en_US.UTF-8
   apache:
     build: ./deploy/serve
     volumes:
