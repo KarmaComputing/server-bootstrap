@@ -1,27 +1,6 @@
 #!ipxe
 
-# The iPXE script below is based on:
-# https://boot.alpinelinux.org/boot.ipxe
+echo Setting temporary DHCP address to chain into bootfile
+dhcp
 
-ifopen
-ifstat
-set net0/ip:ipv4 192.168.0.231
-set net0/netmask:ipv4 255.255.255.0
-set net0/gateway:ipv4 192.168.0.1
-set net0/dns:ipv4 192.168.0.1
-ifopen net0
-
-set serverip 192.168.0.170
-
-set console console=tty0
-set cmdline modules=loop,squashfs nomodeset
-set branch v3.20
-set flavor lts
-set arch x86_64
-set img-url http://${serverip}/iso/alpine-netboot/boot
-set modloop-url ${img-url}/modloop-${flavor}
-
-imgfree
-kernel ${img-url}/vmlinuz-${flavor} ${cmdline} init=/sbin/init ${console} modloop=${modloop-url} ip=192.168.0.231
-initrd ${img-url}/initramfs-${flavor}
-boot
+chain http://192.168.0.160:8080/bootfile?uuid={UUID}
