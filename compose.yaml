@@ -8,6 +8,11 @@ services:
       - ./deploy/ansible:/app/ansible:z
     environment:
       - LC_ALL=en_US.UTF-8
+      - USERNAME=Administrator
+      - PASSWORD=A0F7HKUU
+      - URL=https://192.168.0.230
+      - VALIDCERT=false
+      - WIPEINTERVAL=300
   apache:
     build: ./deploy/serve
     volumes:
