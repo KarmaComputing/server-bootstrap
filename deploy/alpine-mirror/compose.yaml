@@ -1,0 +1,11 @@
+services:
+  sync:
+    build: .
+    volumes:
+      - ./repo:/site:z
+  server:
+    image: docker.io/library/httpd:alpine
+    volumes:
+      - ./repo:/usr/local/apache2/htdocs:z
+    ports:
+      - 8080:80
