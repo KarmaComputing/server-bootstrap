@@ -8,11 +8,11 @@
 URL=https://192.168.0.230 USERNAME=Administrator PASSWORD=A0F7HKUU VALIDCERT=false WIPEINTERVAL=300 go run .
 ```
 
-# Logical Flow
+## Logical Flow
 
 ![diagram](docs/diagram.drawio.png)
 
-# How to Use This
+## How to Use This
 
 1. Building (NOTE: Ensure you are running the scripts from the `deploy/scripts` directory as they use relative paths)
   - Building ipxe.iso image
