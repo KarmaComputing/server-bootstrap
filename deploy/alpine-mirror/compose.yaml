@@ -1,9 +1,11 @@
 services:
   sync:
+    container_name: alpine-mirror-sync
     build: .
     volumes:
       - ./repo:/site:z
   server:
+    container_name: alpine-mirror-server
     image: docker.io/library/httpd:alpine
     volumes:
       - ./repo:/usr/local/apache2/htdocs:z
