@@ -1,13 +1,12 @@
 # How to Use
 
-- Adjust ./synchroniser/crontab for desired schedule of synchronising
-- Adjust ./synchroniser/mirror.sh for which repos to exclude, etc.
-- Image has to be re-built whenever crontab or mirror.sh are changed
+- Adjust `./synchroniser/crontab` for desired schedule of synchronising
+- Adjust `./synchroniser/mirror.sh` for which repos to exclude, etc.
+- Image has to be re-built whenever `crontab` or `mirror.sh` are changed
 - Run by `podman compose up` or `docker compose up`
 
 # Notes
 
 - [Alpine Wiki - How to setup a Mirror](https://wiki.alpinelinux.org/wiki/How_to_setup_a_Alpine_Linux_mirror)
 - You can trigger the syncs manually via
-  - Podman - `podman exec -it alpine-mirror-sync /app/mirror.sh`
-  - Docker - `docker exec -it alpine-mirror-sync /app/mirror.sh`
+  - `<podman|docker> exec -it alpine-mirror-sync /app/mirror.sh`
