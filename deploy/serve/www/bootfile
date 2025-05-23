@@ -14,11 +14,11 @@ set static-dns 192.168.0.1
 # --- iPXE boot sources ---
 set web-server http://192.168.0.160:8080
 set boot-base-url ${web-server}/iso/alpine-netboot/boot
-set repo-url http://dl-cdn.alpinelinux.org/alpine/${alpine-branch}/main
-set sshkey-url ${web-server}/ssh/key.pub
 set kernel-url ${boot-base-url}/vmlinuz-${flavor}
 set modloop-url ${boot-base-url}/modloop-${alpine-flavour}
 set initramfs-url ${boot-base-url}/initramfs-${alpine-flavour}
+set sshkey-url ${web-server}/ssh/key.pub
+set alpine-repo http://dl-cdn.alpinelinux.org/alpine/${alpine-branch}/main
 
 # --- Alpine version info ---
 set alpine-branch v3.20
@@ -42,7 +42,7 @@ ifopen ${pxe-iface}
 ifstat
 
 imgfree
-kernel ${kernel-url} console=tty0 modules=loop,squashfs nomodeset ip=${static-ip}::${static-gw}:${static-mask}::${static-iface}: alpine_repo=${repo-url} modloop=${modloop-url} initrd=${initramfs-url} ssh_key=${sshkey-url}
+kernel ${kernel-url} console=tty0 modules=loop,squashfs nomodeset ip=${static-ip}::${static-gw}:${static-mask}::${static-iface}: alpine_repo=${alpine-repo} modloop=${modloop-url} initrd=${initramfs-url} ssh_key=${sshkey-url}
 initrd ${initramfs-url}
 
 boot
