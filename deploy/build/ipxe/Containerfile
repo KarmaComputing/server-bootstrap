@@ -16,4 +16,9 @@ WORKDIR /build
 RUN git clone https://github.com/ipxe/ipxe.git
 WORKDIR /build/ipxe/src
 
-CMD make -j${ISO_MAKE_THREADS} bin/ipxe.iso EMBED=/input/${FILE} && mv bin/ipxe.iso /output/ipxe.iso
+RUN sed -i 's$//#define PING_CMD$#define PING_CMD$g' config/general.h &&\
+    sed -i 's$//#define NET_PROTO_IPV6$#define NET_PROTO_IPV6$g' config/general.h &&\
+    sed -i 's/undef.*DOWNLOAD_PROTO_HTTPS/define DOWNLOAD_PROTO_HTTPS/g' config/general.h
+
+CMD make -j${ISO_MAKE_THREADS} bin/ipxe.iso EMBED=/input/${FILE} \
+    && mv bin/ipxe.iso /output/ipxe.iso

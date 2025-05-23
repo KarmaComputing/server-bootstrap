@@ -4,12 +4,15 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/exec"
 	"server_bootstrap/lom"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/stmcginnis/gofish"
 	"github.com/stmcginnis/gofish/redfish"
+	"golang.org/x/crypto/ssh"
 )
 
 type Config struct {
@@ -30,6 +33,28 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+func awaitAndConnectSSH(signer ssh.Signer, user, addr string) (*ssh.Client, error) {
+	config := &ssh.ClientConfig{
+		User:            user,
+		Auth:            []ssh.AuthMethod{ssh.PublicKeys(signer)},
+		HostKeyCallback: ssh.InsecureIgnoreHostKey(), // TODO: Verify host? Not sure if that is possible (ssh.FixedHostKey())
+		Timeout:         5 * time.Second,
+	}
+
+	var conn *ssh.Client
+	for {
+		c, err := ssh.Dial("tcp", addr, config)
+		if err == nil {
+			conn = c
+			break
+		}
+		time.Sleep(5 * time.Second)
+		fmt.Println("Failed connection. Retrying...")
+	}
+
+	return conn, nil
 }
 
 func tryGetConfigFromEnvironment() *Config {
@@ -94,7 +119,7 @@ func bootstrap(lom *lom.LOM) error {
 		BootSourceOverrideEnabled: redfish.OnceBootSourceOverrideEnabled,
 	}
 	emptyVirtualMediaPayload := map[string]any{"Image": nil}
-	occupiedVirtualMediaPayload := map[string]string{"Image": "http://192.168.0.170/iso/alpine-netboot/ipxe.iso"}
+	occupiedVirtualMediaPayload := map[string]string{"Image": "http://192.168.0.170:8080/ipxe.iso"}
 
 	for _, system := range systems {
 		// Ensure boot option is actually set
@@ -107,13 +132,13 @@ func bootstrap(lom *lom.LOM) error {
 		fmt.Printf("Removing virtual media for system: %s\n", system.HostName)
 		_, err = lom.APIClient.Patch("/redfish/v1/managers/1/virtualmedia/2", emptyVirtualMediaPayload)
 		if err != nil {
-			return err
+			fmt.Println(err)
 		}
 
 		fmt.Printf("Setting virtual media for system: %s\n", system.HostName)
 		_, err = lom.APIClient.Patch("/redfish/v1/managers/1/virtualmedia/2", occupiedVirtualMediaPayload)
 		if err != nil {
-			return err
+			fmt.Println(err)
 		}
 
 		// Reboot
@@ -125,7 +150,33 @@ func bootstrap(lom *lom.LOM) error {
 	}
 
 	// Await Alpine SSH access
+	addr := "192.168.0.248:22"
+	privateKeyBytes, _ := os.ReadFile("./key")
+	user := "root"
+
+	signer, err := ssh.ParsePrivateKey(privateKeyBytes)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("Waiting for SSH access to %s@%s\n", user, addr)
+	conn, err := awaitAndConnectSSH(signer, user, addr)
+	if err != nil {
+		log.Fatal(err)
+	}
+	conn.Close()
+
 	// Run ansible playbook
+	fmt.Println("Running playbook")
+	cmd := exec.Command("ansible-playbook", "-i", addr+",", "--private-key", "/app/key", "./ansible/playbook.yml")
+	cmd.Env = append(cmd.Env, "ANSIBLE_SSH_COMMON_ARGS='-o StrictHostKeyChecking=no'")
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	err = cmd.Run()
+	if err != nil {
+		log.Fatal(err)
+	}
 	// Wait for real OS SSH access
 	// Ansible playbook 2: electric boogaloo?
 

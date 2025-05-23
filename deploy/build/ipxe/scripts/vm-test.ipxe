@@ -3,8 +3,6 @@
 # The iPXE script below is based on:
 # https://boot.alpinelinux.org/boot.ipxe
 
-#!ipxe
-
 dhcp
 
 set console console=tty0
