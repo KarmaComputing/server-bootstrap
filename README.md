@@ -1,18 +1,17 @@
 # Table of Contents
 
-[API Docs](api/README.md)
-
-# Example Command for Debugging
-
-```sh
-URL=https://192.168.0.230 USERNAME=Administrator PASSWORD=A0F7HKUU VALIDCERT=false WIPEINTERVAL=300 go run .
-```
-
-## Logical Flow
+# Logical Flow
 
 ![diagram](docs/diagram.drawio.png)
 
-## How to Use This
+# Usage
+
+## Example Command for Debugging
+
+- In `internal/runner`:
+```sh
+URL=https://192.168.0.230 USERNAME=Administrator PASSWORD=A0F7HKUU VALIDCERT=false WIPEINTERVAL=300 go run .
+```
 
 1. Building
   - Building ipxe.iso image
@@ -31,8 +30,9 @@ URL=https://192.168.0.230 USERNAME=Administrator PASSWORD=A0F7HKUU VALIDCERT=fal
   - `podman compose up -d` in repository root
 3. !! VM FOR TESTING !!
   - Ensure `qemu` is installed and runnable
-  - Ensure web server is accessible at \<machine-ip\>:8080
+  - Ensure web server is accessible at `\<machine-ip\>:8080`
   - `qemu-system-x86_64 -cdrom <ipxe.iso> -net nic -net user,hostfwd=tcp::2223-:22 -m 3072 -smp $(nproc)`
+  - VM can be accessed over SSH at `localhost:2223`
 
 
 # Bazinga
