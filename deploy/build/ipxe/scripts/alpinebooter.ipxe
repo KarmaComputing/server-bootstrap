@@ -3,4 +3,6 @@
 echo Setting temporary DHCP address to chain into bootfile
 dhcp
 
-chain http://192.168.0.160:8080/bootfile?uuid={UUID}
+set chain-url http://192.168.0.160:8080/bootfile
+echo Chaining to ${chain_url}
+chain ${chain-url}?uuid=${uuid}
