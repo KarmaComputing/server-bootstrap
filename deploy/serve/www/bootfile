@@ -2,38 +2,47 @@
 
 # The iPXE script below is based on:
 # https://boot.alpinelinux.org/boot.ipxe
+# https://wiki.alpinelinux.org/wiki/PXE_boot
 
-ifopen
-ifstat
-
-set iface net0
-echo Configuring ${iface}
-set ${iface}/ip:ipv4 192.168.0.248
-set ${iface}/netmask:ipv4 255.255.255.0
-set ${iface}/gateway:ipv4 192.168.0.1
-set ${iface}/dns:ipv4 192.168.0.1
-ifopen ${iface}
-ifstat
-
-set console console=tty0
-set cmdline modules=loop,squashfs nomodeset
-set branch v3.20
-set flavor lts
-set arch x86_64
-
-set web-server http://192.168.0.160:8080
-set boot-base-url ${web-server}/iso/alpine-netboot/boot
-set repo-url http://dl-cdn.alpinelinux.org/alpine/${branch}/main
-set sshkey-url ${web-server}/ssh/key.pub
-set alpine-dev tmpfs
-
+# --- Network configuration (static IP) ---
+set static-iface eth0
 set static-ip 192.168.0.248
 set static-gw 192.168.0.1
 set static-mask 255.255.255.0
 set static-dns 192.168.0.1
 
+# --- iPXE boot sources ---
+set web-server http://192.168.0.160:8080
+set boot-base-url ${web-server}/iso/alpine-netboot/boot
+set repo-url http://dl-cdn.alpinelinux.org/alpine/${alpine-branch}/main
+set sshkey-url ${web-server}/ssh/key.pub
+set kernel-url ${boot-base-url}/vmlinuz-${flavor}
+set modloop-url ${boot-base-url}/modloop-${alpine-flavour}
+set initramfs-url ${boot-base-url}/initramfs-${alpine-flavour}
+
+# --- Alpine version info ---
+set alpine-branch v3.20
+set alpine-flavour lts
+set arch x86_64
+
+# ---------------------------
+# |    Boot script start    |
+# ---------------------------
+
+# --- Configure network for PXE ---
+echo Configuring iface for PXE (${pxe-iface})
+ifopen
+ifstat
+set pxe-iface net0
+set ${pxe-iface}/ip:ipv4 ${static-ip}
+set ${pxe-iface}/netmask:ipv4 ${static-mask}
+set ${pxe-iface}/gateway:ipv4 ${static-gw}
+set ${pxe-iface}/dns:ipv4 ${static-dns}
+ifopen ${pxe-iface}
+ifstat
+
 imgfree
-kernel ${boot-base-url}/vmlinuz-${flavor} ${cmdline} ${console} ip=${static-ip}::${static-gw}:${static-mask}::eth0:none:${static-dns} alpine_repo=${repo-url} modloop=${boot-base-url}/modloop-${flavor} alpine_dev=${alpine-dev} ssh_key=${sshkey-url}
-initrd ${boot-base-url}/initramfs-${flavor}
+kernel ${kernel-url} console=tty0 modules=loop,squashfs nomodeset ip=${static-ip}::${static-gw}:${static-mask}::${static-iface}: alpine_repo=${repo-url} modloop=${modloop-url} initrd=${initramfs-url} ssh_key=${sshkey-url}
+initrd ${initramfs-url}
 
 boot
