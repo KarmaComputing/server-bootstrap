@@ -1,12 +1,10 @@
-# Table of Contents
-
-# Logical Flow
+# Overview
 
 ![diagram](docs/diagram.drawio.png)
 
 # Usage
 
-## Example Command for Debugging
+## Run for debugging
 
 - In `internal/runner`:
 ```sh
@@ -36,7 +34,7 @@ URL=https://192.168.0.230 USERNAME=Administrator PASSWORD=A0F7HKUU VALIDCERT=fal
 
 3. !! VM FOR TESTING !!
   - Ensure `qemu` is installed and runnable
-  - Ensure web server is accessible at `\<machine-ip\>:8080`
+  - Ensure web server is accessible at whatever address is defined in the iPXE boot script
   - `qemu-system-x86_64 -cdrom <ipxe.iso> -net nic -net user,hostfwd=tcp::2223-:22 -m 3072 -smp $(nproc)`
   - VM can be accessed over SSH at `localhost:2223`
 
