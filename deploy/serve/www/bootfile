@@ -11,18 +11,19 @@ set static-gw 192.168.0.1
 set static-mask 255.255.255.0
 set static-dns 192.168.0.1
 
-# --- iPXE boot sources ---
-set web-server http://192.168.0.160:8080
-set boot-base-url ${web-server}/iso/alpine-netboot/boot
-set kernel-url ${boot-base-url}/vmlinuz-${flavor}
-set modloop-url ${boot-base-url}/modloop-${alpine-flavour}
-set initramfs-url ${boot-base-url}/initramfs-${alpine-flavour}
-set sshkey-url ${web-server}/ssh/key.pub
-
 # --- Alpine version info ---
 set alpine-branch v3.20
 set alpine-flavour lts
 set arch x86_64
+
+# --- iPXE boot sources ---
+set web-server http://192.168.0.236:8080
+set boot-base-url ${web-server}/iso/alpine-netboot/boot
+set kernel-url ${boot-base-url}/vmlinuz-${alpine-flavour}
+set modloop-url ${boot-base-url}/modloop-${alpine-flavour}
+set initramfs-image initramfs-${alpine-flavour}
+set initramfs-url ${boot-base-url}/${initramfs-image}
+set sshkey-url ${web-server}/ssh/key.pub
 set alpine-repo http://dl-cdn.alpinelinux.org/alpine/${alpine-branch}/main
 
 # ---------------------------
@@ -30,10 +31,8 @@ set alpine-repo http://dl-cdn.alpinelinux.org/alpine/${alpine-branch}/main
 # ---------------------------
 
 # --- Configure network for PXE ---
-echo Configuring iface for PXE (${pxe-iface})
-ifopen
-ifstat
 set pxe-iface net0
+echo Configuring iface for PXE (${pxe-iface})
 set ${pxe-iface}/ip:ipv4 ${static-ip}
 set ${pxe-iface}/netmask:ipv4 ${static-mask}
 set ${pxe-iface}/gateway:ipv4 ${static-gw}
@@ -42,7 +41,8 @@ ifopen ${pxe-iface}
 ifstat
 
 imgfree
-kernel ${kernel-url} console=tty0 modules=loop,squashfs nomodeset ip=${static-ip}::${static-gw}:${static-mask}::${static-iface}: alpine_repo=${alpine-repo} modloop=${modloop-url} initrd=${initramfs-url} ssh_key=${sshkey-url}
+
 initrd ${initramfs-url}
+kernel ${kernel-url} netpoll.carrier_timeout=120 console=tty0,115200 initrd=${initramfs-image} modules=loop,squashfs nomodeset ip=${static-ip}::${static-gw}:${static-mask}::eth0:none:${static-dns} alpine_repo=${alpine-repo} modloop=${modloop-url} ssh_key=${sshkey-url} initrd=${initramfs-image}
 
 boot
