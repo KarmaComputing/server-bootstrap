@@ -18,12 +18,12 @@ set kernel-url ${boot-base-url}/vmlinuz-${flavor}
 set modloop-url ${boot-base-url}/modloop-${alpine-flavour}
 set initramfs-url ${boot-base-url}/initramfs-${alpine-flavour}
 set sshkey-url ${web-server}/ssh/key.pub
-set alpine-repo http://dl-cdn.alpinelinux.org/alpine/${alpine-branch}/main
 
 # --- Alpine version info ---
 set alpine-branch v3.20
 set alpine-flavour lts
 set arch x86_64
+set alpine-repo http://dl-cdn.alpinelinux.org/alpine/${alpine-branch}/main
 
 # ---------------------------
 # |    Boot script start    |
