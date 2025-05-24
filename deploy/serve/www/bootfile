@@ -43,6 +43,6 @@ ifstat
 imgfree
 
 initrd ${initramfs-url}
-kernel ${kernel-url} netpoll.carrier_timeout=120 console=tty0,115200 initrd=${initramfs-image} modules=loop,squashfs nomodeset ip=${static-ip}::${static-gw}:${static-mask}::eth0:none:${static-dns} alpine_repo=${alpine-repo} modloop=${modloop-url} ssh_key=${sshkey-url} initrd=${initramfs-image}
+kernel ${kernel-url} netpoll.carrier_timeout=120 console=tty0 modules=loop,squashfs nomodeset ip=${static-ip}::${static-gw}:${static-mask}::eth0:none:${static-dns} alpine_repo=${alpine-repo} modloop=${modloop-url} ssh_key=${sshkey-url}
 
 boot
