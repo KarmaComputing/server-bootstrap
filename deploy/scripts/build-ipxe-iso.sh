@@ -1,6 +1,8 @@
 #!/bin/bash
 cd "$(dirname "$0")"
 
+set -exu
+
 FILE="alpinebooter.ipxe"
 
 WWW_DIR="../serve/www"

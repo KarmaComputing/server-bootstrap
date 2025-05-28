@@ -1,6 +1,8 @@
 #!/bin/bash
 cd "$(dirname "$0")"
 
+set -exu
+
 PODMAN_IMAGE_NAME="alpine_builder"
 WWW_DIR="../serve/www/iso/alpine-netboot"
 BUILD_DIR="../build/alpine"
