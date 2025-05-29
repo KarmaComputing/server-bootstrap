@@ -6,6 +6,10 @@ on:
 jobs:
   create-issue-branch:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: write
+      issues: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
