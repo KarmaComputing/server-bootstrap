@@ -5,6 +5,7 @@
 # https://wiki.alpinelinux.org/wiki/PXE_boot
 
 # --- Network configuration (static IP) ---
+set static-iface
 set static-ip 192.168.0.248
 set static-gw 192.168.0.1
 set static-mask 255.255.255.0
@@ -24,6 +25,7 @@ set initramfs-image initramfs-${alpine-flavour}
 set initramfs-url ${boot-base-url}/${initramfs-image}
 set sshkey-url ${web-server}/ssh/key.pub
 set alpine-repo http://dl-cdn.alpinelinux.org/alpine/${alpine-branch}/main
+#set alpine-repo http://alpine.mirror.karmacomputing.co.uk/${alpine-branch}/main
 
 # ---------------------------
 # |    Boot script start    |
