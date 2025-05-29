@@ -1,0 +1,49 @@
+#!ipxe
+
+# The iPXE script below is based on:
+# https://boot.alpinelinux.org/boot.ipxe
+# https://wiki.alpinelinux.org/wiki/PXE_boot
+
+# --- Network configuration (static IP) ---
+set static-iface
+set static-ip 192.168.0.248
+set static-gw 192.168.0.1
+set static-mask 255.255.255.0
+set static-dns 194.168.4.123
+
+# --- Alpine version info ---
+set alpine-branch v3.20
+set alpine-flavour lts
+set arch x86_64
+
+# --- iPXE boot sources ---
+set web-server http://192.168.0.170:8080
+set boot-base-url ${web-server}/iso/alpine-netboot/boot
+set kernel-url ${boot-base-url}/vmlinuz-${alpine-flavour}
+set modloop-url ${boot-base-url}/modloop-${alpine-flavour}
+set initramfs-image initramfs-${alpine-flavour}
+set initramfs-url ${boot-base-url}/${initramfs-image}
+set sshkey-url ${web-server}/ssh/key.pub
+set alpine-repo http://dl-cdn.alpinelinux.org/alpine/${alpine-branch}/main
+#set alpine-repo http://alpine.mirror.karmacomputing.co.uk/${alpine-branch}/main
+
+# ---------------------------
+# |    Boot script start    |
+# ---------------------------
+
+# --- Configure network for PXE ---
+set pxe-iface net0
+echo Configuring iface for PXE (${pxe-iface}: ip=${static-ip},mask=${static-mask},gw=${static-gw},dns=${static-dns})
+ifopen ${pxe-iface}
+set ${pxe-iface}/ip:ipv4 ${static-ip}
+set ${pxe-iface}/netmask:ipv4 ${static-mask}
+set ${pxe-iface}/gateway:ipv4 ${static-gw}
+set ${pxe-iface}/dns:ipv4 ${static-dns}
+ifstat
+
+imgfree
+
+initrd ${initramfs-url}
+kernel ${kernel-url} console=tty0 modules=loop,squashfs nomodeset ip=${static-ip}::${static-gw}:${static-mask}::${static-iface}:none:${static-dns} alpine_repo=${alpine-repo} modloop=${modloop-url} ssh_key=${sshkey-url}
+
+boot

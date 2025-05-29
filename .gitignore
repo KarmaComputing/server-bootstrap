@@ -7,3 +7,6 @@ node_modules
 test-results/
 playwright-report/
 playwright/.cache/
+key*
+deploy/serve/www/*
+!deploy/serve/www/bootfile

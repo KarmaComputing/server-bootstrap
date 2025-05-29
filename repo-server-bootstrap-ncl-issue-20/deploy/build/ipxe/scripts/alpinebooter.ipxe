@@ -1,0 +1,8 @@
+#!ipxe
+
+echo Setting temporary DHCP address to chain into bootfile
+dhcp
+
+set chain-url http://192.168.0.170:8080/bootfile
+echo Chaining to ${chain_url}
+chain ${chain-url}?uuid=${uuid}

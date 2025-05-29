@@ -1,0 +1,23 @@
+#!ipxe
+
+# The iPXE script below is based on:
+# https://boot.alpinelinux.org/boot.ipxe
+
+dhcp
+
+set console console=tty0
+set cmdline modules=loop,squashfs nomodeset
+set branch v3.20
+set flavor lts
+set arch x86_64
+
+set serverip 192.168.1.29:8080
+set server-url http://${serverip}
+set base-url ${server-url}/iso/alpine-netboot/boot
+set repo-url http://dl-cdn.alpinelinux.org/alpine/${branch}/main
+set sshkey-url ${server-url}/ssh/key.pub
+
+imgfree
+kernel ${base-url}/vmlinuz-${flavor} ${cmdline} ${console} ip=dhcp alpine_repo=${repo-url} modloop=${base-url}/modloop-${flavor} alpine_dev=tmpfs ssh_key=${sshkey-url}
+initrd ${base-url}/initramfs-${flavor}
+boot

@@ -1,0 +1,34 @@
+FROM alpine:latest
+
+RUN apk update && apk add --no-cache build-base \
+    git \
+    gcc \
+    binutils \
+    make \
+    perl \
+    xz-dev \
+    mtools \
+    syslinux \
+    xorriso \
+    curl \
+    openssl \
+    coreutils
+
+WORKDIR /build
+
+RUN git clone https://github.com/ipxe/ipxe.git
+WORKDIR /build/ipxe/src
+
+RUN curl -s http://ca.ipxe.org/ca.crt > ca.pem &&\
+    curl -s https://letsencrypt.org/certs/isrgrootx1.pem > isrgrootx1.pem &&\
+    curl -s https://letsencrypt.org/certs/lets-encrypt-r3.pem > lets-encrypt-r3.pem
+
+RUN sed -i 's$//#define PING_CMD$#define PING_CMD$g' config/general.h &&\
+    sed -i 's$//#define NET_PROTO_IPV6$#define NET_PROTO_IPV6$g' config/general.h &&\
+    sed -i 's/undef.*DOWNLOAD_PROTO_HTTPS/define DOWNLOAD_PROTO_HTTPS/g' config/general.h
+
+CMD make -j${ISO_MAKE_THREADS} bin/ipxe.iso EMBED=/input/${FILE} \
+        DEBUG=tls,httpcore,x509,certstore \
+        CERT=ca.pem,isrgrootx1.pem,lets-encrypt-r3.pem \
+        TRUST=ca.pem,isrgrootx1.pem,lets-encrypt-r3.pem \
+    && mv bin/ipxe.iso /output/ipxe.iso

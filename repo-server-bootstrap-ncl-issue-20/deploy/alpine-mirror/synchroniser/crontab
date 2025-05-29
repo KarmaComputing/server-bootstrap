@@ -1,0 +1,2 @@
+# every 5 days
+* * */5 * * sh /app/mirror.sh

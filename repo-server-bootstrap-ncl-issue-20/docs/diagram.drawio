@@ -1,0 +1,54 @@
+<mxfile host="diagrams.dysen.net" agent="Mozilla/5.0 (X11; Linux x86_64; rv:138.0) Gecko/20100101 Firefox/138.0" version="26.2.8">
+  <diagram name="Page-1" id="zE7GavBk4X5OBm_243wR">
+    <mxGraphModel dx="1049" dy="1689" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="PdlrdI1TMCMrv77BaEMr-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="PdlrdI1TMCMrv77BaEMr-1" target="PdlrdI1TMCMrv77BaEMr-2" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="PdlrdI1TMCMrv77BaEMr-4" value="&lt;div&gt;&lt;font face=&quot;Helvetica&quot;&gt;controller&lt;/font&gt;&lt;font face=&quot;monospace&quot;&gt;: redfish boot override&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font face=&quot;Helvetica&quot;&gt;controller&lt;/font&gt;&lt;font face=&quot;monospace&quot;&gt;: redfish mount networked media&lt;/font&gt;&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="PdlrdI1TMCMrv77BaEMr-3" vertex="1" connectable="0">
+          <mxGeometry x="-0.3046" relative="1" as="geometry">
+            <mxPoint x="52" y="40" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="PdlrdI1TMCMrv77BaEMr-1" value="&lt;div&gt;Off&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: rgb(255, 0, 0);&quot;&gt;OS Offline&lt;/span&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="380" y="-530" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="PdlrdI1TMCMrv77BaEMr-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="PdlrdI1TMCMrv77BaEMr-2" target="PdlrdI1TMCMrv77BaEMr-5" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="PdlrdI1TMCMrv77BaEMr-8" value="iPXE auto-runs boot.php script" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="PdlrdI1TMCMrv77BaEMr-7" vertex="1" connectable="0">
+          <mxGeometry x="-0.3043" y="2" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="PdlrdI1TMCMrv77BaEMr-2" value="&lt;div&gt;On&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: rgb(0, 153, 0);&quot;&gt;OS Online (iPXE iso with hard-coded boot.php location)&lt;/span&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="550" y="-385" width="120" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="PdlrdI1TMCMrv77BaEMr-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" parent="1" source="PdlrdI1TMCMrv77BaEMr-5" target="PdlrdI1TMCMrv77BaEMr-9" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="PdlrdI1TMCMrv77BaEMr-12" value="controller: &lt;font face=&quot;monospace&quot;&gt;ansible-playbook xyz&lt;/font&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="PdlrdI1TMCMrv77BaEMr-11" vertex="1" connectable="0">
+          <mxGeometry x="0.4267" y="-1" relative="1" as="geometry">
+            <mxPoint x="40" y="21" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="PdlrdI1TMCMrv77BaEMr-5" value="&lt;div&gt;On&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: rgb(0, 153, 0);&quot;&gt;OS Online (Custom Alpine Linux iso)&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: rgb(0, 153, 0);&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: rgb(0, 153, 0);&quot;&gt;SSH accessible&lt;/span&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="400" y="-180" width="120" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="PdlrdI1TMCMrv77BaEMr-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="PdlrdI1TMCMrv77BaEMr-9" target="PdlrdI1TMCMrv77BaEMr-1" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="PdlrdI1TMCMrv77BaEMr-18" value="controller: &lt;font face=&quot;monospace&quot;&gt;wait for wipe-interval timeout&lt;/font&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="PdlrdI1TMCMrv77BaEMr-17" vertex="1" connectable="0">
+          <mxGeometry x="-0.2969" y="3" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="PdlrdI1TMCMrv77BaEMr-9" value="&lt;div&gt;On&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: rgb(0, 153, 0);&quot;&gt;OS Online (Intented OS - Debian/Fedora/etc.)&lt;/span&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="260" y="-385" width="120" height="90" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
