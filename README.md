@@ -2,14 +2,14 @@
 
 ![diagram](docs/diagram.drawio.png)
 
-# Usage
 
 ## Run for debugging
 
-- In `internal/runner`:
-```sh
-URL=https://192.168.0.230 USERNAME=Administrator PASSWORD=A0F7HKUU VALIDCERT=false WIPEINTERVAL=300 go run .
-```
+- In `internal/runner`
+
+    ```sh
+    URL=https://192.168.0.230 USERNAME=Administrator PASSWORD=A0F7HKUU VALIDCERT=false WIPEINTERVAL=300 go run .
+    ```
 
 ## Full deploy
 
@@ -37,15 +37,3 @@ URL=https://192.168.0.230 USERNAME=Administrator PASSWORD=A0F7HKUU VALIDCERT=fal
   - Ensure web server is accessible at whatever address is defined in the iPXE boot script
   - `qemu-system-x86_64 -cdrom <ipxe.iso> -net nic -net user,hostfwd=tcp::2223-:22 -m 3072 -smp $(nproc)`
   - VM can be accessed over SSH at `localhost:2223`
-
-
-# Bazinga
-
-```
- ____            _
-| __ )  __ _ ___(_)_ __   __ _  __ _
-|  _ \ / _` |_  / | '_ \ / _` |/ _` |
-| |_) | (_| |/ /| | | | | (_| | (_| |
-|____/ \__,_/___|_|_| |_|\__, |\__,_|
-                        |___/
-```
