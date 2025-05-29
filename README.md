@@ -1,9 +1,14 @@
 # Overview
 
+> [!NOTE]
+> This repo & docs is very much in flux.
+> For project purpose see [Server Bootstrap Project Concise project summary & deliverables](https://docs.google.com/document/d/15YR0hAkHfq8g_2rFzpKjpKf1mytyygREyR7a1ZWfzhE/edit?usp=sharing)
+> For background reading also see [https://github.com/KarmaComputing/server-bootstrap](https://github.com/KarmaComputing/server-bootstrap)
+
 ![diagram](docs/diagram.drawio.png)
 
 
-## TOC
+## Table of contents
 
 - [Alpine Mirroring](./deploy/alpine-mirror/README.md)
 
