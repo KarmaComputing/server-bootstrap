@@ -1,5 +1,8 @@
 # Setup from blank server
 
+> [!NOTE]
+> This repo & docs is very much in flux.
+
 High-level steps:
 
 1. Factory reset server (careful you're on the correct server!)
