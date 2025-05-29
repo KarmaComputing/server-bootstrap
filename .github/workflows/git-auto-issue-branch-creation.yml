@@ -1,7 +1,7 @@
 name: Auto create git branch upon new issue
 on:
   issues:
-    types: [opened]
+    types: [opened, reopened]
 
 jobs:
   create-issue-branch:
