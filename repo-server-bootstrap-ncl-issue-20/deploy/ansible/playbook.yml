@@ -5,7 +5,7 @@
 
   tasks:
       - name: Install python
-        raw: test -e /usr/bin/python3 || apk update && apk add --no-cache python3
+        raw: test -e /usr/bin/python3 || apk add --no-cache python3
 
       - name: Gather facts
         setup:
