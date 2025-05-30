@@ -1,37 +1,10 @@
----
-- name: Wipe and Install
+- name: Setup webserver container
   hosts: all
-  gather_facts: false
 
   tasks:
-    - name: Install python3
-      raw: test -e /usr/bin/python3 || apk add --no-cache python3
-
-    - name: Gather facts
-      setup:
-      vars:
-        ansible_python_interpreter: /usr/bin/python3
-
-    - name: Install openntpd
-      apk:
-        name: openntpd
-        state: present
-
-    - name: Setup NTP
-      command: setup-ntp
-      args:
-        creates: /etc/ntpd.conf
-
-    - name: Add community repository
-      lineinfile:
-        path: /etc/apk/repositories
-        line: "http://dl-cdn.alpinelinux.org/alpine/v3.20/community/"
-        state: present
-
-    - name: Install podman
-      apk:
-        name:
-          - podman
+    - name: Ensure podman is present
+      community.general.apk:
+        name: podman
         state: present
 
     - name: Enable and start cgroups service
