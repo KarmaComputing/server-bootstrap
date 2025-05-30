@@ -4,22 +4,60 @@
   gather_facts: false
 
   tasks:
-      - name: Install python
-        raw: test -e /usr/bin/python3 || apk add --no-cache python3
+    - name: Install python3
+      raw: test -e /usr/bin/python3 || apk add --no-cache python3
 
-      - name: Gather facts
-        setup:
-        vars:
-            ansible_python_interpreter: /usr/bin/python3
+    - name: Gather facts
+      setup:
+      vars:
+        ansible_python_interpreter: /usr/bin/python3
 
-      - name: Add community repository
-        raw: echo "http://dl-cdn.alpinelinux.org/alpine/v3.20/community/" >> /etc/apk/repositories
+    - name: Install openntpd
+      apk:
+        name: openntpd
+        state: present
 
-      - name: Install podman
-        raw: apk add --no-cache podman podman-compose
+    - name: Setup NTP
+      command: setup-ntp
+      args:
+        creates: /etc/ntpd.conf
 
-      - name: Setup podman
-        raw: rc-update add cgroups && rc-service cgroups start
+    - name: Add community repository
+      lineinfile:
+        path: /etc/apk/repositories
+        line: "http://dl-cdn.alpinelinux.org/alpine/v3.20/community/"
+        state: present
 
-      - name: Start webserver
-        raw: podman run --rm -dit --name my-apache-app -p 80:80 -v "$PWD":/usr/local/apache2/htdocs/ httpd:2.4
+    - name: Install podman
+      apk:
+        name:
+          - podman
+        state: present
+
+    - name: Enable and start cgroups service
+      service:
+        name: cgroups
+        enabled: true
+        state: started
+
+    - name: Ensure /srv/www directory exists
+      file:
+        path: /srv/www
+        state: directory
+
+    - name: Create index.html
+      copy:
+        dest: /srv/www/index.html
+        content: "Hello\n"
+
+    - name: Start apache container with podman
+      containers.podman.podman_container:
+        name: apache
+        image: docker.io/library/httpd:2.4
+        state: started
+        restart_policy: unless-stopped
+        detach: true
+        ports:
+          - "80:80"
+        volumes:
+          - /srv/www:/usr/local/apache2/htdocs/
