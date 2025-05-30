@@ -168,7 +168,7 @@ func bootstrap(lom *lom.LOM) error {
 
 	// Run ansible playbook
 	fmt.Println("Running playbook")
-	cmd := exec.Command("ansible-playbook", "-i", addr+",", "--private-key", "/app/key", "./ansible/playbook.yml")
+	cmd := exec.Command("ansible-playbook", "-i", addr+",", "--private-key", "/app/key", "./ansible/main.yml")
 	cmd.Env = append(cmd.Env, "ANSIBLE_SSH_COMMON_ARGS='-o StrictHostKeyChecking=no'")
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr

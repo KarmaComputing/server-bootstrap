@@ -1,0 +1,19 @@
+- name: Setup OS
+  hosts: all
+
+  tasks:
+    - name: Install openntpd
+      community.general.apk:
+        name: openntpd
+        state: present
+
+    - name: Setup NTP
+      command: setup-ntp
+      args:
+        creates: /etc/ntpd.conf
+
+    - name: Add community repository
+      lineinfile:
+        path: /etc/apk/repositories
+        line: "http://dl-cdn.alpinelinux.org/alpine/v3.20/community/"
+        state: present

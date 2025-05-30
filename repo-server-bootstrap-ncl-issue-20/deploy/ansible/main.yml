@@ -1,0 +1,8 @@
+- name: Init python
+  import_playbook: init-python.yml
+
+- name: Setup OS environment
+  import_playbook: setup-os-env.yml
+
+- name: Setup webserver container
+  import_playbook: setup-webserver.yml

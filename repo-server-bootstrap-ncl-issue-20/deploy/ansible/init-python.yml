@@ -1,0 +1,8 @@
+- name: Init python
+  hosts: all
+  gather_facts: false
+
+  tasks:
+    # We should try to inlcude python in the Alpine image by default
+    - name: Install python3
+      raw: test -e /usr/bin/python3 || apk add --no-cache python3
