@@ -1,13 +1,25 @@
 ---
-- name: Test
+- name: Wipe and Install
   hosts: all
   gather_facts: false
 
   tasks:
-    - name: Install python
-      raw: test -e /usr/bin/python3 || apk add --no-cache python3
+      - name: Install python
+        raw: test -e /usr/bin/python3 || apk update && apk add --no-cache python3
 
-    - name: Gather facts
-      setup:
-      vars:
-        ansible_python_interpreter: /usr/bin/python3
+      - name: Gather facts
+        setup:
+        vars:
+            ansible_python_interpreter: /usr/bin/python3
+
+      - name: Add community repository
+        raw: echo "http://dl-cdn.alpinelinux.org/alpine/v3.20/community/" >> /etc/apk/repositories
+
+      - name: Install podman
+        raw: apk add --no-cache podman podman-compose
+
+      - name: Setup podman
+        raw: rc-update add cgroups && rc-service cgroups start
+
+      - name: Start webserver
+        raw: podman run --rm -dit --name my-apache-app -p 80:80 -v "$PWD":/usr/local/apache2/htdocs/ httpd:2.4
