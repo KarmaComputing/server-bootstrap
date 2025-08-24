@@ -1,0 +1,24 @@
+---
+#
+# Bootstrap physical server from factory reset to booted
+#
+# - Install OpenZFS boot & root across first two disks
+#
+- hosts: ipxe_bootstrap_servers
+  become: true
+  become_user: "{{ ipxe_become_user }}"
+  gather_facts: false
+  tasks:
+  - name: Debug
+    ansible.builtin.debug:
+      msg: "Running servers playbook"
+
+  - name: "Template {{ ipxe_bootstrap_servers_boot_txt_full_path }}"
+    ansible.builtin.template:
+      src: ipxe/boot.txt.j2
+      dest: "{{ ipxe_bootstrap_servers_boot_txt_full_path }}"
+      owner: "{{ ipxe_become_user }}"
+      group: "{{ ipxe_become_user }}"
+      mode: '0644'
+    tags:
+    - boot_txt
