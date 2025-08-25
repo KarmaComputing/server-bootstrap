@@ -42,7 +42,7 @@
         name: vpn-server
         location: hel1
         server_type: cx22
-        image: ubuntu-20.04
+        image: ubuntu-22.04
         state: present
         ssh_keys:
           - server_bootstrap_public_ssh_key
