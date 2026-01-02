@@ -9,6 +9,13 @@ python3 -m venv venv
 pip install -r requirements.txt
 ```
 
+## Configure
+
+```
+# edit to your target
+cp settings.yaml.example settings.yaml
+```
+
 # Run
 ```
 ./run.sh
