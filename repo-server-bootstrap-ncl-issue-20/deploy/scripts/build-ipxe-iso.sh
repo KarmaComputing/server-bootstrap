@@ -3,6 +3,10 @@ cd "$(dirname "$0")"
 
 set -exu
 
+function log() {
+  echo "--- $@ ---"
+}
+
 FILE="alpinebooter.ipxe"
 
 WWW_DIR="../serve/www"
@@ -11,33 +15,35 @@ PODMAN_IMAGE_NAME="ipxe_builder"
 SSH_KEY_DIR="../ssh"
 ISO_MAKE_THREADS=16
 
-echo "--- Creating serve directory at ${WWW_DIR} ---"
+log "Creating serve directory at ${WWW_DIR}"
 mkdir -p ${WWW_DIR}
 
-echo "--- Creating ssh key directory at ${SSH_KEY_DIR} ---"
+log "Creating ssh key directory at ${SSH_KEY_DIR}"
 mkdir -p ${SSH_KEY_DIR}
 
-echo "--- Generating new SSH key pair in ${SSH_KEY_DIR} ---"
+log "Generating new SSH key pair in ${SSH_KEY_DIR}"
 ssh-keygen -t rsa -f ${SSH_KEY_DIR}/key -N ""
 
-echo "--- Copying public SSH key to ${WWW_DIR} ---"
+log "Copying public SSH key to ${WWW_DIR}"
 mkdir -p ${WWW_DIR}/ssh
 mv -f ${SSH_KEY_DIR}/key.pub ${WWW_DIR}/ssh/key.pub
 
-echo "--- Setting correct permissions for private key ---"
+log "Setting correct permissions for private key"
 chmod 600 ${SSH_KEY_DIR}/key
 
-echo "--- Building ${PODMAN_IMAGE_NAME} ---"
+log "Building ${PODMAN_IMAGE_NAME}"
 podman build \
     --tag ${PODMAN_IMAGE_NAME} \
     ${BUILD_DIR}
 
-if [ $? -neq 0 ]; then
+RET_CODE=$?
+
+if [ $RET_CODE -neq 0 ]; then
   echo "!!! BUILD FAILED, EXITING !!!"
-  exit
+  exit $RET_CODE
 fi
 
-echo "--- Building ipxe.iso with ${FILE} embedded, writing to ${WWW_DIR} (using ${ISO_MAKE_THREADS} threads) ---"
+log "Building ipxe.iso with ${FILE} embedded, writing to ${WWW_DIR} (using ${ISO_MAKE_THREADS} threads)"
 podman run \
     --rm \
     -e FILE="$FILE" \
@@ -45,6 +51,6 @@ podman run \
     --volume ${WWW_DIR}:/output:z \
     localhost/${PODMAN_IMAGE_NAME}:latest
 
-echo "--- ipxe.iso Built & written to: ./deploy/serve/www/ipxe.iso"
-echo "--- You probably now want to build the OS image. To do that, run:"
-echo "--- deploy/scripts/build-alpine.sh"
+log "ipxe.iso Built & written to: ./deploy/serve/www/ipxe.iso"
+log "You probably now want to build the OS image. To do that, run:"
+log "deploy/scripts/build-alpine.sh"
