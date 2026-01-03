@@ -27,10 +27,10 @@ mv -f ${SSH_KEY_DIR}/key.pub ${WWW_DIR}/ssh/key.pub
 echo "--- Setting correct permissions for private key ---"
 chmod 600 ${SSH_KEY_DIR}/key
 
-# echo "--- Building ${PODMAN_IMAGE_NAME} ---"
-# podman build \
-#     --tag ${PODMAN_IMAGE_NAME} \
-#     ${BUILD_DIR}
+echo "--- Building ${PODMAN_IMAGE_NAME} ---"
+podman build \
+    --tag ${PODMAN_IMAGE_NAME} \
+    ${BUILD_DIR}
 
 if [ $? -neq 0 ]; then
   echo "!!! BUILD FAILED, EXITING !!!"
