@@ -44,3 +44,7 @@ podman run \
     --volume ${BUILD_DIR}/scripts:/input:z \
     --volume ${WWW_DIR}:/output:z \
     localhost/${PODMAN_IMAGE_NAME}:latest
+
+echo "--- ipxe.iso Built & written to: ./deploy/serve/www/ipxe.iso"
+echo "--- You probably now want to build the OS image. To do that, run:"
+echo "--- deploy/scripts/build-alpine.sh"
