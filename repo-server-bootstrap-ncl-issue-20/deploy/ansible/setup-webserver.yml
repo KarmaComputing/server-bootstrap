@@ -1,0 +1,36 @@
+- name: Setup webserver container
+  hosts: all
+
+  tasks:
+    - name: Ensure podman is present
+      community.general.apk:
+        name: podman
+        state: present
+
+    - name: Enable and start cgroups service
+      service:
+        name: cgroups
+        enabled: true
+        state: started
+
+    - name: Ensure /srv/www directory exists
+      file:
+        path: /srv/www
+        state: directory
+
+    - name: Create index.html
+      copy:
+        dest: /srv/www/index.html
+        content: "Hello\n"
+
+    - name: Start apache container with podman
+      containers.podman.podman_container:
+        name: apache
+        image: docker.io/library/httpd:2.4
+        state: started
+        restart_policy: unless-stopped
+        detach: true
+        ports:
+          - "80:80"
+        volumes:
+          - /srv/www:/usr/local/apache2/htdocs/
